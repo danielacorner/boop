@@ -22,8 +22,6 @@ const BALL_RADIUS = 0.5;
 const rfs = THREE.MathUtils.randFloatSpread;
 
 export const LotteryMachine = () => {
-  const gpu = useDetectGPU();
-  const num = gpu.tier > 2 ? 12 : 10;
   return (
     <Canvas
       style={{ position: "fixed", inset: 0 }}
@@ -48,60 +46,7 @@ export const LotteryMachine = () => {
         color="purple"
       />
       <Physics gravity={[0, 2, 0]} iterations={10}>
-        {/* <DebugInDev> */}
-        <ColliderSphere />
-        <Clump
-          numNodes={num}
-          materialProps={{
-            roughness: 1,
-            emissive: "#003734",
-            metalness: 0.5,
-            envMapIntensity: 5,
-            transmission: 0,
-          }}
-        />
-        <Clump
-          numNodes={num}
-          materialProps={{
-            roughness: 0,
-            emissive: "#370037",
-            metalness: 0,
-            envMapIntensity: -28,
-            transmission: 0,
-          }}
-        />
-        <Clump
-          numNodes={num}
-          materialProps={{
-            roughness: 0,
-            emissive: "#370037",
-            metalness: 1,
-            envMapIntensity: -2.8,
-            transmission: 0,
-          }}
-        />
-        <Clump
-          numNodes={num}
-          materialProps={{
-            roughness: 0,
-            emissive: null,
-            metalness: 0,
-            envMapIntensity: 0,
-            transmission: 1,
-            thickness: BALL_RADIUS,
-          }}
-        />
-        <Clump
-          numNodes={num}
-          materialProps={{
-            roughness: 0.4,
-            emissive: null,
-            metalness: 2.7,
-            envMapIntensity: 1.7,
-            transmission: 0,
-          }}
-        />
-        {/* </DebugInDev> */}
+        <PhysicsScene />
       </Physics>
       <Environment files="/adamsbridge.hdr" />
       <Effects />
@@ -118,18 +63,122 @@ export const LotteryMachine = () => {
 //   );
 // }
 
-const tempObject = new THREE.Object3D();
-const tempColor = new THREE.Color();
+// const tempObject = new THREE.Object3D();
+// const tempColor = new THREE.Color();
 
 const COLORS = [...palettes[0], ...palettes[1], ...palettes[3], ...palettes[2]];
 
+function PhysicsScene() {
+  const gpu = useDetectGPU();
+  const num = gpu.tier > 2 ? 12 : 10;
+  const { viewport } = useThree();
+  // const { metalness, env } = useControls({ metalness: 0, env: 1 });
+  return (
+    <>
+      {/* <DebugInDev> */}
+      <ColliderSphere />
+      <Clump
+        numNodes={num}
+        materialProps={{
+          roughness: 0,
+          emissive: null,
+          metalness: 4,
+          envMapIntensity: 1,
+          transmission: 1,
+          thickness: BALL_RADIUS,
+        }}
+      />
+      {/* <Clump
+        numNodes={num}
+        materialProps={{
+          roughness: 0.6,
+          emissive: null,
+          metalness: 0.1,
+          envMapIntensity: 1.5,
+          transmission: 0,
+        }}
+        texturePath={"ball_modern.jpg"}
+      /> */}
+      <Clump
+        numNodes={num}
+        materialProps={{
+          roughness: 0,
+          // emissive: "#535353",
+          metalness: 1,
+          envMapIntensity: 10,
+          transmission: 0,
+        }}
+        // texturePath={"ball_mars.jpg"}
+        radius={BALL_RADIUS}
+      />
+      <Clump
+        numNodes={1}
+        materialProps={{
+          roughness: 0.6,
+          emissive: null,
+          metalness: 0.1,
+          envMapIntensity: 1.5,
+          transmission: 0,
+        }}
+        texturePath={"ball_jupiter.jpg"}
+        radius={BALL_RADIUS * 1.6}
+      />
+      <Clump
+        numNodes={1}
+        materialProps={{
+          roughness: 0.5,
+          emissive: "#c04b14",
+          metalness: 0.1,
+          envMapIntensity: 5,
+          transmission: 0,
+        }}
+        texturePath={"ball_sun.jpg"}
+        radius={BALL_RADIUS * 2.4}
+      />
+      <Clump
+        numNodes={num}
+        materialProps={{
+          roughness: 0.6,
+          emissive: null,
+          metalness: 0,
+          envMapIntensity: 15,
+          transmission: 0,
+        }}
+        texturePath={"ball_earth.jpg"}
+      />
+      <Clump
+        numNodes={num}
+        materialProps={{
+          roughness: 0,
+          emissive: null,
+          metalness: 0,
+          envMapIntensity: 3,
+          transmission: 0,
+        }}
+        texturePath={"ball_vangogh.jpg"}
+      />
+      {/* </DebugInDev> */}
+    </>
+  );
+}
+
 function Clump({
-  mat = new THREE.Matrix4(),
-  vec = new THREE.Vector3(),
   materialProps = {} as any,
   numNodes,
+  texturePath = "/ball.jpg",
+  position = null as [number, number, number] | null,
+  brightness = null,
+  radius = BALL_RADIUS,
 }) {
-  const texture = useTexture("/ball.jpg");
+  const mat = useMemo(() => new THREE.Matrix4(), []);
+  const vec = useMemo(() => new THREE.Vector3(), []);
+  const eul = useMemo(
+    () =>
+      position ? new THREE.Euler(position[0], position[1], position[2]) : null,
+    [position]
+  );
+
+  const texture = useTexture(texturePath);
   const colorArray = useMemo(
     () =>
       new Array(numNodes).fill(null).flatMap((_, i) => {
@@ -140,7 +189,7 @@ function Clump({
   );
 
   const [ref, api] = useSphere<any>(() => ({
-    args: [BALL_RADIUS],
+    args: [radius],
     mass: 1,
     angularDamping: 0.1,
     linearDamping: 0.65,
@@ -153,29 +202,36 @@ function Clump({
       ref.current.getMatrixAt(i, mat);
       // Normalize the position and multiply by a negative force.
       // This is enough to drive it towards the center-point.
-      api
-        .at(i)
-        .applyForce(
-          vec
-            .setFromMatrixPosition(mat)
-            .normalize()
-            .multiplyScalar(-50)
-            .toArray(),
-          [0, 0, 0]
-        );
+      api.at(i).applyForce(
+        position
+          ? new THREE.Vector3(position[0], position[1], position[2])
+              // .set(position[0], position[1], position[2])
+              // .setFromMatrixPosition(mat)
+              .setComponent(0, position[0])
+              .setComponent(1, position[1])
+              .setComponent(2, position[0])
+              .normalize()
+              .multiplyScalar(-50)
+              .toArray()
+          : vec
+              .setFromMatrixPosition(mat)
+              .normalize()
+              .multiplyScalar(-50)
+              .toArray(),
+        position ?? [0, 0, 0]
+      );
     }
   });
   // const sphereGeometry = new THREE.SphereGeometry(RADIUS, 32, 32);
   useEffect(() => {
     for (let index = 0; index < colorArray.length; index++) {
-      const node = nodes[index];
       const color = COLORS[index % COLORS.length];
-      if (materialProps.transmission === 1) {
+      if (materialProps.transmission === 1 || texturePath) {
         return;
       }
       ref.current.setColorAt(index, new THREE.Color(color));
     }
-  }, [colorArray.length, nodes, ref, materialProps.transmission]);
+  }, [colorArray.length, nodes, ref, materialProps.transmission, texturePath]);
   // const { transmission, roughness, emissive, metalness, envMapIntensity } =
   //   useControls({
   //     roughness: 0,
@@ -185,44 +241,46 @@ function Clump({
   //     transmission: 0,
   //   });
   return (
-    <instancedMesh
-      ref={ref}
-      castShadow
-      receiveShadow
-      args={[undefined, undefined, nodes.length]}
-      // geometry={sphereGeometry}
-      // material={baubleMaterial}
-      // material-map={texture}
-    >
-      <sphereBufferGeometry args={[BALL_RADIUS, 32, 32]}>
-        {/* <instancedBufferAttribute
-          attach="attributes-color"
-          count={filteredNodesRandom.length}
-          array={colorArray}
-        /> */}
-      </sphereBufferGeometry>
-
-      <meshPhysicalMaterial
-        map={texture}
-        {...{
-          // const baubleMaterial = new THREE.MeshPhysicalMaterial({
-          // color: "white",
-          // roughness,
-          // envMapIntensity,
-          // emissive: "emissive" in materialProps ? null : emissive,
-          // metalness,
-          // transmission,
-          ...materialProps,
-          // });
-        }}
-        // transmission={1}
+    <>
+      <instancedMesh
+        ref={ref}
+        castShadow
+        receiveShadow
+        args={[undefined, undefined, nodes.length]}
+        // geometry={sphereGeometry}
+        // material={baubleMaterial}
+        // material-map={texture}
       >
-        {/* <instancedBufferAttribute
-          attach="attributes-color"
-          args={[colorArray, 3]}
-        /> */}
-      </meshPhysicalMaterial>
-    </instancedMesh>
+        <sphereBufferGeometry args={[radius, 32, 32]}>
+          {/* <instancedBufferAttribute
+            attach="attributes-color"
+            count={filteredNodesRandom.length}
+            array={colorArray}
+          /> */}
+        </sphereBufferGeometry>
+
+        <meshPhysicalMaterial
+          map={texture}
+          {...{
+            // const baubleMaterial = new THREE.MeshPhysicalMaterial({
+            // color: "white",
+            // roughness,
+            // envMapIntensity,
+            // emissive: "emissive" in materialProps ? null : emissive,
+            // metalness,
+            // transmission,
+            ...materialProps,
+            // });
+          }}
+          // transmission={1}
+        >
+          {/* <instancedBufferAttribute
+            attach="attributes-color"
+            args={[colorArray, 3]}
+          /> */}
+        </meshPhysicalMaterial>
+      </instancedMesh>
+    </>
   );
 }
 function ColliderSphere() {
