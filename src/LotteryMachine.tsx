@@ -24,7 +24,7 @@ export const LotteryMachine = () => {
     <Canvas
       style={{ position: "fixed", inset: 0 }}
       shadows
-      dpr={[0.2, 1]}
+      dpr={[0.2, 2]}
       camera={{ position: [0, 0, 20], fov: 35, near: 1, far: 40 }}
       performance={{ min: 0.9 }}
       gl={{ alpha: false, antialias: false }}
