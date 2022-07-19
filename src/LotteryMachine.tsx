@@ -28,6 +28,7 @@ export const LotteryMachine = () => {
       shadows
       dpr={[1, 2]}
       camera={{ position: [0, 0, 20], fov: 35, near: 1, far: 40 }}
+      performance={{ min: 0.8 }}
     >
       <AdaptiveDpr pixelated />
       {/* {gpu.tier <= 2 && <AdaptiveDpr pixelated />} */}
