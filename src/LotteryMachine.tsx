@@ -9,14 +9,15 @@ import {
 } from "@react-three/drei";
 import * as THREE from "three";
 import { Canvas, extend, useFrame, useThree } from "@react-three/fiber";
-import { Debug, Physics, useSphere } from "@react-three/cannon";
+import { Physics, useSphere } from "@react-three/cannon";
 import { SSAOPass } from "three-stdlib";
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useEffect, useMemo, useRef } from "react";
 import { useControls } from "leva";
 import palettes from "nice-color-palettes";
+import { useEventListener } from "./utils/hooks";
 extend({ SSAOPass });
 
-const RADIUS = 0.5;
+const BALL_RADIUS = 0.5;
 const rfs = THREE.MathUtils.randFloatSpread;
 
 export const LotteryMachine = () => {
@@ -48,7 +49,57 @@ export const LotteryMachine = () => {
       <Physics gravity={[0, 2, 0]} iterations={10}>
         {/* <DebugInDev> */}
         <ColliderSphere />
-        <Clump />
+        <Clump
+          numNodes={12}
+          materialProps={{
+            roughness: 1,
+            emissive: "#003734",
+            metalness: 0.5,
+            envMapIntensity: 5,
+            transmission: 0,
+          }}
+        />
+        <Clump
+          numNodes={12}
+          materialProps={{
+            roughness: 0,
+            emissive: "#370037",
+            metalness: 0,
+            envMapIntensity: -28,
+            transmission: 0,
+          }}
+        />
+        <Clump
+          numNodes={12}
+          materialProps={{
+            roughness: 0,
+            emissive: "#370037",
+            metalness: 1,
+            envMapIntensity: -2.8,
+            transmission: 0,
+          }}
+        />
+        <Clump
+          numNodes={12}
+          materialProps={{
+            roughness: 0,
+            emissive: null,
+            metalness: 0,
+            envMapIntensity: 0,
+            transmission: 1,
+            thickness: BALL_RADIUS,
+          }}
+        />
+        <Clump
+          numNodes={12}
+          materialProps={{
+            roughness: 0.2,
+            // emissive: "#370037",
+            // metalness: 0.6,
+            envMapIntensity: 1.3,
+            // transmission: 0,
+          }}
+        />
         {/* </DebugInDev> */}
       </Physics>
       <Environment files="/adamsbridge.hdr" />
@@ -67,14 +118,7 @@ export const LotteryMachine = () => {
 
 const tempObject = new THREE.Object3D();
 const tempColor = new THREE.Color();
-function useNumNodes() {
-  const { tier } = useDetectGPU();
-  return tier > 2 ? 60 : 30;
-}
-function useColliderRadius() {
-  const { tier } = useDetectGPU();
-  return tier > 2 ? RADIUS * 4 : RADIUS * 3;
-}
+
 // const COLORS = [...new Array(NUM_NODES)].map(
 //   () => palettes[0][Math.floor(Math.random() * palettes[0].length)]
 //   // "hsl(" +
@@ -86,21 +130,13 @@ const COLORS = [...palettes[0], ...palettes[7]];
 function Clump({
   mat = new THREE.Matrix4(),
   vec = new THREE.Vector3(),
-  ...props
+  materialProps = {} as any,
+  numNodes,
 }) {
-  const numNodes = useNumNodes();
   const texture = useTexture("/ball.jpg");
   const colorArray = useMemo(
     () =>
-      // Float32Array.from(
       new Array(numNodes).fill(null).flatMap((_, i) => {
-        // const [h, s, l] = hslStringToHSL(COLORS[i]);
-        // const hex = hslToHex(
-        //   Number(h),
-        //   Number(s.slice(0, -1)),
-        //   Number(l.slice(0, -1))
-        // );
-        // const color = hex;
         const color = COLORS[i];
         return color;
       }),
@@ -108,39 +144,14 @@ function Clump({
     [numNodes]
   );
 
-  // const colorArray = useMemo(
-  //   () =>
-  //     Float32Array.from(
-  //       [...new Array(NUM_NODES)].flatMap((_, i) => {
-  //         const [h, s, l] = hslStringToHSL(colors[i]);
-  //         console.log(
-  //           "🌟🚨 ~ file: LotteryMachine.tsx ~ line 82 ~ [...newArray ~ [h, s, l]",
-  //           [h, s, l]
-  //         );
-  //         const hex = hslToHex(
-  //           Number(h),
-  //           Number(s.slice(0, -1)),
-  //           Number(l.slice(0, -1))
-  //         );
-  //         console.log(
-  //           "🌟🚨 ~ file: LotteryMachine.tsx ~ line 91 ~ [...newArray ~ hex",
-  //           hex
-  //         );
-  //         return tempColor.set(hex).toArray();
-  //       })
-  //     ),
-  //   []
-  // );
-
   const [ref, api] = useSphere<any>(() => ({
-    args: [RADIUS],
+    args: [BALL_RADIUS],
     mass: 1,
     angularDamping: 0.1,
     linearDamping: 0.65,
     position: [rfs(20), rfs(20), rfs(20)],
   }));
-  const NUM_NODES = 30;
-  const nodes = [...Array(NUM_NODES)];
+  const nodes = [...Array(numNodes)];
   useFrame((state) => {
     for (let i = 0; i < nodes.length; i++) {
       // Get current whereabouts of the instanced sphere
@@ -163,6 +174,9 @@ function Clump({
     for (let index = 0; index < colorArray.length; index++) {
       const node = nodes[index];
       const color = COLORS[index % COLORS.length];
+      if (transmission === 1) {
+        return;
+      }
       ref.current.setColorAt(index, new THREE.Color(color));
     }
   });
@@ -185,7 +199,7 @@ function Clump({
       // material={baubleMaterial}
       // material-map={texture}
     >
-      <sphereBufferGeometry args={[RADIUS, 32, 32]}>
+      <sphereBufferGeometry args={[BALL_RADIUS, 32, 32]}>
         {/* <instancedBufferAttribute
           attach="attributes-color"
           count={filteredNodesRandom.length}
@@ -200,9 +214,10 @@ function Clump({
           // color: "white",
           roughness,
           envMapIntensity,
-          emissive,
+          emissive: "emissive" in materialProps ? null : emissive,
           metalness,
           transmission,
+          ...materialProps,
           // });
         }}
         // transmission={1}
@@ -216,10 +231,10 @@ function Clump({
   );
 }
 function ColliderSphere() {
-  const [shuffling, setShuffling] = useState(false);
-  const viewport = useThree((state) => state.viewport);
+  const { viewport, size } = useThree();
 
-  const colliderRadius = useColliderRadius();
+  const gpu = useDetectGPU();
+  const colliderRadius = gpu.tier > 2 ? 3 : 1.5;
   const [ref, api] = useSphere<any>(() => ({
     type: "Kinematic",
     args: [colliderRadius],
@@ -229,23 +244,35 @@ function ColliderSphere() {
   const position = useRef([0, 0, 0]);
   useEffect(() => api.position.subscribe((v) => (position.current = v)), [api]);
 
-  useFrame((state) => {
-    console.log(
-      "🌟🚨 ~ file: LotteryMachine.tsx ~ line 233 ~ ColliderSphere ~ state",
-      state
-    );
+  // useFrame((state) => {
+  //   const nextX = (state.pointer.x * viewport.width) / 2;
+  //   const nextY = (state.pointer.y * viewport.height) / 2;
+  //   const nextXL = THREE.MathUtils.lerp(position.current[0], nextX, 0.2);
+  //   const nextYL = THREE.MathUtils.lerp(position.current[1], nextY, 0.2);
 
-    console.log(
-      "🌟🚨 ~ file: LotteryMachine.tsx ~ line 239 ~ useFrame ~ state.pointer.x",
-      state.pointer.x
-    );
-    const nextX = (state.pointer.x * viewport.width) / 2;
-    const nextY = (state.pointer.y * viewport.height) / 2;
-    const nextXL = THREE.MathUtils.lerp(position.current[0], nextX, 0.2);
-    const nextYL = THREE.MathUtils.lerp(position.current[1], nextY, 0.2);
+  //   return api.position.set(nextXL, nextYL, 0);
+  // });
 
+  useEventListener("touchmove", (event) => {
+    console.log(
+      "🌟🚨 ~ file: LotteryMachine.tsx ~ line 215 ~ useEventListener ~ event",
+      event
+    );
+    console.log(
+      "🌟🚨 ~ file: LotteryMachine.tsx ~ line 262 ~ useEventListener ~ event.touches",
+      event.touches
+    );
+    const posX =
+      (event.changedTouches[0].clientX / size.width) * viewport.width -
+      viewport.width / 2;
+    const posY =
+      (event.changedTouches[0].clientY / size.height) * -viewport.height +
+      viewport.height / 2;
+    const nextXL = THREE.MathUtils.lerp(position.current[0], posX, 0.2);
+    const nextYL = THREE.MathUtils.lerp(position.current[1], posY, 0.2);
     return api.position.set(nextXL, nextYL, 0);
   });
+
   return (
     <Sphere ref={ref} args={[colliderRadius]}>
       <meshPhysicalMaterial
