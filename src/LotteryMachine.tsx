@@ -22,7 +22,7 @@ const rfs = THREE.MathUtils.randFloatSpread;
 
 export const LotteryMachine = () => {
   const gpu = useDetectGPU();
-
+  const num = gpu.tier > 2 ? 12 : 10;
   return (
     <Canvas
       style={{ position: "fixed", inset: 0 }}
@@ -50,7 +50,7 @@ export const LotteryMachine = () => {
         {/* <DebugInDev> */}
         <ColliderSphere />
         <Clump
-          numNodes={12}
+          numNodes={num}
           materialProps={{
             roughness: 1,
             emissive: "#003734",
@@ -60,7 +60,7 @@ export const LotteryMachine = () => {
           }}
         />
         <Clump
-          numNodes={12}
+          numNodes={num}
           materialProps={{
             roughness: 0,
             emissive: "#370037",
@@ -70,7 +70,7 @@ export const LotteryMachine = () => {
           }}
         />
         <Clump
-          numNodes={12}
+          numNodes={num}
           materialProps={{
             roughness: 0,
             emissive: "#370037",
@@ -80,7 +80,7 @@ export const LotteryMachine = () => {
           }}
         />
         <Clump
-          numNodes={12}
+          numNodes={num}
           materialProps={{
             roughness: 0,
             emissive: null,
@@ -91,13 +91,13 @@ export const LotteryMachine = () => {
           }}
         />
         <Clump
-          numNodes={12}
+          numNodes={num}
           materialProps={{
-            roughness: 0.2,
-            // emissive: "#370037",
-            // metalness: 0.6,
-            envMapIntensity: 1.3,
-            // transmission: 0,
+            roughness: 0.4,
+            emissive: null,
+            metalness: 2.7,
+            envMapIntensity: 1.7,
+            transmission: 0,
           }}
         />
         {/* </DebugInDev> */}
@@ -119,13 +119,7 @@ export const LotteryMachine = () => {
 const tempObject = new THREE.Object3D();
 const tempColor = new THREE.Color();
 
-// const COLORS = [...new Array(NUM_NODES)].map(
-//   () => palettes[0][Math.floor(Math.random() * palettes[0].length)]
-//   // "hsl(" +
-//   // Math.round(360 * Math.random()) +
-//   // `, 100%, ${Math.round(Math.random() * 64) + 36}%)`
-// );
-const COLORS = [...palettes[0], ...palettes[7]];
+const COLORS = [...palettes[0], ...palettes[1], ...palettes[3], ...palettes[2]];
 
 function Clump({
   mat = new THREE.Matrix4(),
@@ -140,7 +134,6 @@ function Clump({
         const color = COLORS[i];
         return color;
       }),
-    // ),
     [numNodes]
   );
 
@@ -151,7 +144,7 @@ function Clump({
     linearDamping: 0.65,
     position: [rfs(20), rfs(20), rfs(20)],
   }));
-  const nodes = [...Array(numNodes)];
+  const nodes = useMemo(() => [...Array(numNodes)], [numNodes]);
   useFrame((state) => {
     for (let i = 0; i < nodes.length; i++) {
       // Get current whereabouts of the instanced sphere
@@ -170,25 +163,25 @@ function Clump({
         );
     }
   });
+  // const sphereGeometry = new THREE.SphereGeometry(RADIUS, 32, 32);
   useEffect(() => {
     for (let index = 0; index < colorArray.length; index++) {
       const node = nodes[index];
       const color = COLORS[index % COLORS.length];
-      if (transmission === 1) {
+      if (materialProps.transmission === 1) {
         return;
       }
       ref.current.setColorAt(index, new THREE.Color(color));
     }
-  });
-  // const sphereGeometry = new THREE.SphereGeometry(RADIUS, 32, 32);
-  const { transmission, roughness, emissive, metalness, envMapIntensity } =
-    useControls({
-      roughness: 0,
-      emissive: "#370037",
-      metalness: 0,
-      envMapIntensity: 0.2,
-      transmission: 0,
-    });
+  }, [colorArray.length, nodes, ref, materialProps.transmission]);
+  // const { transmission, roughness, emissive, metalness, envMapIntensity } =
+  //   useControls({
+  //     roughness: 0,
+  //     emissive: "#370037",
+  //     metalness: 0,
+  //     envMapIntensity: 0.2,
+  //     transmission: 0,
+  //   });
   return (
     <instancedMesh
       ref={ref}
@@ -212,11 +205,11 @@ function Clump({
         {...{
           // const baubleMaterial = new THREE.MeshPhysicalMaterial({
           // color: "white",
-          roughness,
-          envMapIntensity,
-          emissive: "emissive" in materialProps ? null : emissive,
-          metalness,
-          transmission,
+          // roughness,
+          // envMapIntensity,
+          // emissive: "emissive" in materialProps ? null : emissive,
+          // metalness,
+          // transmission,
           ...materialProps,
           // });
         }}
