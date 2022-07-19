@@ -6,14 +6,12 @@ import {
   Sphere,
   useDetectGPU,
   AdaptiveDpr,
-  Stars,
 } from "@react-three/drei";
 import * as THREE from "three";
 import { Canvas, extend, useFrame, useThree } from "@react-three/fiber";
 import { Physics, useSphere } from "@react-three/cannon";
 import { SSAOPass } from "three-stdlib";
 import { useEffect, useMemo, useRef } from "react";
-import { useControls } from "leva";
 import palettes from "nice-color-palettes";
 import { useEventListener } from "./utils/hooks";
 extend({ SSAOPass });
@@ -26,9 +24,10 @@ export const LotteryMachine = () => {
     <Canvas
       style={{ position: "fixed", inset: 0 }}
       shadows
-      dpr={[1, 2]}
+      dpr={[0.2, 1]}
       camera={{ position: [0, 0, 20], fov: 35, near: 1, far: 40 }}
-      performance={{ min: 0.8 }}
+      performance={{ min: 0.9 }}
+      gl={{ alpha: false, antialias: false }}
     >
       <AdaptiveDpr pixelated />
       {/* {gpu.tier <= 2 && <AdaptiveDpr pixelated />} */}
