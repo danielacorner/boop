@@ -53,7 +53,7 @@ const SoundButtonStyles = styled.div<{ isAudioPlaying: boolean }>`
   position: fixed;
   bottom: 8px;
   right: 12px;
-  opacity: 0.6;
+  opacity: 0.3;
   align-items: center;
   z-index: 9;
   .MuiButtonBase-root {
@@ -64,7 +64,7 @@ const SoundButtonStyles = styled.div<{ isAudioPlaying: boolean }>`
     a {
       color: white;
     }
-    opacity: ${(p) => (p.isAudioPlaying ? 0.1 : 0)};
+    opacity: ${(p) => (p.isAudioPlaying ? 0.5 : 0)};
     margin-top: -6px;
   }
   &:hover,
