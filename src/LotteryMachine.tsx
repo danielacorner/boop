@@ -234,7 +234,7 @@ function ColliderSphere() {
   const { viewport, size } = useThree();
 
   const gpu = useDetectGPU();
-  const colliderRadius = gpu.tier > 2 ? 3 : 1.5;
+  const colliderRadius = gpu.tier > 2 ? 3 : 2;
   const [ref, api] = useSphere<any>(() => ({
     type: "Kinematic",
     args: [colliderRadius],
@@ -244,37 +244,45 @@ function ColliderSphere() {
   const position = useRef([0, 0, 0]);
   useEffect(() => api.position.subscribe((v) => (position.current = v)), [api]);
 
-  // useFrame((state) => {
-  //   const nextX = (state.pointer.x * viewport.width) / 2;
-  //   const nextY = (state.pointer.y * viewport.height) / 2;
-  //   const nextXL = THREE.MathUtils.lerp(position.current[0], nextX, 0.2);
-  //   const nextYL = THREE.MathUtils.lerp(position.current[1], nextY, 0.2);
-
-  //   return api.position.set(nextXL, nextYL, 0);
-  // });
-
-  useEventListener("touchmove", (event) => {
-    console.log(
-      "🌟🚨 ~ file: LotteryMachine.tsx ~ line 215 ~ useEventListener ~ event",
-      event
-    );
-    console.log(
-      "🌟🚨 ~ file: LotteryMachine.tsx ~ line 262 ~ useEventListener ~ event.touches",
-      event.touches
-    );
-    const posX =
-      (event.changedTouches[0].clientX / size.width) * viewport.width -
-      viewport.width / 2;
-    const posY =
-      (event.changedTouches[0].clientY / size.height) * -viewport.height +
-      viewport.height / 2;
-    const nextXL = THREE.MathUtils.lerp(position.current[0], posX, 0.2);
-    const nextYL = THREE.MathUtils.lerp(position.current[1], posY, 0.2);
+  const touchingRef = useRef<[number, number, number] | null>(null);
+  useFrame((state) => {
+    const nextX =
+      ((touchingRef.current?.[0] ?? state.pointer.x) * viewport.width) / 2;
+    const nextY =
+      ((touchingRef.current?.[1] ?? state.pointer.y) * viewport.height) / 2;
+    const nextXL = THREE.MathUtils.lerp(position.current[0], nextX, 0.24);
+    const nextYL = THREE.MathUtils.lerp(position.current[1], nextY, 0.24);
     return api.position.set(nextXL, nextYL, 0);
   });
 
+  useEventListener("touchmove", (event) => {
+    touchingRef.current = getPosition({
+      clientX: event.changedTouches[0].clientX,
+      clientY: event.changedTouches[0].clientY,
+      size,
+      viewport,
+    });
+  });
+
+  useEventListener("click", (event) => {
+    touchingRef.current = getPosition({
+      clientX: event.clientX,
+      clientY: event.clientY,
+      size,
+      viewport,
+    });
+  });
+  useEventListener("mousemove", (event) => {
+    touchingRef.current = getPosition({
+      clientX: event.clientX,
+      clientY: event.clientY,
+      size,
+      viewport,
+    });
+  });
+
   return (
-    <Sphere ref={ref} args={[colliderRadius]}>
+    <Sphere ref={ref} args={[colliderRadius, 32, 32]}>
       <meshPhysicalMaterial
         transmission={1}
         thickness={colliderRadius / 2}
@@ -303,4 +311,15 @@ function Effects(props) {
       />
     </EffectComposer>
   );
+}
+
+function getPosition({
+  clientX,
+  clientY,
+  size,
+  viewport,
+}): [number, number, number] {
+  const posX = (clientX * 2 - size.width) / size.width;
+  const posY = -(clientY * 2 - size.height) / size.height;
+  return [posX, posY, 0];
 }
