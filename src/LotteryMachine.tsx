@@ -6,6 +6,7 @@ import {
   Sphere,
   useDetectGPU,
   AdaptiveDpr,
+  Stars,
 } from "@react-three/drei";
 import * as THREE from "three";
 import { Canvas, extend, useFrame, useThree } from "@react-three/fiber";
@@ -104,7 +105,8 @@ export const LotteryMachine = () => {
       </Physics>
       <Environment files="/adamsbridge.hdr" />
       <Effects />
-      <Sky />
+      {/* https://threejs.org/examples/webgl_shaders_sky.html */}
+      <Sky turbidity={10} rayleigh={0} inclination={0.51} />
     </Canvas>
   );
 };
