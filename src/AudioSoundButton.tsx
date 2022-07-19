@@ -35,7 +35,6 @@ export function AudioSoundButton({ title, href }) {
             {isMusicOn ? <VolumeUp /> : <VolumeOff />}
           </IconButton>
         </Tooltip>
-        {isHovered && <VolumeControls {...{ volume, setVolume }} />}
       </SoundButtonStyles>
       <ReactPlayer
         style={{ visibility: "hidden", position: "fixed" }}
@@ -61,6 +60,7 @@ const SoundButtonStyles = styled.div<{ isAudioPlaying: boolean }>`
     color: hsla(0, 100%, 100%, 1);
   }
   .soundInfo {
+    font-family: system-ui;
     a {
       color: white;
     }
@@ -71,71 +71,6 @@ const SoundButtonStyles = styled.div<{ isAudioPlaying: boolean }>`
   &:active {
     .soundInfo {
       opacity: 1;
-    }
-  }
-`;
-function VolumeControls({ volume, setVolume }) {
-  const [isAudioPlaying] = useAtom(isMusicOnAtom);
-
-  return (
-    <VolumeControlsStyles {...{ isAudioPlaying }}>
-      <div className="volumeControlsContent">
-        {[...Array(NUM_VOLUME_STEPS + 1)].map((_, idx) => (
-          <div
-            key={idx}
-            className={`volumeTick${volume > idx ? " active" : ""}${
-              volume === idx ? " current" : ""
-            }`}
-            onClick={() => {
-              setVolume(idx);
-            }}
-          >
-            <Tooltip title={`${(idx * 100) / NUM_VOLUME_STEPS}%`}>
-              <div className="tickBackground"></div>
-            </Tooltip>
-          </div>
-        ))}
-      </div>
-    </VolumeControlsStyles>
-  );
-}
-const VolumeControlsStyles = styled.div<{ isAudioPlaying }>`
-  position: relative;
-  .volumeControlsContent {
-    cursor: pointer;
-    display: flex;
-    position: absolute;
-    bottom: 22px;
-    right: 12px;
-  }
-  .volumeTick {
-    padding: 12px 0;
-    margin: -12px 0;
-    width: 4px;
-    height: 6px;
-    box-sizing: border-box;
-    .tickBackground {
-      margin-top: -12px;
-      height: 6px;
-      background: #2c2c2c;
-    }
-    &.active {
-      .tickBackground {
-        background: ${(p) => (p.isAudioPlaying ? "#fff" : "#555")};
-      }
-    }
-    &.current {
-      position: relative;
-      &:after {
-        position: absolute;
-        content: "";
-        top: -3.5px;
-        left: -6px;
-        width: 12px;
-        height: 12px;
-        border-radius: 50%;
-        background: #a8a8a8;
-      }
     }
   }
 `;
