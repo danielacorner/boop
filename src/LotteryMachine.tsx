@@ -14,6 +14,7 @@ import { SSAOPass } from "three-stdlib";
 import { useEffect, useMemo, useRef } from "react";
 import palettes from "nice-color-palettes";
 import { useEventListener } from "./utils/hooks";
+import { useControls } from "leva";
 extend({ SSAOPass });
 
 const BALL_RADIUS = 0.5;
@@ -72,8 +73,6 @@ const COLORS = [...palettes[0], ...palettes[1], ...palettes[3], ...palettes[2]];
 function PhysicsScene() {
   const gpu = useDetectGPU();
   const num = gpu.tier > 2 ? 12 : 10;
-  const { viewport } = useThree();
-  // const { metalness, env } = useControls({ metalness: 0, env: 1 });
   return (
     <>
       {/* <DebugInDev> */}
@@ -88,6 +87,19 @@ function PhysicsScene() {
           transmission: 1,
           thickness: BALL_RADIUS,
         }}
+        texturePath={"ball_vangogh.jpg"}
+      />
+      <Clump
+        numNodes={num}
+        materialProps={{
+          roughness: 0,
+          emissive: null,
+          metalness: 0,
+          envMapIntensity: 0,
+          transmission: 1,
+          thickness: BALL_RADIUS * 7,
+        }}
+        radius={BALL_RADIUS}
       />
       {/* <Clump
         numNodes={num}
@@ -104,12 +116,11 @@ function PhysicsScene() {
         numNodes={num}
         materialProps={{
           roughness: 0,
-          // emissive: "#535353",
           metalness: 1,
           envMapIntensity: 10,
           transmission: 0,
         }}
-        // texturePath={"ball_mars.jpg"}
+        texturePath={"ball_vangogh.jpg"}
         radius={BALL_RADIUS}
       />
       <Clump
@@ -139,10 +150,10 @@ function PhysicsScene() {
       <Clump
         numNodes={num}
         materialProps={{
-          roughness: 0.6,
+          roughness: 0,
           emissive: null,
           metalness: 0,
-          envMapIntensity: 15,
+          envMapIntensity: 4,
           transmission: 0,
         }}
         texturePath={"ball_earth.jpg"}
@@ -158,6 +169,7 @@ function PhysicsScene() {
         }}
         texturePath={"ball_vangogh.jpg"}
       />
+
       {/* </DebugInDev> */}
     </>
   );
