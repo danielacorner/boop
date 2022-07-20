@@ -1,33 +1,6 @@
 import { AudioSoundButton } from "./AudioSoundButton";
 import { LotteryMachine } from "./LotteryMachine";
 
-const { title, href } = shuffleArray([
-  {
-    title: "Memories (Someone We'll Never Know) - Moon OST",
-    href: "https://www.youtube.com/watch?v=QVuoul47Q_w&list=OLAK5uy_l3rRYn-9yNjarAoHvVh8tNmaOWIeJVEU0&index=5",
-  },
-  {
-    title: "The Nursery - Moon OST",
-    href: "https://www.youtube.com/watch?v=RgVzeqPIt-8&list=OLAK5uy_l3rRYn-9yNjarAoHvVh8tNmaOWIeJVEU0&index=9",
-  },
-  {
-    title: "We're Going Home - Moon OST",
-    href: "https://www.youtube.com/watch?v=O3Kn9mFgr_o&list=OLAK5uy_l3rRYn-9yNjarAoHvVh8tNmaOWIeJVEU0&index=11",
-  },
-  {
-    title: "Cygnus - Endless Space 2 OST",
-    href: "https://www.youtube.com/watch?v=PeGv-QtHyaA&list=PLtzah_dj5hUXssVw_j55Fnwjud0fZRle6&index=22",
-  },
-  // {
-  //   title: "Worship the Endless - Endless Space 2 OST",
-  //   href: "https://www.youtube.com/watch?v=uN6JFzeSAz0&list=PLtzah_dj5hUXssVw_j55Fnwjud0fZRle6&index=2",
-  // },
-  // {
-  //   title: "Three Quarks in a Row - Endless Space 2 OST",
-  //   href: "https://www.youtube.com/watch?v=MEvIBLiGDu8&list=PLtzah_dj5hUXssVw_j55Fnwjud0fZRle6&index=17",
-  // },
-])[0];
-
 function App() {
   return (
     <>
@@ -46,3 +19,54 @@ function shuffleArray(array) {
   }
   return array;
 }
+
+const { title, href } = shuffleArray([
+  {
+    title: "Welcome to Lunar Industries - Moon OST",
+    href: "https://www.youtube.com/watch?v=WUraLNrTVeg",
+  },
+  {
+    title: "Memories (Someone We'll Never Know) - Moon OST",
+    href: "https://www.youtube.com/watch?v=QVuoul47Q_w&list=OLAK5uy_l3rRYn-9yNjarAoHvVh8tNmaOWIeJVEU0&index=5",
+  },
+  {
+    title: "The Nursery - Moon OST",
+    href: "https://www.youtube.com/watch?v=RgVzeqPIt-8&list=OLAK5uy_l3rRYn-9yNjarAoHvVh8tNmaOWIeJVEU0&index=9",
+  },
+  {
+    title: "Battlestar Sonatica",
+    href: "https://www.youtube.com/watch?v=5vcFFf9aa7k",
+  },
+  {
+    title: "Cygnus - Endless Space 2 OST",
+    href: "https://www.youtube.com/watch?v=PeGv-QtHyaA&list=PLtzah_dj5hUXssVw_j55Fnwjud0fZRle6&index=22",
+  },
+  {
+    title: "Singularity - Endless Space 2 OST",
+    href: "https://www.youtube.com/watch?v=kLyBwJageak&list=PLtzah_dj5hUXssVw_j55Fnwjud0fZRle6&index=6",
+  },
+  {
+    title: "Axial Tilt Zero - Endless Space 2 OST",
+    href: "https://www.youtube.com/watch?v=3Ql_ENGlTRM&list=PLtzah_dj5hUXssVw_j55Fnwjud0fZRle6&index=3",
+  },
+  {
+    title: "Lost Season 1 - 20 - Life and Death",
+    href: "https://www.youtube.com/watch?v=xc4blBt4ql8&list=PLFEB2DECAC439E2CD&index=20",
+  },
+  {
+    title: "Is This Our Earth? (Mixed)",
+    href: "https://www.youtube.com/watch?v=6MlaAq2DnbE",
+  },
+  {
+    title: "Space Me Out (Jody Wisternoff & James Grant Edit)",
+    href: "https://www.youtube.com/watch?v=8AjzuJVp7pw",
+  },
+  {
+    title: "Stafrænn Hákon - P-Rofi",
+    href: "https://www.youtube.com/watch?v=GC_xfnEXtqs",
+  },
+  // {
+  //   title: "Three Quarks in a Row - Endless Space 2 OST",
+  //   href: "https://www.youtube.com/watch?v=MEvIBLiGDu8&list=PLtzah_dj5hUXssVw_j55Fnwjud0fZRle6&index=17",
+  // },
+])[0];

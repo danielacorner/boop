@@ -25,16 +25,16 @@ export function AudioSoundButton({ title, href }) {
         onMouseLeave={() => setIsHovered(false)}
         {...{ isAudioPlaying: Boolean(isMusicOn) }}
       >
-        <div className="soundInfo">
-          <a href={href} target="_blank" rel="noopener noreferrer">
-            {title}
-          </a>
-        </div>
         <Tooltip title={isMusicOn ? "mute 🔈" : "unmute 🔊"}>
           <IconButton onClick={() => setIsMusicOn(!isMusicOn)}>
             {isMusicOn ? <VolumeUp /> : <VolumeOff />}
           </IconButton>
         </Tooltip>
+        <div className="soundInfo">
+          <a href={href} target="_blank" rel="noopener noreferrer">
+            {title}
+          </a>
+        </div>
       </SoundButtonStyles>
       <ReactPlayer
         style={{ visibility: "hidden", position: "fixed" }}
@@ -47,30 +47,46 @@ export function AudioSoundButton({ title, href }) {
 }
 const SoundButtonStyles = styled.div<{ isAudioPlaying: boolean }>`
   pointer-events: auto;
-  height: 48px;
   white-space: nowrap;
   display: flex;
   position: fixed;
-  bottom: 8px;
-  right: 12px;
   opacity: 0.3;
   align-items: center;
   z-index: 9;
   .MuiButtonBase-root {
     color: hsla(0, 100%, 100%, 1);
   }
+  bottom: 4px;
+  left: 4px;
+  .MuiSvgIcon-root {
+    width: 22px;
+    height: 22px;
+  }
   .soundInfo {
     font-family: system-ui;
+    display: flex;
     a {
+      font-size: 12px;
       color: white;
+      text-decoration: none;
     }
     opacity: ${(p) => (p.isAudioPlaying ? 0.5 : 0)};
-    margin-top: -6px;
   }
   &:hover,
   &:active {
     .soundInfo {
       opacity: 1;
+    }
+  }
+  @media (min-width: 768px) {
+    bottom: 8px;
+    left: 12px;
+    .MuiSvgIcon-root {
+      width: 36px;
+      height: 36px;
+    }
+    .soundInfo a {
+      font-size: 18px;
     }
   }
 `;

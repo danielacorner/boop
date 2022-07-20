@@ -77,7 +77,9 @@ function PhysicsScene() {
     <>
       {/* <DebugInDev> */}
       <ColliderSphere />
+      {/* glassy starry night */}
       <Clump
+        texturePath={"ball_vangogh.jpg"}
         numNodes={num}
         materialProps={{
           roughness: 0,
@@ -87,8 +89,8 @@ function PhysicsScene() {
           transmission: 1,
           thickness: BALL_RADIUS,
         }}
-        texturePath={"ball_vangogh.jpg"}
       />
+      {/* glassy */}
       <Clump
         numNodes={num}
         materialProps={{
@@ -101,18 +103,21 @@ function PhysicsScene() {
         }}
         radius={BALL_RADIUS}
       />
+      {/* galaxy */}
       {/* <Clump
+        texturePath={"ball_galaxy.jpg"}
         numNodes={num}
         materialProps={{
-          roughness: 0.6,
+          roughness: 0,
           emissive: null,
           metalness: 0.1,
-          envMapIntensity: 1.5,
+          envMapIntensity: 3,
           transmission: 0,
         }}
-        texturePath={"ball_modern.jpg"}
       /> */}
+      {/* shiny starry night */}
       <Clump
+        texturePath={"ball_vangogh.jpg"}
         numNodes={num}
         materialProps={{
           roughness: 0,
@@ -120,45 +125,11 @@ function PhysicsScene() {
           envMapIntensity: 10,
           transmission: 0,
         }}
-        texturePath={"ball_vangogh.jpg"}
         radius={BALL_RADIUS}
       />
+      {/* starry night */}
       <Clump
-        numNodes={1}
-        materialProps={{
-          roughness: 0.6,
-          emissive: null,
-          metalness: 0.1,
-          envMapIntensity: 1.5,
-          transmission: 0,
-        }}
-        texturePath={"ball_jupiter.jpg"}
-        radius={BALL_RADIUS * 1.6}
-      />
-      <Clump
-        numNodes={1}
-        materialProps={{
-          roughness: 0.5,
-          emissive: "#c04b14",
-          metalness: 0.1,
-          envMapIntensity: 5,
-          transmission: 0,
-        }}
-        texturePath={"ball_sun.jpg"}
-        radius={BALL_RADIUS * 2.4}
-      />
-      <Clump
-        numNodes={num}
-        materialProps={{
-          roughness: 0,
-          emissive: null,
-          metalness: 0,
-          envMapIntensity: 4,
-          transmission: 0,
-        }}
-        texturePath={"ball_earth.jpg"}
-      />
-      <Clump
+        texturePath={"ball_vangogh.jpg"}
         numNodes={num}
         materialProps={{
           roughness: 0,
@@ -167,9 +138,45 @@ function PhysicsScene() {
           envMapIntensity: 3,
           transmission: 0,
         }}
-        texturePath={"ball_vangogh.jpg"}
       />
-
+      {/* jupiter */}
+      <Clump
+        texturePath={"ball_jupiter.jpg"}
+        numNodes={1}
+        materialProps={{
+          roughness: 0.6,
+          emissive: null,
+          metalness: 0.1,
+          envMapIntensity: 1.5,
+          transmission: 0,
+        }}
+        radius={BALL_RADIUS * 1.6}
+      />
+      {/* sun */}
+      <Clump
+        texturePath={"ball_sun.jpg"}
+        numNodes={1}
+        materialProps={{
+          roughness: 0.5,
+          emissive: "#c04b14",
+          metalness: 0.1,
+          envMapIntensity: 5,
+          transmission: 0,
+        }}
+        radius={BALL_RADIUS * 2.4}
+      />
+      {/* earth */}
+      <Clump
+        texturePath={"ball_earth.jpg"}
+        numNodes={num}
+        materialProps={{
+          roughness: 0,
+          emissive: null,
+          metalness: 0,
+          envMapIntensity: 4,
+          transmission: 0,
+        }}
+      />
       {/* </DebugInDev> */}
     </>
   );
