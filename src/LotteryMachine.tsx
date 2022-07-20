@@ -20,14 +20,15 @@ const BALL_RADIUS = 0.5;
 const rfs = THREE.MathUtils.randFloatSpread;
 
 export const LotteryMachine = () => {
+  const gpu = useDetectGPU();
   return (
     <Canvas
       style={{ position: "fixed", inset: 0 }}
       shadows
-      dpr={[0.2, 2]}
+      dpr={[1, gpu.tier > 2 ? 2 : 1]}
       camera={{ position: [0, 0, 20], fov: 35, near: 1, far: 40 }}
-      performance={{ min: 0.9 }}
-      gl={{ alpha: false, antialias: false }}
+      performance={{ min: 1 }}
+      // gl={{ alpha: false, antialias: false }}
     >
       <AdaptiveDpr pixelated />
       {/* {gpu.tier <= 2 && <AdaptiveDpr pixelated />} */}
