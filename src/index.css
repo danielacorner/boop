@@ -1,0 +1,5 @@
+/* prevent pull-down-to-refresh */
+html,
+body {
+    overscroll-behavior-y: contain;
+}
