@@ -4,7 +4,6 @@ import { useConvexPolyhedron } from "@react-three/cannon";
 import { Geometry } from "three-stdlib";
 import { useMemo, useRef } from "react";
 import D20_Star from "../GLTFs/D20_star";
-import { useControls } from "leva";
 import { useMount } from "react-use";
 import { BALL_MASS, BALL_RADIUS } from "../utils/constants";
 
@@ -21,7 +20,7 @@ const COMMON_MATERIAL_PROPS = {
 const DETAIL = 1;
 const STAR_SCALE = 1.6;
 export function D20StarComponent() {
-  const { x, y, z } = useControls({ x: 0.9, y: 0, z: 1.83 });
+  const { x, y, z } = { x: 0.9, y: 0, z: 1.83 }
 
   const geo = useMemo(
     () =>
