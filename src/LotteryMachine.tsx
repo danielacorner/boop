@@ -173,12 +173,12 @@ function PhysicsScene() {
       {/* moon */}
       <Clump
         texturePath={"ball_moon.jpg"}
-        numNodes={2}
+        numNodes={3}
         materialProps={{
           roughness: 0.9,
           emissive: null,
           metalness: 0.2,
-          envMapIntensity: 2,
+          envMapIntensity: 3,
           transmission: 0,
         }}
         radius={BALL_RADIUS}

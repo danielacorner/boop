@@ -17,11 +17,6 @@ export function Clump({
 }) {
   const mat = useMemo(() => new THREE.Matrix4(), []);
   const vec = useMemo(() => new THREE.Vector3(), []);
-  const eul = useMemo(
-    () =>
-      position ? new THREE.Euler(position[0], position[1], position[2]) : null,
-    [position]
-  );
 
   const texture = useTexture(texturePath);
   const colorArray = useMemo(
@@ -33,15 +28,19 @@ export function Clump({
     [numNodes]
   );
 
-  const [ref, api] = useSphere<any>(() => ({
+  const [ref, api] = useSphere<THREE.InstancedMesh>(() => ({
     args: [radius],
     mass,
     angularDamping: 0.1,
     linearDamping: 0.65,
+    angularVelocity: [rfs(3), rfs(3), rfs(3)],
     position: [rfs(20), rfs(20), rfs(20)],
   }));
   const nodes = useMemo(() => [...Array(numNodes)], [numNodes]);
   useFrame((state) => {
+    if (!ref.current) {
+      return;
+    }
     for (let i = 0; i < nodes.length; i++) {
       // Get current whereabouts of the instanced sphere
       ref.current.getMatrixAt(i, mat);
@@ -69,6 +68,9 @@ export function Clump({
   });
   // const sphereGeometry = new THREE.SphereGeometry(RADIUS, 32, 32);
   useEffect(() => {
+    if (!ref.current) {
+      return;
+    }
     for (let index = 0; index < colorArray.length; index++) {
       const color = COLORS[index % COLORS.length];
       if (materialProps.transmission === 1 || texturePath) {
