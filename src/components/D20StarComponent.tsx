@@ -17,7 +17,7 @@ const COMMON_MATERIAL_PROPS = {
   reflectivity: 1,
 };
 
-const DETAIL = 1;
+const DETAIL = 0;
 const STAR_SCALE = 1.6;
 export function D20StarComponent() {
   const { x, y, z } = { x: 0.9, y: 0, z: 1.83 }
