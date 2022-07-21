@@ -4,11 +4,10 @@ import { useState } from "react";
 import { VolumeUp, VolumeOff } from "@mui/icons-material";
 import { Tooltip, IconButton } from "@mui/material";
 import { useAtom, atom } from "jotai";
-import { atomWithStorage } from "jotai/utils";
 import ReactPlayer from "react-player";
 const NUM_VOLUME_STEPS = 20;
 
-const isMusicOnAtom = atomWithStorage<boolean>("atoms:isMusicOn", false);
+const isMusicOnAtom = atom<boolean>(false);
 const volumeAtom = atom<number>(5);
 
 /** Mute button with hidden a <ReactPlayer/> */
