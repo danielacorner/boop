@@ -64,8 +64,8 @@ export function D20StarComponent() {
         <D20_Star scale={0.03 * STAR_SCALE}>
           <meshPhysicalMaterial
             {...COMMON_MATERIAL_PROPS}
-            color={"#e3dbf3"}
-            emissive={"#190d31"}
+            color={"#e3deee"}
+            emissive={"#23212a"}
             depthTest={true}
             depthWrite={true}
             metalness={x}

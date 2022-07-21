@@ -26,7 +26,7 @@ export const LotteryMachine = () => {
       dpr={[1, maxDpr]}
       camera={{ position: [0, 0, 20], fov: 35, near: 1, far: 40 }}
       performance={{ min: 1 }}
-      // gl={{ alpha: false, antialias: false }}
+      // gl={{ alpha: true, antialias: true }}
     >
       <OrbitControls
         enablePan={false}
