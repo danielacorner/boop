@@ -1,3 +1,4 @@
+import * as THREE from "three";
 import { useEffect, useRef } from "react";
 
 export function useEventListener(eventName, handler, element = window) {
@@ -29,3 +30,14 @@ export function useEventListener(eventName, handler, element = window) {
     [eventName, element] // Re-run if eventName or element changes
   );
 }
+export function getPosition({
+  clientX,
+  clientY,
+  size,
+  viewport,
+}): [number, number, number] {
+  const posX = (clientX * 2 - size.width) / size.width;
+  const posY = -(clientY * 2 - size.height) / size.height;
+  return [posX, posY, 0];
+}
+export const rfs = THREE.MathUtils.randFloatSpread;

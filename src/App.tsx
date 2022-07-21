@@ -1,4 +1,4 @@
-import { AudioSoundButton } from "./AudioSoundButton";
+import { AudioSoundButton } from "./components/AudioSoundButton";
 import { LotteryMachine } from "./LotteryMachine";
 
 function App() {
@@ -50,8 +50,8 @@ const { title, href } = shuffleArray([
     href: "https://www.youtube.com/watch?v=3Ql_ENGlTRM&list=PLtzah_dj5hUXssVw_j55Fnwjud0fZRle6&index=3",
   },
   {
-    title: "Lost Season 1 - 20 - Life and Death",
-    href: "https://www.youtube.com/watch?v=xc4blBt4ql8&list=PLFEB2DECAC439E2CD&index=20",
+    title: "Tristram - Diablo 2 OST",
+    href: "https://www.youtube.com/watch?v=VWziHqEd0Uw&t=1372s",
   },
   {
     title: "Is This Our Earth? (Mixed)",
