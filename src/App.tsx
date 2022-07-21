@@ -1,9 +1,11 @@
+import { Loader } from "@react-three/drei";
 import { AudioSoundButton } from "./components/AudioSoundButton";
 import { LotteryMachine } from "./LotteryMachine";
 
 function App() {
   return (
     <>
+      <Loader />
       <LotteryMachine />
       <AudioSoundButton title={title} href={href} />
     </>
