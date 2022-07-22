@@ -10,8 +10,10 @@ export function Clump({
   materialProps = {} as any,
   numNodes,
   texturePath = "/ball.jpg",
+  roughnessTexturePath = "/roughness_map.jpg",
   position = null as [number, number, number] | null,
   brightness = null,
+  coloredTexture = false,
   radius = BALL_RADIUS,
   mass = BALL_MASS,
 }) {
@@ -19,6 +21,7 @@ export function Clump({
   const vec = useMemo(() => new THREE.Vector3(), []);
 
   const texture = useTexture(texturePath);
+  const roughnessTexture = useTexture(roughnessTexturePath);
   const colorArray = useMemo(
     () =>
       new Array(numNodes).fill(null).flatMap((_, i) => {
@@ -31,9 +34,9 @@ export function Clump({
   const [ref, api] = useSphere<THREE.InstancedMesh>(() => ({
     args: [radius],
     mass,
-    angularDamping: 0.1,
+    angularDamping: 0,
     linearDamping: 0.65,
-    angularVelocity: [rfs(3), rfs(3), rfs(3)],
+    angularVelocity: [rfs(0.8), rfs(0.8), rfs(0.8)],
     position: [rfs(20), rfs(20), rfs(20)],
   }));
   const nodes = useMemo(() => [...Array(numNodes)], [numNodes]);
@@ -73,12 +76,22 @@ export function Clump({
     }
     for (let index = 0; index < colorArray.length; index++) {
       const color = COLORS[index % COLORS.length];
-      if (materialProps.transmission === 1 || texturePath) {
+      if (
+        materialProps.transmission === 1 ||
+        (texturePath && !coloredTexture)
+      ) {
         return;
       }
       ref.current.setColorAt(index, new THREE.Color(color));
     }
-  }, [colorArray.length, nodes, ref, materialProps.transmission, texturePath]);
+  }, [
+    colorArray.length,
+    nodes,
+    ref,
+    materialProps.transmission,
+    texturePath,
+    coloredTexture,
+  ]);
   // const { transmission, roughness, emissive, metalness, envMapIntensity } =
   //   useControls({
   //     roughness: 0,
@@ -105,6 +118,7 @@ export function Clump({
 
         <meshPhysicalMaterial
           map={texture}
+          roughnessMap={roughnessTexture}
           {...{
             // const baubleMaterial = new THREE.MeshPhysicalMaterial({
             // color: "white",

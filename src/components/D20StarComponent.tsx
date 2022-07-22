@@ -59,9 +59,9 @@ export function D20StarComponent() {
   const [hovered, hover] = useState<THREE.Event | null>(null);
   const [{ envMapIntensity, scale, emissive }] = useSpring(
     {
-      envMapIntensity: hovered ? 6 : 1.83,
+      envMapIntensity: hovered ? 4 : 1.83,
       scale: hovered ? 1.2 : 1,
-      emissive: hovered ? "#655895" : "#23212a",
+      emissive: hovered ? "#5f538a" : "#23212a",
     },
     [hovered]
   );
