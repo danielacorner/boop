@@ -48,11 +48,11 @@ const MUSIC = [
   },
   {
     title: "Memories (Someone We'll Never Know) - Moon OST",
-    href: "https://www.youtube.com/watch?v=QVuoul47Q_w&list=OLAK5uy_l3rRYn-9yNjarAoHvVh8tNmaOWIeJVEU0&index=5",
+    href: "https://www.youtube.com/watch?v=XSJJuDLtCqY",
   },
   {
     title: "The Nursery - Moon OST",
-    href: "https://www.youtube.com/watch?v=RgVzeqPIt-8&list=OLAK5uy_l3rRYn-9yNjarAoHvVh8tNmaOWIeJVEU0&index=9",
+    href: "https://www.youtube.com/watch?v=RgVzeqPIt-8",
   },
   {
     title: "Battlestar Sonatica",
@@ -60,15 +60,15 @@ const MUSIC = [
   },
   {
     title: "Cygnus - Endless Space 2 OST",
-    href: "https://www.youtube.com/watch?v=PeGv-QtHyaA&list=PLtzah_dj5hUXssVw_j55Fnwjud0fZRle6&index=22",
+    href: "https://www.youtube.com/watch?v=PeGv-QtHyaA",
   },
   {
     title: "Singularity - Endless Space 2 OST",
-    href: "https://www.youtube.com/watch?v=kLyBwJageak&list=PLtzah_dj5hUXssVw_j55Fnwjud0fZRle6&index=6",
+    href: "https://www.youtube.com/watch?v=kLyBwJageak&t=1m51s",
   },
   {
     title: "Axial Tilt Zero - Endless Space 2 OST",
-    href: "https://www.youtube.com/watch?v=3Ql_ENGlTRM&list=PLtzah_dj5hUXssVw_j55Fnwjud0fZRle6&index=3",
+    href: "https://www.youtube.com/watch?v=3Ql_ENGlTRM",
   },
   {
     title: "Tristram - Diablo 2 OST",

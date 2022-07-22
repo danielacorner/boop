@@ -29,11 +29,13 @@ export function AudioSoundButton({ title, href }) {
             {isMusicOn ? <VolumeUp /> : <VolumeOff />}
           </IconButton>
         </Tooltip>
-        <div className="soundInfo">
-          <a href={href} target="_blank" rel="noopener noreferrer">
-            {title}
-          </a>
-        </div>
+        {isMusicOn && (
+          <div className="soundInfo">
+            <a href={href} target="_blank" rel="noopener noreferrer">
+              {title}
+            </a>
+          </div>
+        )}
       </SoundButtonStyles>
       <ReactPlayer
         style={{ visibility: "hidden", position: "fixed" }}
@@ -79,7 +81,10 @@ const SoundButtonStyles = styled.div<{ isAudioPlaying: boolean }>`
   }
   @media (min-width: 768px) {
     bottom: 8px;
-    left: 12px;
+    left: 0px;
+    right: 0px;
+    display: flex;
+    justify-content: center;
     .MuiSvgIcon-root {
       width: 36px;
       height: 36px;
