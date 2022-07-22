@@ -5,6 +5,7 @@ import {
   useDetectGPU,
   AdaptiveDpr,
   OrbitControls,
+  Stars,
 } from "@react-three/drei";
 import { Canvas, extend, useThree } from "@react-three/fiber";
 import { Debug, Physics } from "@react-three/cannon";
@@ -42,6 +43,7 @@ export const LotteryMachine = () => {
         maxDistance={32}
       />
       <AdaptiveDpr pixelated />
+      <FancyStars />
       {/* {gpu.tier <= 2 && <AdaptiveDpr pixelated />} */}
       <ambientLight intensity={0.25} />
       <spotLight
@@ -95,6 +97,7 @@ function PhysicsScene() {
           transmission: 0,
         }}
         radius={BALL_RADIUS * 1.8}
+        mass={BALL_MASS * 1.8 * 2}
       />
       {/* moon */}
       <Clump
@@ -108,6 +111,7 @@ function PhysicsScene() {
           transmission: 0,
         }}
         radius={BALL_RADIUS * 1.2}
+        mass={BALL_MASS * 1.2}
       />
       {/* jupiter */}
       <Clump
@@ -121,7 +125,7 @@ function PhysicsScene() {
           transmission: 0,
         }}
         radius={BALL_RADIUS * 1.8}
-        mass={BALL_RADIUS * 1.8}
+        mass={BALL_MASS * 1.8 * 2}
       />
       {/* sun */}
       <Clump
@@ -135,7 +139,7 @@ function PhysicsScene() {
           transmission: 0,
         }}
         radius={BALL_RADIUS * 2.4}
-        mass={BALL_MASS * 2.4}
+        mass={BALL_MASS * 2.4 * 2}
       />
       {/* starry night */}
       <Clump
@@ -244,5 +248,21 @@ function Effects(props) {
         kernelSize={0}
       />
     </EffectComposer>
+  );
+}
+function FancyStars() {
+  const { viewport } = useThree();
+  console.log(
+    "🌟🚨 ~ file: LotteryMachine.tsx ~ line 253 ~ FancyStars ~ viewport",
+    viewport
+  );
+  return (
+    <Stars
+      count={20000}
+      depth={2}
+      factor={0.5}
+      radius={Math.max(viewport.width, viewport.height) / 2}
+      fade={true}
+    />
   );
 }
