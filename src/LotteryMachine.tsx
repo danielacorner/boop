@@ -252,12 +252,16 @@ function Effects(props) {
 }
 function FancyStars() {
   const { viewport } = useThree();
+
   return (
     <Stars
-      count={10000}
+      count={viewport.width > 8 ? 12000 : 10000}
       depth={3}
       factor={0.5}
-      radius={Math.max(viewport.width, viewport.height) * 0.7}
+      radius={
+        Math.max(viewport.width, viewport.height) *
+        (viewport.width > 8 ? 0.5 : 0.7)
+      }
       fade={true}
     />
   );
