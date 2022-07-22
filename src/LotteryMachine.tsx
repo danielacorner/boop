@@ -252,16 +252,12 @@ function Effects(props) {
 }
 function FancyStars() {
   const { viewport } = useThree();
-  console.log(
-    "🌟🚨 ~ file: LotteryMachine.tsx ~ line 253 ~ FancyStars ~ viewport",
-    viewport
-  );
   return (
     <Stars
-      count={20000}
-      depth={2}
+      count={10000}
+      depth={3}
       factor={0.5}
-      radius={Math.max(viewport.width, viewport.height) / 2}
+      radius={Math.max(viewport.width, viewport.height) * 0.7}
       fade={true}
     />
   );
