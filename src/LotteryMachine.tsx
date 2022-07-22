@@ -96,8 +96,8 @@ function PhysicsScene() {
           envMapIntensity: 4,
           transmission: 0,
         }}
-        radius={BALL_RADIUS * 1.8}
-        mass={BALL_MASS * 1.8 * 2}
+        radius={BALL_RADIUS * 1.4}
+        mass={BALL_MASS * 1.4 * 2}
       />
       {/* moon */}
       <Clump
@@ -110,8 +110,8 @@ function PhysicsScene() {
           envMapIntensity: 3,
           transmission: 0,
         }}
-        radius={BALL_RADIUS * 1.2}
-        mass={BALL_MASS * 1.2}
+        radius={BALL_RADIUS}
+        mass={BALL_MASS * 2}
       />
       {/* jupiter */}
       <Clump
