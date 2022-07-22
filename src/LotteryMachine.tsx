@@ -25,7 +25,7 @@ export const LotteryMachine = () => {
       style={{ position: "fixed", inset: 0 }}
       shadows
       dpr={[1, maxDpr]}
-      camera={{ position: [0, 0, 20], fov: 35, near: 1, far: 40 }}
+      camera={{ position: [0, 0, 20], fov: 35, near: 1, far: 60 }}
       performance={{ min: 1 }}
       // gl={{ alpha: true, antialias: true }}
     >

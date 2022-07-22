@@ -39,6 +39,10 @@ const MUSIC = [
     href: "https://www.youtube.com/watch?v=6MlaAq2DnbE",
   },
   {
+    title: "Is This Our Earth? - Lane 8",
+    href: "https://www.youtube.com/watch?v=rs80mrSQliM",
+  },
+  {
     title: "Welcome to Lunar Industries - Moon OST",
     href: "https://www.youtube.com/watch?v=WUraLNrTVeg",
   },
