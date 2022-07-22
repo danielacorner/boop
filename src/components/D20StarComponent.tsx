@@ -2,10 +2,11 @@ import * as THREE from "three";
 import { useFrame } from "@react-three/fiber";
 import { useConvexPolyhedron } from "@react-three/cannon";
 import { Geometry } from "three-stdlib";
-import { useMemo, useRef } from "react";
+import { useMemo, useRef, useState } from "react";
 import D20_Star from "../GLTFs/D20_star";
 import { useMount } from "react-use";
 import { BALL_MASS, BALL_RADIUS } from "../utils/constants";
+import { animated, useSpring } from "@react-spring/three";
 
 const COMMON_MATERIAL_PROPS = {
   transparent: true,
@@ -20,8 +21,6 @@ const COMMON_MATERIAL_PROPS = {
 const DETAIL = 0;
 const STAR_SCALE = 1.6;
 export function D20StarComponent() {
-  const { x, y, z } = { x: 0.9, y: 0, z: 1.83 };
-
   const geo = useMemo(
     () =>
       toConvexProps(
@@ -57,26 +56,53 @@ export function D20StarComponent() {
       [0, 0, 0]
     );
   });
+  const [hovered, hover] = useState<THREE.Event | null>(null);
+  const [{ envMapIntensity, scale, emissive }] = useSpring(
+    {
+      envMapIntensity: hovered ? 6 : 1.83,
+      scale: hovered ? 1.2 : 1,
+      emissive: hovered ? "#655895" : "#23212a",
+    },
+    [hovered]
+  );
 
   return (
     <>
-      <mesh ref={ref} castShadow receiveShadow>
+      <animated.mesh
+        ref={ref}
+        castShadow
+        receiveShadow
+        onClick={() => {
+          window.open("https://20d.netlify.app");
+        }}
+        onPointerOver={(e) => {
+          e.stopPropagation();
+          hover(e.object);
+          document.body.style.cursor = "pointer";
+        }}
+        onPointerOut={(e) => {
+          hover(null);
+          document.body.style.cursor = "unset";
+        }}
+        scale={scale}
+      >
         <D20_Star scale={0.03 * STAR_SCALE}>
-          <meshPhysicalMaterial
+          <animated.meshPhysicalMaterial
             {...COMMON_MATERIAL_PROPS}
             color={"#e3deee"}
-            emissive={"#23212a"}
-            depthTest={true}
+            emissive={emissive}
+            depthTest={hovered ? false : true}
             depthWrite={true}
-            metalness={x}
-            roughness={y}
-            envMapIntensity={z}
+            metalness={0.9}
+            roughness={0}
+            envMapIntensity={envMapIntensity}
+            {...({} as any)}
             // clearcoat={z}
             // clearcoatRoughness={0.4}
             // color="silver"
           />
         </D20_Star>
-      </mesh>
+      </animated.mesh>
     </>
   );
 }
