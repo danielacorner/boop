@@ -87,6 +87,8 @@ export function D20StarComponent() {
         scale={scale}
       >
         <D20_Star scale={0.03 * STAR_SCALE}>
+          {/* eslint-disable-next-line @typescript-eslint/ban-ts-comment */}
+          {/* @ts-ignore */}
           <animated.meshPhysicalMaterial
             {...COMMON_MATERIAL_PROPS}
             color={"#e3deee"}
@@ -96,7 +98,6 @@ export function D20StarComponent() {
             metalness={0.9}
             roughness={0}
             envMapIntensity={envMapIntensity}
-            {...({} as any)}
             // clearcoat={z}
             // clearcoatRoughness={0.4}
             // color="silver"
