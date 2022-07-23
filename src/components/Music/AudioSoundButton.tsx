@@ -2,7 +2,7 @@
 import styled from "styled-components";
 import { useState } from "react";
 import { VolumeUp, VolumeOff } from "@mui/icons-material";
-import { Tooltip, IconButton } from "@mui/material";
+import { IconButton } from "@mui/material";
 import { useAtom, atom } from "jotai";
 import ReactPlayer from "react-player";
 const NUM_VOLUME_STEPS = 20;
@@ -24,11 +24,9 @@ export function AudioSoundButton({ title, href }) {
         onMouseLeave={() => setIsHovered(false)}
         {...{ isAudioPlaying: Boolean(isMusicOn) }}
       >
-        <Tooltip title={isMusicOn ? "mute 🔈" : "unmute 🔊"}>
-          <IconButton onClick={() => setIsMusicOn(!isMusicOn)}>
-            {isMusicOn ? <VolumeUp /> : <VolumeOff />}
-          </IconButton>
-        </Tooltip>
+        <IconButton onClick={() => setIsMusicOn(!isMusicOn)}>
+          {isMusicOn ? <VolumeUp /> : <VolumeOff />}
+        </IconButton>
         {isMusicOn && (
           <div className="soundInfo">
             <a href={href} target="_blank" rel="noopener noreferrer">
@@ -64,8 +62,8 @@ const SoundButtonStyles = styled.div<{ isAudioPlaying: boolean }>`
     height: 22px;
   }
   .soundInfo {
+    margin-top: -3px;
     font-family: system-ui;
-    display: flex;
     a {
       font-size: 12px;
       color: white;
@@ -86,11 +84,14 @@ const SoundButtonStyles = styled.div<{ isAudioPlaying: boolean }>`
     display: flex;
     justify-content: center;
     .MuiSvgIcon-root {
-      width: 36px;
-      height: 36px;
+      width: 24px;
+      height: 24px;
     }
-    .soundInfo a {
-      font-size: 18px;
+    .soundInfo {
+      margin-top: -2px;
+      a {
+        font-size: 14px;
+      }
     }
   }
 `;
