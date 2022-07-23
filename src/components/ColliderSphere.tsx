@@ -11,11 +11,9 @@ export function ColliderSphere() {
   const { viewport, size } = useThree();
 
   // on double click, keep the sphere interactive with the clumps
-  const state1 = GROUP1;
-  const state2 = GROUP2;
-  const [collisionFilterGroup, setCollisionFilterGroup] = useState<any>(state1);
+  const [doubleclicked, setDoubleclicked] = useState(false);
   useEventListener("dblclick", () => {
-    setCollisionFilterGroup(collisionFilterGroup === state1 ? state2 : state1);
+    setDoubleclicked(!doubleclicked);
   });
 
   const gpu = useDetectGPU();
@@ -31,13 +29,13 @@ export function ColliderSphere() {
       type: "Kinematic",
       args: [colliderRadius],
       position: [0, 0, 0],
-      collisionFilterGroup, // Put the sphere in group 1
-      collisionFilterMask: GROUP1 | GROUP2, // it can only collide with GROUP1
+      collisionFilterGroup: GROUP1, // Put the sphere in group 1
+      collisionFilterMask: GROUP1 | GROUP2, // It can only collide with group 1 and 2
       // collisionFilterMask: GROUP2 | GROUP3, // It can only collide with group 2 and 3
       // collisionFilterMask,
     }),
-    null
-    // [collisionFilterMask]
+    null,
+    [doubleclicked, colliderRadius]
   );
 
   // subscribe to sphere position

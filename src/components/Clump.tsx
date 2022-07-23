@@ -42,12 +42,9 @@ export function Clump({
   // the clump stops interacting with itself
   // (but not with the collidersphere)
 
-  const state1 = GROUP1;
-  // state 2: collisionFilterMask =
-  const state2 = GROUP2;
-  const [collisionFilterGroup, setCollisionFilterGroup] = useState<any>(GROUP1);
+  const [doubleclicked, setDoubleclicked] = useState(false);
   useEventListener("dblclick", () => {
-    setCollisionFilterGroup(collisionFilterGroup === state1 ? state2 : state1);
+    setDoubleclicked(!doubleclicked);
   });
 
   const [sphereRef, api] = useSphere<THREE.InstancedMesh>(
@@ -60,10 +57,10 @@ export function Clump({
       position: [rfs(20), rfs(20), rfs(20)],
       rotation: [rfs(20), rfs(20), rfs(20)],
       collisionFilterMask: GROUP1, // it can only collide with GROUP1
-      collisionFilterGroup,
+      collisionFilterGroup: doubleclicked ? GROUP2 : GROUP1,
     }),
     null,
-    [collisionFilterGroup, mass, radius]
+    [doubleclicked, mass, radius]
   );
   const nodes = useMemo(() => [...Array(numNodes)], [numNodes]);
   useFrame((state) => {
