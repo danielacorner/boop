@@ -1,12 +1,12 @@
 import { Loader } from "@react-three/drei";
-import { LotteryMachine } from "./LotteryMachine";
+import { Scene } from "./Scene";
 import { Music } from "./components/Music/Music";
 
 function App() {
   return (
     <>
       <Loader />
-      <LotteryMachine />
+      <Scene />
       <Music />
     </>
   );

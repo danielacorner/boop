@@ -13,11 +13,12 @@ import { SSAOPass } from "three-stdlib";
 import { D20StarComponent } from "./components/D20StarComponent";
 import { Clump } from "./components/Clump";
 import { ColliderSphere } from "./components/ColliderSphere";
+import { useControls } from "leva";
 import { BALL_MASS, BALL_RADIUS } from "./utils/constants";
 
 extend({ SSAOPass });
 
-export const LotteryMachine = () => {
+export const Scene = () => {
   const { tier } = useDetectGPU();
   const maxDpr = tier > 2 ? 2 : tier > 1 ? 1 : tier > 0 ? 0.8 : 0.6;
   return (
@@ -83,8 +84,35 @@ function DebugInDev({ children }) {
 function PhysicsScene() {
   const gpu = useDetectGPU();
   const num = gpu.tier > 2 ? 10 : 8;
+  const { xyz } = useControls({ xyz: 1 });
   const clumps = (
     <>
+      {/* galaxy */}
+      <Clump
+        texturePath={"ball_galaxy.jpg"}
+        numNodes={num * 0.5}
+        materialProps={{
+          roughness: 0,
+          emissive: null,
+          metalness: 0.1,
+          envMapIntensity: 3,
+          transmission: 0,
+        }}
+      />
+      {/* glassy textured */}
+      <Clump
+        texturePath={"ball_galaxy.jpg"}
+        coloredTexture={true}
+        numNodes={num * 0.5}
+        materialProps={{
+          roughness: 0,
+          emissive: "#230000",
+          metalness: 3,
+          envMapIntensity: 2,
+          transmission: 0.7,
+          thickness: BALL_RADIUS * 75,
+        }}
+      />
       {/* earth */}
       <Clump
         texturePath={"ball_earth.jpg"}
@@ -141,19 +169,6 @@ function PhysicsScene() {
         radius={BALL_RADIUS * 2.4}
         mass={BALL_MASS * 2.4 * 2}
       />
-      {/* starry night */}
-      <Clump
-        texturePath={"ball_vangogh.jpg"}
-        numNodes={num}
-        materialProps={{
-          roughness: 0,
-          emissive: null,
-          metalness: 4,
-          envMapIntensity: 1,
-          transmission: 1,
-          thickness: BALL_RADIUS,
-        }}
-      />
       {/* colored cell */}
       <Clump
         texturePath={"ball_cell.jpg"}
@@ -181,25 +196,14 @@ function PhysicsScene() {
         }}
         radius={BALL_RADIUS}
       />
-      {/* galaxy */}
-      <Clump
-        texturePath={"ball_galaxy.jpg"}
-        numNodes={num}
-        materialProps={{
-          roughness: 0,
-          emissive: null,
-          metalness: 0.1,
-          envMapIntensity: 3,
-          transmission: 0,
-        }}
-      />
+
       {/* shiny starry night */}
       <Clump
         texturePath={"ball_vangogh.jpg"}
         numNodes={num}
         materialProps={{
           roughness: 0,
-          metalness: 1,
+          metalness: 0.7,
           envMapIntensity: 10,
           transmission: 0,
         }}

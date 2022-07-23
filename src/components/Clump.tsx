@@ -5,14 +5,14 @@ import { useSphere } from "@react-three/cannon";
 import { useEffect, useMemo } from "react";
 import { BALL_RADIUS, BALL_MASS, COLORS } from "../utils/constants";
 import { rfs } from "../utils/hooks";
-
+const WHITE_PIXEL = "/white_pixel.png";
 export function Clump({
   materialProps = {} as any,
   numNodes,
-  texturePath = "/ball.jpg",
-  roughnessTexturePath = "/roughness_map.jpg",
+  texturePath = "/black_pixel.png",
+  roughnessTexturePath = "/black_pixel.png",
+  normalMapPath = WHITE_PIXEL,
   position = null as [number, number, number] | null,
-  brightness = null,
   coloredTexture = false,
   radius = BALL_RADIUS,
   mass = BALL_MASS,
@@ -22,6 +22,7 @@ export function Clump({
 
   const texture = useTexture(texturePath);
   const roughnessTexture = useTexture(roughnessTexturePath);
+  const normalMap = useTexture(normalMapPath);
   const colorArray = useMemo(
     () =>
       new Array(numNodes).fill(null).flatMap((_, i) => {
@@ -69,7 +70,6 @@ export function Clump({
       );
     }
   });
-  // const sphereGeometry = new THREE.SphereGeometry(RADIUS, 32, 32);
   useEffect(() => {
     if (!ref.current) {
       return;
@@ -92,51 +92,43 @@ export function Clump({
     texturePath,
     coloredTexture,
   ]);
-  // const { transmission, roughness, emissive, metalness, envMapIntensity } =
-  //   useControls({
-  //     roughness: 0,
-  //     emissive: "#370037",
-  //     metalness: 0,
-  //     envMapIntensity: 0.2,
-  //     transmission: 0,
-  //   });
+
   return (
-    <>
-      <instancedMesh
-        ref={ref}
-        castShadow
-        receiveShadow
-        args={[undefined, undefined, nodes.length]}
-      >
-        <sphereBufferGeometry args={[radius, 32, 32]}>
-          {/* <instancedBufferAttribute
+    <instancedMesh
+      ref={ref}
+      castShadow
+      receiveShadow
+      args={[undefined, undefined, nodes.length]}
+    >
+      <sphereBufferGeometry args={[radius, 32, 32]}>
+        {/* <instancedBufferAttribute
               attach="attributes-color"
               count={filteredNodesRandom.length}
               array={colorArray}
             /> */}
-        </sphereBufferGeometry>
+      </sphereBufferGeometry>
 
-        <meshPhysicalMaterial
-          map={texture}
-          roughnessMap={roughnessTexture}
-          {...{
-            // const baubleMaterial = new THREE.MeshPhysicalMaterial({
-            // color: "white",
-            // roughness,
-            // envMapIntensity,
-            // emissive: "emissive" in materialProps ? null : emissive,
-            // metalness,
-            // transmission,
-            ...materialProps,
-            // });
-          }}
-        >
-          {/* <instancedBufferAttribute
-              attach="attributes-color"
-              args={[colorArray, 3]}
-            /> */}
-        </meshPhysicalMaterial>
-      </instancedMesh>
-    </>
+      <meshPhysicalMaterial
+        map={texture}
+        roughnessMap={roughnessTexture}
+        {...(normalMapPath === WHITE_PIXEL
+          ? {}
+          : {
+              normalMap,
+            })}
+        // normalMap={normalMap}
+        {...{
+          // const baubleMaterial = new THREE.MeshPhysicalMaterial({
+          // color: "white",
+          // roughness,
+          // envMapIntensity,
+          // emissive: "emissive" in materialProps ? null : emissive,
+          // metalness,
+          // transmission,
+          ...materialProps,
+          // });
+        }}
+      ></meshPhysicalMaterial>
+    </instancedMesh>
   );
 }
