@@ -255,18 +255,14 @@ function PhysicsScene() {
           transmission: 0,
         }}
       />
-      {/* shiny icosahedra */}
+      {/* shiny icosahedron */}
       <Clump
         cube={true}
-        // texturePath={"marble/marble_big.jpg"}
-        // normalMapPath={"marble/marble_normal.jpg"}
-        // displacementMapPath={"marble/marble_displacement.jpg"}
-        // aoMapPath={"marble/marble_spec.jpg"}
         numNodes={num}
         materialProps={{
           roughness: 0,
           emissive: null,
-          metalness: 0.1,
+          metalness: 0,
           envMapIntensity: 5,
           transmission: 1,
           thickness: BALL_RADIUS,
