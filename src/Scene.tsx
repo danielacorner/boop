@@ -13,7 +13,7 @@ import { SSAOPass } from "three-stdlib";
 import { D20StarComponent } from "./components/D20StarComponent";
 import { Clump } from "./components/Clump";
 import { ColliderSphere } from "./components/ColliderSphere";
-import { useControls } from "leva";
+// import { useControls } from "leva";
 import { BALL_MASS, BALL_RADIUS } from "./utils/constants";
 
 extend({ SSAOPass });
@@ -84,7 +84,7 @@ function DebugInDev({ children }) {
 function PhysicsScene() {
   const gpu = useDetectGPU();
   const num = gpu.tier > 2 ? 10 : 8;
-  const { xyz } = useControls({ xyz: 1 });
+  // const { xyz } = useControls({ xyz: 1 });
   const clumps = (
     <>
       {/* galaxy */}
@@ -130,6 +130,7 @@ function PhysicsScene() {
       {/* moon */}
       <Clump
         texturePath={"ball_moon.jpg"}
+        normalMapPath={"planet_normal.png"}
         numNodes={1}
         materialProps={{
           roughness: 0.9,
@@ -144,6 +145,7 @@ function PhysicsScene() {
       {/* jupiter */}
       <Clump
         texturePath={"ball_jupiter.jpg"}
+        normalMapPath={"planet_normal.png"}
         numNodes={1}
         materialProps={{
           roughness: 0.6,
@@ -172,6 +174,8 @@ function PhysicsScene() {
       {/* colored cell */}
       <Clump
         texturePath={"ball_cell.jpg"}
+        // normalMapPath={"planet_normal.png"}
+        // roughnessMapPath={"roughness_map.jpg"}
         numNodes={num}
         materialProps={{
           roughness: 0,
@@ -218,6 +222,18 @@ function PhysicsScene() {
           emissive: null,
           metalness: 0,
           envMapIntensity: 3,
+          transmission: 0,
+        }}
+      />
+      {/* marble */}
+      <Clump
+        texturePath={"marble/White_Marble_003_COLOR.jpg"}
+        numNodes={num}
+        materialProps={{
+          roughness: 0,
+          emissive: null,
+          metalness: 0,
+          envMapIntensity: 1,
           transmission: 0,
         }}
       />

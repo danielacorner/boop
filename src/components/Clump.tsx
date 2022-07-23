@@ -9,8 +9,8 @@ const WHITE_PIXEL = "/white_pixel.png";
 export function Clump({
   materialProps = {} as any,
   numNodes,
-  texturePath = "/black_pixel.png",
-  roughnessTexturePath = "/black_pixel.png",
+  texturePath = WHITE_PIXEL,
+  roughnessMapPath = WHITE_PIXEL,
   normalMapPath = WHITE_PIXEL,
   position = null as [number, number, number] | null,
   coloredTexture = false,
@@ -21,7 +21,7 @@ export function Clump({
   const vec = useMemo(() => new THREE.Vector3(), []);
 
   const texture = useTexture(texturePath);
-  const roughnessTexture = useTexture(roughnessTexturePath);
+  const roughnessMap = useTexture(roughnessMapPath);
   const normalMap = useTexture(normalMapPath);
   const colorArray = useMemo(
     () =>
@@ -39,6 +39,7 @@ export function Clump({
     linearDamping: 0.65,
     angularVelocity: [rfs(0.8), rfs(0.8), rfs(0.8)],
     position: [rfs(20), rfs(20), rfs(20)],
+    rotation: [rfs(20), rfs(20), rfs(20)],
   }));
   const nodes = useMemo(() => [...Array(numNodes)], [numNodes]);
   useFrame((state) => {
@@ -110,7 +111,13 @@ export function Clump({
 
       <meshPhysicalMaterial
         map={texture}
-        roughnessMap={roughnessTexture}
+        roughnessMap={roughnessMap}
+        // normalMapType={THREE.ObjectSpaceNormalMap}
+        {...(roughnessMapPath === WHITE_PIXEL
+          ? {}
+          : {
+              roughnessMap,
+            })}
         {...(normalMapPath === WHITE_PIXEL
           ? {}
           : {
