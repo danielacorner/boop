@@ -11,10 +11,6 @@ const LERP_SPEED = 0.4;
 
 export function ColliderSphere() {
   const { viewport, size, performance } = useThree();
-  console.log(
-    "🌟🚨 ~ file: ColliderSphere.tsx ~ line 14 ~ ColliderSphere ~ performance",
-    performance
-  );
 
   // on double click, keep the sphere interactive with the clumps
   const [doubleclicked, setDoubleclicked] = useState(false);
