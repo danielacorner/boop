@@ -5,7 +5,7 @@ import {
   useDetectGPU,
   AdaptiveDpr,
   OrbitControls,
-  Stars,
+  Mask,
 } from "@react-three/drei";
 import { Canvas, extend, useThree } from "@react-three/fiber";
 import { Debug, Physics } from "@react-three/cannon";
@@ -15,19 +15,21 @@ import { Clump } from "./Clump";
 import { ColliderSphere } from "./ColliderSphere";
 import { BALL_MASS, BALL_RADIUS } from "../utils/constants";
 import { MusicZoom } from "./MusicZoom";
+import { FancyStars } from "./FancyStars";
 
 extend({ SSAOPass });
 
 export const Scene = () => {
   const { tier } = useDetectGPU();
-  const maxDpr = tier > 2 ? 2 : tier > 1 ? 1 : tier > 0 ? 0.8 : 0.6;
+  const maxDpr = tier > 2 ? 2 : tier > 1 ? 0.8 : tier > 0 ? 0.8 : 0.6;
   return (
     <Canvas
       style={{ position: "fixed", inset: 0 }}
       shadows
       dpr={[1, maxDpr]}
       camera={{ position: [0, 0, 20], fov: 35, near: 1, far: 60 }}
-      performance={{ min: 1 }}
+      // https://docs.pmnd.rs/react-three-fiber/advanced/scaling-performance
+      performance={{ min: 0.75, max: 1 }}
       // gl={{ alpha: true, antialias: true }}
     >
       <OrbitControls
@@ -87,6 +89,7 @@ function PhysicsScene() {
   // const { xyz } = useControls({ xyz: 1 });
   const clumps = (
     <>
+      <MaskThing />
       {/* galaxy */}
       <Clump
         texturePath={"ball_galaxy.jpg"}
@@ -284,17 +287,7 @@ function Effects(props) {
     </EffectComposer>
   );
 }
-function FancyStars() {
-  const { viewport } = useThree();
 
-  const maxViewport = Math.max(viewport.width, viewport.height);
-  return (
-    <Stars
-      count={viewport.width > 8 ? 12000 : 10000}
-      depth={3}
-      factor={0.5}
-      radius={maxViewport * (maxViewport > 16 ? 0.5 : 0.7)}
-      fade={true}
-    />
-  );
+function MaskThing() {
+  return <></>;
 }
