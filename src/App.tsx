@@ -1,5 +1,5 @@
 import { Loader } from "@react-three/drei";
-import { Scene } from "./Scene";
+import { Scene } from "./components/Scene";
 import { Music } from "./components/Music/Music";
 
 function App() {
