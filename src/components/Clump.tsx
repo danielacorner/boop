@@ -49,6 +49,7 @@ export function Clump({
   useEventListener("dblclick", () => {
     setCollisionFilterGroup(collisionFilterGroup === state1 ? state2 : state1);
   });
+
   const [sphereRef, api] = useSphere<THREE.InstancedMesh>(
     () => ({
       args: [radius],

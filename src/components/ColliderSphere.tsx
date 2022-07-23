@@ -5,19 +5,19 @@ import { useSphere } from "@react-three/cannon";
 import { useEffect, useRef, useState } from "react";
 import { useEventListener, getPosition } from "../utils/hooks";
 import { GROUP1, GROUP2 } from "../utils/constants";
+import { useSpring, animated } from "@react-spring/three";
 
 export function ColliderSphere() {
   const { viewport, size } = useThree();
+
+  // on double click, keep the sphere interactive with the clumps
   const state1 = GROUP1;
   const state2 = GROUP2;
   const [collisionFilterGroup, setCollisionFilterGroup] = useState<any>(state1);
   useEventListener("dblclick", () => {
     setCollisionFilterGroup(collisionFilterGroup === state1 ? state2 : state1);
-    console.log(
-      "🌟🚨 ~ file: Clump.tsx ~ line 37 ~ useEventListener ~ collisionFilterGroup",
-      collisionFilterGroup
-    );
   });
+
   const gpu = useDetectGPU();
   const colliderRadius = gpu.tier > 2 ? 3 : 2;
 
@@ -25,7 +25,8 @@ export function ColliderSphere() {
   // (bodyA.collisionFilterGroup & bodyB.collisionFilterMask) && (bodyB.collisionFilterGroup & bodyA.collisionFilterMask)
   //  These are indeed bitwise operations. https://en.wikipedia.org/wiki/Bitwise_operation#Truth_table_for_all_binary_logical_operators
   // examples https://github.com/schteppe/cannon.js/blob/master/demos/collisionFilter.html#L50
-  const [ref, api] = useSphere<any>(
+  const ref = useRef<any>();
+  const [sphereRef, api] = useSphere<any>(
     () => ({
       type: "Kinematic",
       args: [colliderRadius],
@@ -89,25 +90,23 @@ export function ColliderSphere() {
     }, 1000);
     return () => clearTimeout(timer);
   });
-  useFrame((state) => {
-    const nextRadius = colliderRadius * (big ? 2 : 1);
-    // const lerp = THREE.MathUtils.lerp(api.args[0], nextRadius, 0.24);
-    // console.log(
-    //   "🌟🚨 ~ file: ColliderSphere.tsx ~ line 72 ~ useFrame ~ api",
-    //   api
-    // );
-    // console.log(
-    //   "🌟🚨 ~ file: ColliderSphere.tsx ~ line 77 ~ useFrame ~ ref.current.scale",
-    //   ref.current.scale
-    // );
+  const { scale } = useSpring({
+    scale: (big ? [1.2, 1.2, 1.2] : [1, 1, 1]) as [number, number, number],
+    config: {
+      mass: 0.5,
+      tension: 500,
+      friction: 7,
+    },
   });
   return (
-    <Sphere ref={ref} args={[colliderRadius, 32, 32]}>
-      <meshPhysicalMaterial
-        transmission={1}
-        thickness={colliderRadius / 2}
-        roughness={0}
-      />
-    </Sphere>
+    <animated.mesh ref={sphereRef} scale={scale}>
+      <Sphere args={[colliderRadius, 32, 32]}>
+        <meshPhysicalMaterial
+          transmission={1}
+          thickness={colliderRadius / 2}
+          roughness={0}
+        />
+      </Sphere>
+    </animated.mesh>
   );
 }
