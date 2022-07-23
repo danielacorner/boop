@@ -23,7 +23,8 @@ export function Clump({
   displacementMapPath = WHITE_PIXEL,
   position = null as [number, number, number] | null,
   coloredTexture = false,
-  cube = false,
+  icosa = false,
+  dodeca = false,
   radius = BALL_RADIUS,
   mass = BALL_MASS,
 }) {
@@ -129,8 +130,10 @@ export function Clump({
       receiveShadow
       args={[undefined, undefined, nodes.length]}
     >
-      {cube ? (
+      {icosa ? (
         <icosahedronBufferGeometry args={[radius, 0]} />
+      ) : dodeca ? (
+        <dodecahedronBufferGeometry args={[radius, 0]} />
       ) : (
         <sphereBufferGeometry args={[radius, 32, 32]}>
           {/* <instancedBufferAttribute

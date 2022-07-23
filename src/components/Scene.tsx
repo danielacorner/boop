@@ -191,7 +191,7 @@ function PhysicsScene() {
       />
       {/* glassy */}
       <Clump
-        numNodes={num}
+        numNodes={num / 2}
         materialProps={{
           roughness: 0,
           emissive: null,
@@ -257,8 +257,21 @@ function PhysicsScene() {
       />
       {/* shiny icosahedron */}
       <Clump
-        cube={true}
-        numNodes={num}
+        icosa={true}
+        numNodes={num / 2}
+        materialProps={{
+          roughness: 0,
+          emissive: null,
+          metalness: 0,
+          envMapIntensity: 5,
+          transmission: 1,
+          thickness: BALL_RADIUS,
+        }}
+      />
+      {/* shiny dodecaahedron */}
+      <Clump
+        dodeca={true}
+        numNodes={num / 2}
         materialProps={{
           roughness: 0,
           emissive: null,
