@@ -1,5 +1,6 @@
 import * as THREE from "three";
 import { useEffect, useRef } from "react";
+import { Geometry } from "three-stdlib";
 
 export function useEventListener(eventName, handler, element = window) {
   // Create a ref that stores handler
@@ -41,3 +42,15 @@ export function getPosition({
   return [posX, posY, 0];
 }
 export const rfs = THREE.MathUtils.randFloatSpread;
+
+/**
+ * Returns legacy geometry vertices, faces for ConvP
+ * @param {THREE.BufferGeometry} bufferGeometry
+ */
+export function toConvexProps(bufferGeometry) {
+  const geo = new Geometry().fromBufferGeometry(bufferGeometry);
+  // Merge duplicate vertices resulting from glTF export.
+  // Cannon assumes contiguous, closed meshes to work
+  geo.mergeVertices();
+  return [geo.vertices.map((v) => [v.x, v.y, v.z]), geo.faces.map((f) => [f.a, f.b, f.c]), []]; // prettier-ignore
+}

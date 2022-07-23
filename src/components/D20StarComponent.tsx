@@ -1,13 +1,12 @@
 import * as THREE from "three";
 import { useFrame } from "@react-three/fiber";
 import { useConvexPolyhedron } from "@react-three/cannon";
-import { Geometry } from "three-stdlib";
 import { useMemo, useRef, useState } from "react";
 import D20_Star from "../Models/D20_star";
 import { useMount } from "react-use";
 import { BALL_MASS, BALL_RADIUS, GROUP1, GROUP2 } from "../utils/constants";
 import { animated, useSpring } from "@react-spring/three";
-import { useEventListener } from "../utils/hooks";
+import { toConvexProps, useEventListener } from "../utils/hooks";
 
 const COMMON_MATERIAL_PROPS = {
   transparent: true,
@@ -132,15 +131,4 @@ export function D20StarComponent() {
       </animated.mesh>
     </>
   );
-}
-/**
- * Returns legacy geometry vertices, faces for ConvP
- * @param {THREE.BufferGeometry} bufferGeometry
- */
-function toConvexProps(bufferGeometry) {
-  const geo = new Geometry().fromBufferGeometry(bufferGeometry);
-  // Merge duplicate vertices resulting from glTF export.
-  // Cannon assumes contiguous, closed meshes to work
-  geo.mergeVertices();
-  return [geo.vertices.map((v) => [v.x, v.y, v.z]), geo.faces.map((f) => [f.a, f.b, f.c]), []]; // prettier-ignore
 }

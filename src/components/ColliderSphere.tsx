@@ -6,6 +6,8 @@ import { useEffect, useRef, useState } from "react";
 import { useEventListener, getPosition } from "../utils/hooks";
 import { GROUP1, GROUP2 } from "../utils/constants";
 import { useSpring, animated } from "@react-spring/three";
+import { useAtom } from "jotai";
+import { isMusicOnAtom } from "./Music/AudioSoundButton";
 
 const LERP_SPEED = 0.4;
 
@@ -108,6 +110,10 @@ export function ColliderSphere() {
       friction: 7,
     },
   });
+
+  // TODO fake bpm-based dancing when music is playing
+  const [isMusicOn] = useAtom(isMusicOnAtom);
+
   return (
     <animated.mesh ref={sphereRef} scale={scale}>
       <Sphere args={[colliderRadius, 32, 32]}>

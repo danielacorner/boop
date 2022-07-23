@@ -242,23 +242,24 @@ function PhysicsScene() {
       />
       {/* marble */}
       <Clump
+        coloredTexture={true}
         texturePath={"marble/marble_big.jpg"}
         // normalMapPath={"marble/marble_normal.jpg"}
         // displacementMapPath={"marble/marble_displacement.jpg"}
         // aoMapPath={"marble/marble_spec.jpg"}
-        numNodes={num * 0.5}
+        numNodes={num}
         materialProps={{
           roughness: 0,
           emissive: null,
           metalness: 0.35,
-          envMapIntensity: 1,
+          envMapIntensity: 2,
           transmission: 0,
         }}
       />
       {/* shiny icosahedron */}
       <Clump
         icosa={true}
-        numNodes={num / 2}
+        numNodes={num}
         materialProps={{
           roughness: 0,
           emissive: null,
@@ -267,11 +268,12 @@ function PhysicsScene() {
           transmission: 1,
           thickness: BALL_RADIUS,
         }}
+        radius={BALL_RADIUS * 1.2}
       />
       {/* shiny dodecaahedron */}
       <Clump
         dodeca={true}
-        numNodes={num / 2}
+        numNodes={num}
         materialProps={{
           roughness: 0,
           emissive: null,
@@ -280,6 +282,7 @@ function PhysicsScene() {
           transmission: 1,
           thickness: BALL_RADIUS,
         }}
+        radius={BALL_RADIUS * 1.2}
       />
     </>
   );
