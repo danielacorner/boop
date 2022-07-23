@@ -7,8 +7,14 @@ import { useEventListener, getPosition } from "../utils/hooks";
 import { GROUP1, GROUP2 } from "../utils/constants";
 import { useSpring, animated } from "@react-spring/three";
 
+const LERP_SPEED = 0.4;
+
 export function ColliderSphere() {
-  const { viewport, size } = useThree();
+  const { viewport, size, performance } = useThree();
+  console.log(
+    "🌟🚨 ~ file: ColliderSphere.tsx ~ line 14 ~ ColliderSphere ~ performance",
+    performance
+  );
 
   // on double click, keep the sphere interactive with the clumps
   const [doubleclicked, setDoubleclicked] = useState(false);
@@ -19,11 +25,12 @@ export function ColliderSphere() {
   const gpu = useDetectGPU();
   const colliderRadius = gpu.tier > 2 ? 3 : 2;
 
+  const shouldLerpRef = useRef<boolean>(true);
+
   // A collision is allowed if
   // (bodyA.collisionFilterGroup & bodyB.collisionFilterMask) && (bodyB.collisionFilterGroup & bodyA.collisionFilterMask)
   //  These are indeed bitwise operations. https://en.wikipedia.org/wiki/Bitwise_operation#Truth_table_for_all_binary_logical_operators
   // examples https://github.com/schteppe/cannon.js/blob/master/demos/collisionFilter.html#L50
-  const ref = useRef<any>();
   const [sphereRef, api] = useSphere<any>(
     () => ({
       type: "Kinematic",
@@ -48,12 +55,17 @@ export function ColliderSphere() {
       ((touchingRef.current?.[0] ?? state.pointer.x) * viewport.width) / 2;
     const nextY =
       ((touchingRef.current?.[1] ?? state.pointer.y) * viewport.height) / 2;
-    const nextXL = THREE.MathUtils.lerp(position.current[0], nextX, 0.24);
-    const nextYL = THREE.MathUtils.lerp(position.current[1], nextY, 0.24);
-    return api.position.set(nextXL, nextYL, 0);
+    const nextXL = THREE.MathUtils.lerp(position.current[0], nextX, LERP_SPEED);
+    const nextYL = THREE.MathUtils.lerp(position.current[1], nextY, LERP_SPEED);
+    return api.position.set(
+      shouldLerpRef.current ? nextXL : nextX,
+      shouldLerpRef.current ? nextYL : nextY,
+      0
+    );
   });
-
   useEventListener("touchmove", (event) => {
+    shouldLerpRef.current = false;
+    // performance.regress();
     touchingRef.current = getPosition({
       clientX: event.changedTouches[0].clientX,
       clientY: event.changedTouches[0].clientY,
@@ -63,6 +75,8 @@ export function ColliderSphere() {
   });
 
   useEventListener("click", (event) => {
+    shouldLerpRef.current = true;
+    // performance.regress();
     touchingRef.current = getPosition({
       clientX: event.clientX,
       clientY: event.clientY,
@@ -71,6 +85,8 @@ export function ColliderSphere() {
     });
   });
   useEventListener("mousemove", (event) => {
+    shouldLerpRef.current = false;
+    // performance.regress();
     touchingRef.current = getPosition({
       clientX: event.clientX,
       clientY: event.clientY,
