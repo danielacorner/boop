@@ -5,7 +5,6 @@ import {
   useDetectGPU,
   AdaptiveDpr,
   OrbitControls,
-  Mask,
 } from "@react-three/drei";
 import { Canvas, extend, useThree } from "@react-three/fiber";
 import { Debug, Physics } from "@react-three/cannon";
@@ -89,7 +88,6 @@ function PhysicsScene() {
   // const { xyz } = useControls({ xyz: 1 });
   const clumps = (
     <>
-      <MaskThing />
       {/* galaxy */}
       <Clump
         texturePath={"ball_galaxy.jpg"}
@@ -286,8 +284,4 @@ function Effects(props) {
       />
     </EffectComposer>
   );
-}
-
-function MaskThing() {
-  return <></>;
 }
