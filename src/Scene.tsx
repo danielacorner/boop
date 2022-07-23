@@ -245,7 +245,7 @@ function PhysicsScene() {
         materialProps={{
           roughness: 0,
           emissive: null,
-          metalness: 0,
+          metalness: 0.35,
           envMapIntensity: 1,
           transmission: 0,
         }}
