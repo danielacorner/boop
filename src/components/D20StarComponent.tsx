@@ -3,7 +3,7 @@ import { useFrame } from "@react-three/fiber";
 import { useConvexPolyhedron } from "@react-three/cannon";
 import { Geometry } from "three-stdlib";
 import { useMemo, useRef, useState } from "react";
-import D20_Star from "../GLTFs/D20_star";
+import D20_Star from "../Models/D20_star";
 import { useMount } from "react-use";
 import { BALL_MASS, BALL_RADIUS } from "../utils/constants";
 import { animated, useSpring } from "@react-spring/three";

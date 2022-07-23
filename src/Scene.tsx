@@ -200,6 +200,19 @@ function PhysicsScene() {
         }}
         radius={BALL_RADIUS}
       />
+      {/* glassy */}
+      <Clump
+        numNodes={num}
+        materialProps={{
+          roughness: 0,
+          emissive: null,
+          metalness: 0,
+          envMapIntensity: 0,
+          transmission: 1,
+          thickness: BALL_RADIUS * 7,
+        }}
+        radius={BALL_RADIUS}
+      />
 
       {/* shiny starry night */}
       <Clump
@@ -228,7 +241,7 @@ function PhysicsScene() {
       {/* marble */}
       <Clump
         texturePath={"marble/White_Marble_003_COLOR.jpg"}
-        numNodes={num}
+        numNodes={num * 0.5}
         materialProps={{
           roughness: 0,
           emissive: null,

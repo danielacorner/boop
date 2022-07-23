@@ -2,9 +2,15 @@ import { useTexture } from "@react-three/drei";
 import * as THREE from "three";
 import { useFrame } from "@react-three/fiber";
 import { useSphere } from "@react-three/cannon";
-import { useEffect, useMemo } from "react";
-import { BALL_RADIUS, BALL_MASS, COLORS } from "../utils/constants";
-import { rfs } from "../utils/hooks";
+import { useEffect, useMemo, useRef, useState } from "react";
+import {
+  BALL_RADIUS,
+  BALL_MASS,
+  COLORS,
+  GROUP1,
+  GROUP2,
+} from "../utils/constants";
+import { rfs, useEventListener } from "../utils/hooks";
 const WHITE_PIXEL = "/white_pixel.png";
 export function Clump({
   materialProps = {} as any,
@@ -32,23 +38,40 @@ export function Clump({
     [numNodes]
   );
 
-  const [ref, api] = useSphere<THREE.InstancedMesh>(() => ({
-    args: [radius],
-    mass,
-    angularDamping: 0,
-    linearDamping: 0.65,
-    angularVelocity: [rfs(0.8), rfs(0.8), rfs(0.8)],
-    position: [rfs(20), rfs(20), rfs(20)],
-    rotation: [rfs(20), rfs(20), rfs(20)],
-  }));
+  // on double click...
+  // the clump stops interacting with itself
+  // (but not with the collidersphere)
+
+  const state1 = GROUP1;
+  // state 2: collisionFilterMask =
+  const state2 = GROUP2;
+  const [collisionFilterGroup, setCollisionFilterGroup] = useState<any>(GROUP1);
+  useEventListener("dblclick", () => {
+    setCollisionFilterGroup(collisionFilterGroup === state1 ? state2 : state1);
+  });
+  const [sphereRef, api] = useSphere<THREE.InstancedMesh>(
+    () => ({
+      args: [radius],
+      mass,
+      angularDamping: 0,
+      linearDamping: 0.65,
+      angularVelocity: [rfs(0.8), rfs(0.8), rfs(0.8)],
+      position: [rfs(20), rfs(20), rfs(20)],
+      rotation: [rfs(20), rfs(20), rfs(20)],
+      collisionFilterMask: GROUP1, // it can only collide with GROUP1
+      collisionFilterGroup,
+    }),
+    null,
+    [collisionFilterGroup, mass, radius]
+  );
   const nodes = useMemo(() => [...Array(numNodes)], [numNodes]);
   useFrame((state) => {
-    if (!ref.current) {
+    if (!sphereRef.current) {
       return;
     }
     for (let i = 0; i < nodes.length; i++) {
       // Get current whereabouts of the instanced sphere
-      ref.current.getMatrixAt(i, mat);
+      sphereRef.current.getMatrixAt(i, mat);
       // Normalize the position and multiply by a negative force.
       // This is enough to drive it towards the center-point.
       api.at(i).applyForce(
@@ -72,7 +95,7 @@ export function Clump({
     }
   });
   useEffect(() => {
-    if (!ref.current) {
+    if (!sphereRef.current) {
       return;
     }
     for (let index = 0; index < colorArray.length; index++) {
@@ -83,12 +106,12 @@ export function Clump({
       ) {
         return;
       }
-      ref.current.setColorAt(index, new THREE.Color(color));
+      sphereRef.current.setColorAt(index, new THREE.Color(color));
     }
   }, [
     colorArray.length,
     nodes,
-    ref,
+    sphereRef,
     materialProps.transmission,
     texturePath,
     coloredTexture,
@@ -96,7 +119,7 @@ export function Clump({
 
   return (
     <instancedMesh
-      ref={ref}
+      ref={sphereRef}
       castShadow
       receiveShadow
       args={[undefined, undefined, nodes.length]}

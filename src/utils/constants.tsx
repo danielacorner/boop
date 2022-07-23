@@ -8,3 +8,8 @@ export const COLORS = [
 
 export const BALL_RADIUS = 0.5;
 export const BALL_MASS = 1;
+
+// Collision filter groups - must be powers of 2!
+export const GROUP1 = 1;
+export const GROUP2 = 2;
+export const GROUP3 = 4;
