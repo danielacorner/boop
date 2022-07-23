@@ -131,7 +131,7 @@ function PhysicsScene() {
       {/* moon */}
       <Clump
         texturePath={"ball_moon.jpg"}
-        normalMapPath={"planet_normal.png"}
+        normalMapPath={"planet_normal.jpg"}
         numNodes={1}
         materialProps={{
           roughness: 0.9,
@@ -140,13 +140,13 @@ function PhysicsScene() {
           envMapIntensity: 3,
           transmission: 0,
         }}
-        radius={BALL_RADIUS}
+        radius={BALL_RADIUS * 1.2}
         mass={BALL_MASS * 2}
       />
       {/* jupiter */}
       <Clump
         texturePath={"ball_jupiter.jpg"}
-        normalMapPath={"planet_normal.png"}
+        normalMapPath={"planet_normal.jpg"}
         numNodes={1}
         materialProps={{
           roughness: 0.6,
@@ -161,6 +161,7 @@ function PhysicsScene() {
       {/* sun */}
       <Clump
         texturePath={"ball_sun.jpg"}
+        // normalMapPath={"wavy-normal.jpg"}
         numNodes={1}
         materialProps={{
           roughness: 0.5,
@@ -175,7 +176,7 @@ function PhysicsScene() {
       {/* colored cell */}
       <Clump
         texturePath={"ball_cell.jpg"}
-        // normalMapPath={"planet_normal.png"}
+        // normalMapPath={"planet_normal_sm.png"}
         // roughnessMapPath={"roughness_map.jpg"}
         numNodes={num}
         materialProps={{
@@ -241,7 +242,10 @@ function PhysicsScene() {
       />
       {/* marble */}
       <Clump
-        texturePath={"marble/White_Marble_003_COLOR.jpg"}
+        texturePath={"marble/marble_big.jpg"}
+        // normalMapPath={"marble/marble_normal.jpg"}
+        // displacementMapPath={"marble/marble_displacement.jpg"}
+        // aoMapPath={"marble/marble_spec.jpg"}
         numNodes={num * 0.5}
         materialProps={{
           roughness: 0,
@@ -249,6 +253,23 @@ function PhysicsScene() {
           metalness: 0.35,
           envMapIntensity: 1,
           transmission: 0,
+        }}
+      />
+      {/* shiny icosahedra */}
+      <Clump
+        cube={true}
+        // texturePath={"marble/marble_big.jpg"}
+        // normalMapPath={"marble/marble_normal.jpg"}
+        // displacementMapPath={"marble/marble_displacement.jpg"}
+        // aoMapPath={"marble/marble_spec.jpg"}
+        numNodes={num}
+        materialProps={{
+          roughness: 0,
+          emissive: null,
+          metalness: 0.1,
+          envMapIntensity: 5,
+          transmission: 1,
+          thickness: BALL_RADIUS,
         }}
       />
     </>

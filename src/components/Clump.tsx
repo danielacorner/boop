@@ -18,8 +18,12 @@ export function Clump({
   texturePath = WHITE_PIXEL,
   roughnessMapPath = WHITE_PIXEL,
   normalMapPath = WHITE_PIXEL,
+  aoMapPath = WHITE_PIXEL,
+  bumpMapPath = WHITE_PIXEL,
+  displacementMapPath = WHITE_PIXEL,
   position = null as [number, number, number] | null,
   coloredTexture = false,
+  cube = false,
   radius = BALL_RADIUS,
   mass = BALL_MASS,
 }) {
@@ -29,6 +33,9 @@ export function Clump({
   const texture = useTexture(texturePath);
   const roughnessMap = useTexture(roughnessMapPath);
   const normalMap = useTexture(normalMapPath);
+  const aoMap = useTexture(aoMapPath);
+  const bumpMap = useTexture(bumpMapPath);
+  const displacementMap = useTexture(displacementMapPath);
   const colorArray = useMemo(
     () =>
       new Array(numNodes).fill(null).flatMap((_, i) => {
@@ -122,13 +129,17 @@ export function Clump({
       receiveShadow
       args={[undefined, undefined, nodes.length]}
     >
-      <sphereBufferGeometry args={[radius, 32, 32]}>
-        {/* <instancedBufferAttribute
+      {cube ? (
+        <icosahedronBufferGeometry args={[radius, 0]} />
+      ) : (
+        <sphereBufferGeometry args={[radius, 32, 32]}>
+          {/* <instancedBufferAttribute
               attach="attributes-color"
               count={filteredNodesRandom.length}
               array={colorArray}
             /> */}
-      </sphereBufferGeometry>
+        </sphereBufferGeometry>
+      )}
 
       <meshPhysicalMaterial
         map={texture}
@@ -143,6 +154,22 @@ export function Clump({
           ? {}
           : {
               normalMap,
+            })}
+        {...(aoMapPath === WHITE_PIXEL
+          ? {}
+          : {
+              aoMap,
+              aoMapIntensity: 0.5,
+            })}
+        {...(bumpMapPath === WHITE_PIXEL
+          ? {}
+          : {
+              bumpMap,
+            })}
+        {...(displacementMapPath === WHITE_PIXEL
+          ? {}
+          : {
+              displacementMap,
             })}
         // normalMap={normalMap}
         {...{
