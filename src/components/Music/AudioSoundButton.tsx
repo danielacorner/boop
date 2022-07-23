@@ -1,29 +1,18 @@
-// import ReactPlayer from "react-player";
 import styled from "styled-components";
-import { useState } from "react";
 import { VolumeUp, VolumeOff } from "@mui/icons-material";
 import { IconButton } from "@mui/material";
 import { useAtom, atom } from "jotai";
 import ReactPlayer from "react-player";
-const NUM_VOLUME_STEPS = 20;
 
 const isMusicOnAtom = atom<boolean>(false);
-const volumeAtom = atom<number>(5);
 
 /** Mute button with hidden a <ReactPlayer/> */
 export function AudioSoundButton({ title, href }) {
   const [isMusicOn, setIsMusicOn] = useAtom(isMusicOnAtom);
 
-  const [isHovered, setIsHovered] = useState(false);
-  const [volume, setVolume] = useAtom(volumeAtom);
-  const volLevel = Number(volume) / NUM_VOLUME_STEPS;
   return (
     <>
-      <SoundButtonStyles
-        onMouseEnter={() => setIsHovered(true)}
-        onMouseLeave={() => setIsHovered(false)}
-        {...{ isAudioPlaying: Boolean(isMusicOn) }}
-      >
+      <SoundButtonStyles {...{ isAudioPlaying: Boolean(isMusicOn) }}>
         <IconButton onClick={() => setIsMusicOn(!isMusicOn)}>
           {isMusicOn ? <VolumeUp /> : <VolumeOff />}
         </IconButton>
@@ -38,7 +27,6 @@ export function AudioSoundButton({ title, href }) {
       <ReactPlayer
         style={{ visibility: "hidden", position: "fixed" }}
         playing={Boolean(isMusicOn)}
-        volume={volLevel}
         url={href}
       />
     </>
