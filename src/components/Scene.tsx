@@ -86,213 +86,211 @@ function PhysicsScene() {
   const gpu = useDetectGPU();
   const num = gpu.tier > 2 ? 10 : 8;
   // const { xyz } = useControls({ xyz: 1 });
-  const clumps = (
-    <>
-      {/* galaxy */}
-      <Clump
-        texturePath={"ball_galaxy.jpg"}
-        numNodes={num * 0.5}
-        materialProps={{
-          roughness: 0,
-          emissive: null,
-          metalness: 0.1,
-          envMapIntensity: 3,
-          transmission: 0,
-        }}
-      />
-      {/* glassy textured */}
-      <Clump
-        texturePath={"ball_galaxy.jpg"}
-        coloredTexture={true}
-        numNodes={num * 0.5}
-        materialProps={{
-          roughness: 0,
-          emissive: "#230000",
-          metalness: 3,
-          envMapIntensity: 2,
-          transmission: 0.7,
-          thickness: BALL_RADIUS * 75,
-        }}
-      />
-      {/* earth */}
-      <Clump
-        texturePath={"ball_earth.jpg"}
-        numNodes={1}
-        materialProps={{
-          roughness: 0,
-          emissive: null,
-          metalness: 0,
-          envMapIntensity: 4,
-          transmission: 0,
-        }}
-        radius={BALL_RADIUS * 1.4}
-        mass={BALL_MASS * 1.4 * 2}
-      />
-      {/* moon */}
-      <Clump
-        texturePath={"ball_moon.jpg"}
-        normalMapPath={"planet_normal.jpg"}
-        numNodes={1}
-        materialProps={{
-          roughness: 0.9,
-          emissive: null,
-          metalness: 0.2,
-          envMapIntensity: 3,
-          transmission: 0,
-        }}
-        radius={BALL_RADIUS * 1.2}
-        mass={BALL_MASS * 2}
-      />
-      {/* jupiter */}
-      <Clump
-        texturePath={"ball_jupiter.jpg"}
-        normalMapPath={"planet_normal.jpg"}
-        numNodes={1}
-        materialProps={{
-          roughness: 0.6,
-          emissive: null,
-          metalness: 0.1,
-          envMapIntensity: 1.5,
-          transmission: 0,
-        }}
-        radius={BALL_RADIUS * 1.8}
-        mass={BALL_MASS * 1.8 * 2}
-      />
-      {/* sun */}
-      <Clump
-        texturePath={"ball_sun.jpg"}
-        // normalMapPath={"wavy-normal.jpg"}
-        numNodes={1}
-        materialProps={{
-          roughness: 0.5,
-          emissive: "#c04b14",
-          metalness: 0.1,
-          envMapIntensity: 4,
-          transmission: 0,
-        }}
-        radius={BALL_RADIUS * 2.4}
-        mass={BALL_MASS * 2.4 * 2}
-      />
-      {/* colored cell */}
-      <Clump
-        texturePath={"ball_cell.jpg"}
-        // normalMapPath={"planet_normal_sm.png"}
-        // roughnessMapPath={"roughness_map.jpg"}
-        numNodes={num}
-        materialProps={{
-          roughness: 0,
-          emissive: null,
-          metalness: 0.9,
-          envMapIntensity: 4.2,
-          transmission: 0,
-          thickness: BALL_RADIUS,
-        }}
-        coloredTexture={true}
-      />
-      {/* glassy */}
-      <Clump
-        numNodes={num / 2}
-        materialProps={{
-          roughness: 0,
-          emissive: null,
-          metalness: 0,
-          envMapIntensity: 0,
-          transmission: 1,
-          thickness: BALL_RADIUS * 7,
-        }}
-        radius={BALL_RADIUS}
-      />
-      {/* glassy */}
-      <Clump
-        numNodes={num}
-        materialProps={{
-          roughness: 0,
-          emissive: null,
-          metalness: 0,
-          envMapIntensity: 0,
-          transmission: 1,
-          thickness: BALL_RADIUS * 7,
-        }}
-        radius={BALL_RADIUS}
-      />
 
-      {/* shiny starry night */}
-      <Clump
-        texturePath={"ball_vangogh.jpg"}
-        numNodes={num}
-        materialProps={{
-          roughness: 0,
-          metalness: 0.7,
-          envMapIntensity: 10,
-          transmission: 0,
-        }}
-        radius={BALL_RADIUS}
-      />
-      {/* starry night */}
-      <Clump
-        texturePath={"ball_vangogh.jpg"}
-        numNodes={num}
-        materialProps={{
-          roughness: 0,
-          emissive: null,
-          metalness: 0,
-          envMapIntensity: 3,
-          transmission: 0,
-        }}
-      />
-      {/* marble */}
-      <Clump
-        coloredTexture={true}
-        texturePath={"marble/marble_big.jpg"}
-        // normalMapPath={"marble/marble_normal.jpg"}
-        // displacementMapPath={"marble/marble_displacement.jpg"}
-        // aoMapPath={"marble/marble_spec.jpg"}
-        numNodes={num}
-        materialProps={{
-          roughness: 0,
-          emissive: null,
-          metalness: 0.35,
-          envMapIntensity: 2,
-          transmission: 0,
-        }}
-      />
-      {/* shiny icosahedron */}
-      <Clump
-        icosa={true}
-        numNodes={num}
-        materialProps={{
-          roughness: 0,
-          emissive: null,
-          metalness: 0,
-          envMapIntensity: 5,
-          transmission: 1,
-          thickness: BALL_RADIUS,
-        }}
-        radius={BALL_RADIUS * 1.2}
-      />
-      {/* shiny dodecaahedron */}
-      <Clump
-        dodeca={true}
-        numNodes={num}
-        materialProps={{
-          roughness: 0,
-          emissive: null,
-          metalness: 0,
-          envMapIntensity: 5,
-          transmission: 1,
-          thickness: BALL_RADIUS,
-        }}
-        radius={BALL_RADIUS * 1.2}
-      />
-    </>
-  );
   return (
     <>
       {/* <DebugInDev> */}
       <ColliderSphere />
       <D20StarComponent />
-      {clumps}
       <MusicZoom />
+      <>
+        {/* galaxy */}
+        <Clump
+          texturePath={"ball_galaxy.jpg"}
+          numNodes={num * 0.5}
+          materialProps={{
+            roughness: 0,
+            emissive: null,
+            metalness: 0.1,
+            envMapIntensity: 3,
+            transmission: 0,
+          }}
+        />
+        {/* glassy textured */}
+        <Clump
+          texturePath={"ball_galaxy.jpg"}
+          coloredTexture={true}
+          numNodes={num * 0.5}
+          materialProps={{
+            roughness: 0,
+            emissive: "#230000",
+            metalness: 3,
+            envMapIntensity: 2,
+            transmission: 0.7,
+            thickness: BALL_RADIUS * 75,
+          }}
+        />
+        {/* earth */}
+        <Clump
+          texturePath={"ball_earth.jpg"}
+          numNodes={1}
+          materialProps={{
+            roughness: 0,
+            emissive: null,
+            metalness: 0,
+            envMapIntensity: 4,
+            transmission: 0,
+          }}
+          radius={BALL_RADIUS * 1.4}
+          mass={BALL_MASS * 1.4 * 2}
+        />
+        {/* moon */}
+        <Clump
+          texturePath={"ball_moon.jpg"}
+          normalMapPath={"planet_normal.jpg"}
+          numNodes={1}
+          materialProps={{
+            roughness: 0.9,
+            emissive: null,
+            metalness: 0.2,
+            envMapIntensity: 3,
+            transmission: 0,
+          }}
+          radius={BALL_RADIUS * 1.2}
+          mass={BALL_MASS * 2}
+        />
+        {/* jupiter */}
+        <Clump
+          texturePath={"ball_jupiter.jpg"}
+          normalMapPath={"planet_normal.jpg"}
+          numNodes={1}
+          materialProps={{
+            roughness: 0.6,
+            emissive: null,
+            metalness: 0.1,
+            envMapIntensity: 1.5,
+            transmission: 0,
+          }}
+          radius={BALL_RADIUS * 1.8}
+          mass={BALL_MASS * 1.8 * 2}
+        />
+        {/* sun */}
+        <Clump
+          texturePath={"ball_sun.jpg"}
+          // normalMapPath={"wavy-normal.jpg"}
+          numNodes={1}
+          materialProps={{
+            roughness: 0.5,
+            emissive: "#c04b14",
+            metalness: 0.1,
+            envMapIntensity: 4,
+            transmission: 0,
+          }}
+          radius={BALL_RADIUS * 2.4}
+          mass={BALL_MASS * 2.4 * 2}
+        />
+        {/* colored cell */}
+        <Clump
+          texturePath={"ball_cell.jpg"}
+          // normalMapPath={"planet_normal_sm.png"}
+          // roughnessMapPath={"roughness_map.jpg"}
+          numNodes={num}
+          materialProps={{
+            roughness: 0,
+            emissive: null,
+            metalness: 0.9,
+            envMapIntensity: 4.2,
+            transmission: 0,
+            thickness: BALL_RADIUS,
+          }}
+          coloredTexture={true}
+        />
+        {/* glassy */}
+        <Clump
+          numNodes={num / 2}
+          materialProps={{
+            roughness: 0,
+            emissive: null,
+            metalness: 0,
+            envMapIntensity: 0,
+            transmission: 1,
+            thickness: BALL_RADIUS * 7,
+          }}
+          radius={BALL_RADIUS}
+        />
+        {/* glassy */}
+        <Clump
+          numNodes={num}
+          materialProps={{
+            roughness: 0,
+            emissive: null,
+            metalness: 0,
+            envMapIntensity: 0,
+            transmission: 1,
+            thickness: BALL_RADIUS * 7,
+          }}
+          radius={BALL_RADIUS}
+        />
+
+        {/* shiny starry night */}
+        <Clump
+          texturePath={"ball_vangogh.jpg"}
+          numNodes={num}
+          materialProps={{
+            roughness: 0,
+            metalness: 0.7,
+            envMapIntensity: 10,
+            transmission: 0,
+          }}
+          radius={BALL_RADIUS}
+        />
+        {/* starry night */}
+        <Clump
+          texturePath={"ball_vangogh.jpg"}
+          numNodes={num}
+          materialProps={{
+            roughness: 0,
+            emissive: null,
+            metalness: 0,
+            envMapIntensity: 3,
+            transmission: 0,
+          }}
+        />
+        {/* marble */}
+        <Clump
+          coloredTexture={true}
+          texturePath={"marble/marble_big.jpg"}
+          // normalMapPath={"marble/marble_normal.jpg"}
+          // displacementMapPath={"marble/marble_displacement.jpg"}
+          // aoMapPath={"marble/marble_spec.jpg"}
+          numNodes={num}
+          materialProps={{
+            roughness: 0,
+            emissive: null,
+            metalness: 0.35,
+            envMapIntensity: 2,
+            transmission: 0,
+          }}
+        />
+        {/* shiny icosahedron */}
+        <Clump
+          icosa={true}
+          numNodes={num}
+          materialProps={{
+            roughness: 0,
+            emissive: null,
+            metalness: 0,
+            envMapIntensity: 5,
+            transmission: 1,
+            thickness: BALL_RADIUS,
+          }}
+          radius={BALL_RADIUS * 1.2}
+        />
+        {/* shiny dodecaahedron */}
+        <Clump
+          dodeca={true}
+          numNodes={num}
+          materialProps={{
+            roughness: 0,
+            emissive: null,
+            metalness: 0,
+            envMapIntensity: 5,
+            transmission: 1,
+            thickness: BALL_RADIUS * 1.2,
+          }}
+          radius={BALL_RADIUS * 1.2}
+        />
+      </>
       {/* </DebugInDev> */}
     </>
   );

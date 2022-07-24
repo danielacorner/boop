@@ -46,19 +46,9 @@ export function Clump({
     [numNodes]
   );
 
-  // on double click...
-  // the clump stops interacting with itself
-  // (but not with the collidersphere)
-
-  const [doubleclicked, setDoubleclicked] = useState(false);
-  useEventListener("dblclick", () => {
-    setDoubleclicked(!doubleclicked);
-  });
-
   const props = {
     radius,
     mass,
-    doubleclicked,
     numNodes,
     mat,
     position,
@@ -86,7 +76,6 @@ export function Clump({
 function IcoClump({
   radius,
   mass,
-  doubleclicked,
   numNodes,
   mat,
   position,
@@ -111,7 +100,6 @@ function IcoClump({
 }: {
   radius: number;
   mass: number;
-  doubleclicked: boolean;
   numNodes: any;
   mat: THREE.Matrix4;
   position: [number, number, number] | null;
@@ -134,26 +122,67 @@ function IcoClump({
   displacementMapPath: string;
   displacementMap: THREE.Texture;
 }) {
-  const geo = useMemo(
-    () => toConvexProps(new THREE.IcosahedronBufferGeometry(radius, 0)),
-    [radius]
-  );
-  const [sphereRef, api] = useConvexPolyhedron<THREE.InstancedMesh>(
+  // on double click...
+  // the clump stops interacting with itself
+  // (but not with the collidersphere)
+
+  const [doubleclicked, setDoubleclicked] = useState(false);
+  useEventListener("dblclick", () => {
+    setDoubleclicked(!doubleclicked);
+  });
+  const [sphereRef, api] = useSphere<THREE.InstancedMesh>(
     () => ({
+      args: [radius * 0.9],
       mass,
-      // https://threejs.org/docs/scenes/geometry-browser.html#IcosahedronGeometry
-      args: geo as any,
-      angularDamping: 0,
+      angularDamping: 0.75,
       linearDamping: 0.65,
       angularVelocity: [rfs(0.8), rfs(0.8), rfs(0.8)],
       position: [rfs(20), rfs(20), rfs(20)],
       rotation: [rfs(20), rfs(20), rfs(20)],
       collisionFilterMask: GROUP1,
       collisionFilterGroup: doubleclicked ? GROUP2 : GROUP1,
+      onCollide: ({ body, collisionFilters, contact, target }: any) => {
+        if (body.name === "colliderSphere") {
+          for (let i = 0; i < nodes.length; i++) {
+            const torque = [
+              rfs(4 * contact.impactVelocity ** 2),
+              rfs(4 * contact.impactVelocity ** 2),
+              rfs(4 * contact.impactVelocity ** 2),
+            ];
+            api.at(i).applyTorque(torque as [number, number, number]);
+          }
+        }
+      },
     }),
     null,
-    [doubleclicked, mass, geo]
+    [doubleclicked, mass, radius]
   );
+  // ! not working great - dodecas overlap with spheres
+  // const geo = useMemo(
+  //   () =>
+  //     toConvexProps(
+  //       dodeca
+  //         ? new THREE.DodecahedronBufferGeometry(radius * 1.2, 0)
+  //         : new THREE.IcosahedronBufferGeometry(radius * 1.2, 0)
+  //     ),
+  //   [radius, dodeca]
+  // );
+  // const [sphereRef, api] = useConvexPolyhedron<THREE.InstancedMesh>(
+  //   () => ({
+  //     mass,
+  //     // https://threejs.org/docs/scenes/geometry-browser.html#IcosahedronGeometry
+  //     args: geo as any,
+  //     angularDamping: 0,
+  //     linearDamping: 0.65,
+  //     angularVelocity: [rfs(0.8), rfs(0.8), rfs(0.8)],
+  //     position: [rfs(20), rfs(20), rfs(20)],
+  //     rotation: [rfs(20), rfs(20), rfs(20)],
+  //     collisionFilterMask: GROUP1,
+  //     collisionFilterGroup: doubleclicked ? GROUP2 : GROUP1,
+  //   }),
+  //   null,
+  //   [doubleclicked, mass, geo]
+  // );
 
   const nodes = useMemo(() => [...Array(numNodes)], [numNodes]);
   useFrame((state) => {
@@ -278,7 +307,6 @@ function IcoClump({
 function SphereClump({
   radius,
   mass,
-  doubleclicked,
   numNodes,
   mat,
   position,
@@ -303,7 +331,6 @@ function SphereClump({
 }: {
   radius: number;
   mass: number;
-  doubleclicked: boolean;
   numNodes: any;
   mat: THREE.Matrix4;
   position: [number, number, number] | null;
@@ -326,6 +353,14 @@ function SphereClump({
   displacementMapPath: string;
   displacementMap: THREE.Texture;
 }) {
+  // on double click...
+  // the clump stops interacting with itself
+  // (but not with the collidersphere)
+
+  const [doubleclicked, setDoubleclicked] = useState(false);
+  useEventListener("dblclick", () => {
+    setDoubleclicked(!doubleclicked);
+  });
   const [sphereRef, api] = useSphere<THREE.InstancedMesh>(
     () => ({
       args: [radius],

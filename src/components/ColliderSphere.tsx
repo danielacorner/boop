@@ -31,6 +31,7 @@ export function ColliderSphere() {
   // examples https://github.com/schteppe/cannon.js/blob/master/demos/collisionFilter.html#L50
   const [sphereRef, api] = useSphere<any>(
     () => ({
+      name: "colliderSphere",
       type: "Kinematic",
       args: [colliderRadius],
       position: [0, 0, 0],
@@ -115,7 +116,7 @@ export function ColliderSphere() {
   const [isMusicOn] = useAtom(isMusicOnAtom);
 
   return (
-    <animated.mesh ref={sphereRef} scale={scale}>
+    <animated.mesh name="colliderSphere" ref={sphereRef} scale={scale}>
       <Sphere args={[colliderRadius, 32, 32]}>
         <meshPhysicalMaterial
           transmission={1}
