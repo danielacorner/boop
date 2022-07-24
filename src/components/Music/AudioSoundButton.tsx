@@ -4,19 +4,29 @@ import { IconButton } from "@mui/material";
 import { useAtom, atom } from "jotai";
 import ReactPlayer from "react-player";
 
-export const isMusicOnAtom = atom<boolean>(false);
+export const musicAtom = atom<{
+  playing: boolean;
+  autoMode: boolean;
+  bpm: number;
+}>({
+  playing: false,
+  autoMode: false,
+  bpm: 0,
+});
 
 /** Mute button with hidden a <ReactPlayer/> */
 export function AudioSoundButton({ title, href, internal }) {
-  const [isMusicOn, setIsMusicOn] = useAtom(isMusicOnAtom);
+  const [{ playing }, setMusic] = useAtom(musicAtom);
 
   return (
     <>
-      <SoundButtonStyles {...{ isAudioPlaying: Boolean(isMusicOn) }}>
-        <IconButton onClick={() => setIsMusicOn(!isMusicOn)}>
-          {isMusicOn ? <VolumeUp /> : <VolumeOff />}
+      <SoundButtonStyles {...{ isAudioPlaying: Boolean(playing) }}>
+        <IconButton
+          onClick={() => setMusic((p) => ({ ...p, playing: !playing }))}
+        >
+          {playing ? <VolumeUp /> : <VolumeOff />}
         </IconButton>
-        {isMusicOn && (
+        {playing && (
           <div className="soundInfo">
             <a href={href} target="_blank" rel="noopener noreferrer">
               {title}
@@ -27,7 +37,7 @@ export function AudioSoundButton({ title, href, internal }) {
       {internal ? null : (
         <ReactPlayer
           style={{ visibility: "hidden", position: "fixed" }}
-          playing={Boolean(isMusicOn)}
+          playing={Boolean(playing)}
           url={href}
         />
       )}

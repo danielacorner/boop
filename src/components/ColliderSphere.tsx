@@ -7,7 +7,7 @@ import { useEventListener, getPosition } from "../utils/hooks";
 import { GROUP1, GROUP2 } from "../utils/constants";
 import { useSpring, animated } from "@react-spring/three";
 import { useAtom } from "jotai";
-import { isMusicOnAtom } from "./Music/AudioSoundButton";
+import { musicAtom } from "./Music/AudioSoundButton";
 
 const LERP_SPEED = 0.4;
 
@@ -21,7 +21,8 @@ export function ColliderSphere() {
   });
 
   const gpu = useDetectGPU();
-  const colliderRadius = gpu.tier > 2 ? 3 : 2;
+  const colliderRadius = gpu.tier > 2 ? 3 : 2.3;
+  // const colliderRadius = gpu.tier > 2 ? 3 : 2;
 
   const shouldLerpRef = useRef<boolean>(true);
 
@@ -113,8 +114,23 @@ export function ColliderSphere() {
   });
 
   // TODO fake bpm-based dancing when music is playing
-  const [isMusicOn] = useAtom(isMusicOnAtom);
+  const [{ playing, bpm, autoMode }] = useAtom(musicAtom);
+  const bps = bpm / 60;
+  const nextBeat = useRef(bps);
+  useFrame((state) => {
+    if (!playing || !autoMode) {
+      return;
+    }
 
+    if (state.clock.elapsedTime >= nextBeat.current) {
+      console.log(
+        "🌟🚨 ~ file: ColliderSphere.tsx ~ line 118 ~ useFrame ~ state",
+        state
+      );
+      nextBeat.current = nextBeat.current + bps;
+      api.applyForce([0, 10, 0], position.current as [number, number, number]);
+    }
+  });
   return (
     <animated.mesh name="colliderSphere" ref={sphereRef} scale={scale}>
       <Sphere args={[colliderRadius, 32, 32]}>

@@ -4,7 +4,7 @@ import { useAtom } from "jotai";
 import { suspend } from "suspend-react";
 import { useRef, useState, useEffect } from "react";
 import * as THREE from "three";
-import { isMusicOnAtom } from "./Music/AudioSoundButton";
+import { musicAtom } from "./Music/AudioSoundButton";
 
 export function MusicZoom() {
   const [{ url }] = useAtom(musicUrlAtom);
@@ -27,7 +27,7 @@ function Sound({ url }) {
   const { camera } = useThree();
   const [listener] = useState(() => new THREE.AudioListener());
   const buffer = useLoader(THREE.AudioLoader, url);
-  const [isMusicOn, setIsMusicOn] = useAtom(isMusicOnAtom);
+  const [isMusicOn, setIsMusicOn] = useAtom(musicAtom);
   useEffect(() => {
     if (isMusicOn) {
       sound.current.setBuffer(buffer);

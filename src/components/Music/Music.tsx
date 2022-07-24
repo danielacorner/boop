@@ -44,58 +44,76 @@ function shuffleArray(array) {
   }
   return array;
 }
-const MUSIC: { title: string; href: string; internal?: boolean }[] = [
+const MUSIC: {
+  title: string;
+  href: string;
+  internal?: boolean;
+  bpm: number;
+}[] = [
   {
+    bpm: 40,
     title: "Is This Our Earth? (Mixed)",
     href: "https://www.youtube.com/watch?v=6MlaAq2DnbE",
     // href: "/music/is_this_our_earth_mixed.mp3",
     // internal: true,
   },
   {
+    bpm: 40,
     title: "Is This Our Earth? - Lane 8",
     href: "https://www.youtube.com/watch?v=rs80mrSQliM",
   },
   {
+    bpm: 40,
     title: "Welcome to Lunar Industries - Moon OST",
     href: "https://www.youtube.com/watch?v=WUraLNrTVeg",
   },
   {
+    bpm: 40,
     title: "Memories (Someone We'll Never Know) - Moon OST",
     href: "https://www.youtube.com/watch?v=XSJJuDLtCqY",
   },
   {
+    bpm: 40,
     title: "The Nursery - Moon OST",
     href: "https://www.youtube.com/watch?v=RgVzeqPIt-8",
   },
   {
+    bpm: 40,
     title: "Battlestar Sonatica",
     href: "https://www.youtube.com/watch?v=5vcFFf9aa7k",
   },
   {
+    bpm: 40,
     title: "Cygnus - Endless Space 2 OST",
     href: "https://www.youtube.com/watch?v=PeGv-QtHyaA",
   },
   {
+    bpm: 40,
     title: "Singularity - Endless Space 2 OST",
     href: "https://www.youtube.com/watch?v=kLyBwJageak&t=1m51s",
   },
   {
+    bpm: 40,
     title: "Axial Tilt Zero - Endless Space 2 OST",
     href: "https://www.youtube.com/watch?v=3Ql_ENGlTRM",
   },
   {
+    bpm: 40,
     title: "Tristram - Diablo 2 OST",
     href: "https://www.youtube.com/watch?v=VWziHqEd0Uw&t=1372s",
   },
   {
+    bpm: 40,
     title: "Stafrænn Hákon - P-Rofi",
     href: "https://www.youtube.com/watch?v=GC_xfnEXtqs",
   },
   // {
+  // bpm:40,
   //   title: "Space Me Out (Jody Wisternoff & James Grant Edit)",
   //   href: "https://www.youtube.com/watch?v=8AjzuJVp7pw",
   // },
   // {
+  // bpm:40,
   //   title: "Three Quarks in a Row - Endless Space 2 OST",
   //   href: "https://www.youtube.com/watch?v=MEvIBLiGDu8&list=PLtzah_dj5hUXssVw_j55Fnwjud0fZRle6&index=17",
   // },

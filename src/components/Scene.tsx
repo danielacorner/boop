@@ -15,6 +15,7 @@ import { ColliderSphere } from "./ColliderSphere";
 import { BALL_MASS, BALL_RADIUS } from "../utils/constants";
 import { MusicZoom } from "./MusicZoom";
 import { FancyStars } from "./FancyStars";
+import { useControls } from "leva";
 
 extend({ SSAOPass });
 
@@ -85,7 +86,7 @@ function DebugInDev({ children }) {
 function PhysicsScene() {
   const gpu = useDetectGPU();
   const num = gpu.tier > 2 ? 10 : 8;
-  // const { xyz } = useControls({ xyz: 1 });
+  const { xyz } = useControls({ xyz: 20 });
 
   return (
     <>
@@ -106,18 +107,16 @@ function PhysicsScene() {
             transmission: 0,
           }}
         />
-        {/* glassy textured */}
+        {/* frosted glassy */}
         <Clump
-          texturePath={"ball_galaxy.jpg"}
-          coloredTexture={true}
           numNodes={num * 0.5}
           materialProps={{
-            roughness: 0,
-            emissive: "#230000",
-            metalness: 3,
-            envMapIntensity: 2,
-            transmission: 0.7,
-            thickness: BALL_RADIUS * 75,
+            roughness: 0.67,
+            emissive: "#000000",
+            metalness: 0,
+            envMapIntensity: 4,
+            transmission: 1,
+            thickness: BALL_RADIUS,
           }}
         />
         {/* earth */}
@@ -186,7 +185,7 @@ function PhysicsScene() {
           // roughnessMapPath={"roughness_map.jpg"}
           numNodes={num}
           materialProps={{
-            roughness: 0,
+            roughness: 0.7,
             emissive: null,
             metalness: 0.9,
             envMapIntensity: 4.2,
@@ -275,6 +274,7 @@ function PhysicsScene() {
             thickness: BALL_RADIUS,
           }}
           radius={BALL_RADIUS * 1.2}
+          mass={BALL_MASS * 1.2}
         />
         {/* shiny dodecaahedron */}
         <Clump
@@ -289,6 +289,7 @@ function PhysicsScene() {
             thickness: BALL_RADIUS * 1.2,
           }}
           radius={BALL_RADIUS * 1.2}
+          mass={BALL_MASS}
         />
       </>
       {/* </DebugInDev> */}

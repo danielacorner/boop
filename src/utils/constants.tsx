@@ -6,7 +6,7 @@ export const COLORS = [
   ...palettes[2],
 ];
 
-export const BALL_RADIUS = 0.5;
+export const BALL_RADIUS = 0.4;
 export const BALL_MASS = 1;
 
 // Collision filter groups - must be powers of 2!
