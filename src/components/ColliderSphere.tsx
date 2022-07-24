@@ -179,10 +179,14 @@ export function ColliderSphere() {
         maxDistance = colliderRadius * 2;
       }
 
+      // TODO on the first and third beats, intersect through the middle of the screen
+      const intersect = [1].includes(beatNum);
       nextPosition.current = getNextPosition(
         nextPosition.current,
         { minDistance, maxDistance },
-        viewport
+        viewport,
+        0,
+        intersect
       );
     }
     api.position.set(
@@ -216,20 +220,33 @@ function getNextPosition(
   currentPosition: [number, number, number],
   { minDistance, maxDistance }: { minDistance: number; maxDistance: number },
   viewport,
-  attemps = 0
+  attemps = 0,
+  intersect: boolean
 ): [number, number, number] {
-  let nextPosition: [number, number, number] = [
+  const initialNextPosition: [number, number, number] = [
     rfs(viewport.width),
     rfs(viewport.height),
     0,
   ];
+  let nextPosition = initialNextPosition;
+  if (intersect) {
+    nextPosition = [
+      // make sure x and y have flipped
+      (Math.sign(nextPosition[0]) === Math.sign(currentPosition[0]) ? -1 : 1) *
+        nextPosition[0],
+      (Math.sign(nextPosition[1]) === Math.sign(currentPosition[1]) ? -1 : 1) *
+        nextPosition[1],
+      0,
+    ];
+  }
   const distance = getDistanceBetweenPoints(currentPosition, nextPosition);
   if (distance < minDistance || (distance > maxDistance && attemps < 10)) {
     nextPosition = getNextPosition(
       currentPosition,
       { minDistance, maxDistance },
       viewport,
-      attemps + 1
+      attemps + 1,
+      intersect
     );
   }
   return nextPosition;
