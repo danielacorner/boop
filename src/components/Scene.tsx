@@ -106,20 +106,7 @@ function PhysicsScene() {
             transmission: 0,
           }}
         />
-        {/* frosted glassy */}
-        <Clump
-          numNodes={num * 0.5}
-          // dodeca={true}
-          materialProps={{
-            roughness: 0.67,
-            emissive: "#000000",
-            metalness: 0,
-            envMapIntensity: 1,
-            transmission: 1,
-            thickness: BALL_RADIUS,
-          }}
-          radius={BALL_RADIUS}
-        />
+
         {/* earth */}
         <Clump
           texturePath={"ball_earth.jpg"}
