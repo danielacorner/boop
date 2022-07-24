@@ -3,7 +3,7 @@ import * as THREE from "three";
 import { useFrame, useThree } from "@react-three/fiber";
 import { useSphere } from "@react-three/cannon";
 import { useEffect, useRef, useState } from "react";
-import { useEventListener, getPosition } from "../utils/hooks";
+import { useEventListener, getPosition, rfs } from "../utils/hooks";
 import { GROUP1, GROUP2 } from "../utils/constants";
 import { useSpring, animated } from "@react-spring/three";
 import { useAtom } from "jotai";
@@ -119,19 +119,31 @@ export function ColliderSphere() {
 
   // fake bpm-based dancing when music is playing
   const bps = bpm / 60;
-  const nextBeat = useRef(bps);
+  const nextBeat = useRef(0);
   useFrame((state) => {
-    if (!playing || !autoMode) {
+    if (!bps || !playing || !autoMode) {
       return;
     }
+    if (bps && !nextBeat.current) {
+      nextBeat.current = state.clock.elapsedTime + 1 / bps;
+    }
+    console.log(
+      "🌟🚨 ~ file: ColliderSphere.tsx ~ line 123 ~ ColliderSphere ~ nextBeat",
+      nextBeat.current
+    );
 
     if (state.clock.elapsedTime >= nextBeat.current) {
+      console.log(
+        "🌟🚨 ~ file: ColliderSphere.tsx ~ line 129 ~ useFrame ~ state.clock.elapsedTime",
+        state.clock.elapsedTime
+      );
       console.log(
         "🌟🚨 ~ file: ColliderSphere.tsx ~ line 118 ~ useFrame ~ state",
         state
       );
-      nextBeat.current = nextBeat.current + bps;
-      api.applyForce([0, 10, 0], position.current as [number, number, number]);
+      nextBeat.current = nextBeat.current + 1 / bps;
+      api.position.set(rfs(viewport.width), rfs(viewport.height), 0);
+      // api.applyForce([0, 10, 0], position.current as [number, number, number]);
     }
   });
   return (

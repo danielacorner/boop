@@ -20,14 +20,14 @@ export const musicAtom = atom<{
 });
 
 /** Mute button with hidden a <ReactPlayer/> */
-export function AudioSoundButton({ title, href, internal }) {
+export function AudioSoundButton({ title, href, bpm, internal }) {
   const [{ playing, autoMode }, setMusic] = useAtom(musicAtom);
 
   return (
     <>
       <SoundButtonStyles {...{ isAudioPlaying: Boolean(playing) }}>
         <IconButton
-          onClick={() => setMusic((p) => ({ ...p, playing: !playing }))}
+          onClick={() => setMusic((p) => ({ ...p, playing: !playing, bpm }))}
         >
           {playing ? <VolumeUp /> : <VolumeOff />}
         </IconButton>

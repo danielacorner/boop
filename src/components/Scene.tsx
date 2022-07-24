@@ -110,14 +110,16 @@ function PhysicsScene() {
         {/* frosted glassy */}
         <Clump
           numNodes={num * 0.5}
+          // dodeca={true}
           materialProps={{
             roughness: 0.67,
             emissive: "#000000",
             metalness: 0,
-            envMapIntensity: 4,
+            envMapIntensity: 1,
             transmission: 1,
             thickness: BALL_RADIUS,
           }}
+          radius={BALL_RADIUS}
         />
         {/* earth */}
         <Clump
@@ -197,19 +199,6 @@ function PhysicsScene() {
         {/* glassy */}
         <Clump
           numNodes={num / 2}
-          materialProps={{
-            roughness: 0,
-            emissive: null,
-            metalness: 0,
-            envMapIntensity: 0,
-            transmission: 1,
-            thickness: BALL_RADIUS * 7,
-          }}
-          radius={BALL_RADIUS}
-        />
-        {/* glassy */}
-        <Clump
-          numNodes={num}
           materialProps={{
             roughness: 0,
             emissive: null,

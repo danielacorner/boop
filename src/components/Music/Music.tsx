@@ -15,7 +15,7 @@ export function Music() {
   const [isFirstTimeVisit, setIsFirstTimeVisit] = useAtom(isFirstTimeVisitAtom);
   const [, setMusicUrl] = useAtom(musicUrlAtom);
 
-  const { title, href, internal } = useMemo(
+  const { title, href, bpm, internal } = useMemo(
     () =>
       isFirstTimeVisit
         ? // first-time visitors always hear the same song
@@ -33,7 +33,7 @@ export function Music() {
   });
   return (
     <>
-      <AudioSoundButton title={title} href={href} internal={internal} />
+      <AudioSoundButton {...{ title, href, internal, bpm }} />
     </>
   );
 }
@@ -51,59 +51,59 @@ const MUSIC: {
   bpm: number;
 }[] = [
   {
-    bpm: 40,
+    bpm: 125,
     title: "Is This Our Earth? (Mixed)",
     href: "https://www.youtube.com/watch?v=6MlaAq2DnbE",
     // href: "/music/is_this_our_earth_mixed.mp3",
     // internal: true,
   },
   {
-    bpm: 40,
+    bpm: 125,
     title: "Is This Our Earth? - Lane 8",
     href: "https://www.youtube.com/watch?v=rs80mrSQliM",
   },
   {
-    bpm: 40,
+    bpm: 110,
     title: "Welcome to Lunar Industries - Moon OST",
     href: "https://www.youtube.com/watch?v=WUraLNrTVeg",
   },
   {
-    bpm: 40,
+    bpm: 78,
     title: "Memories (Someone We'll Never Know) - Moon OST",
     href: "https://www.youtube.com/watch?v=XSJJuDLtCqY",
   },
   {
-    bpm: 40,
+    bpm: 66,
     title: "The Nursery - Moon OST",
     href: "https://www.youtube.com/watch?v=RgVzeqPIt-8",
   },
   {
-    bpm: 40,
+    bpm: 116,
     title: "Battlestar Sonatica",
     href: "https://www.youtube.com/watch?v=5vcFFf9aa7k",
   },
   {
-    bpm: 40,
+    bpm: 86,
     title: "Cygnus - Endless Space 2 OST",
     href: "https://www.youtube.com/watch?v=PeGv-QtHyaA",
   },
   {
-    bpm: 40,
+    bpm: 86,
     title: "Singularity - Endless Space 2 OST",
     href: "https://www.youtube.com/watch?v=kLyBwJageak&t=1m51s",
   },
   {
-    bpm: 40,
+    bpm: 122,
     title: "Axial Tilt Zero - Endless Space 2 OST",
     href: "https://www.youtube.com/watch?v=3Ql_ENGlTRM",
   },
   {
-    bpm: 40,
+    bpm: 74,
     title: "Tristram - Diablo 2 OST",
     href: "https://www.youtube.com/watch?v=VWziHqEd0Uw&t=1372s",
   },
   {
-    bpm: 40,
+    bpm: 99,
     title: "Stafrænn Hákon - P-Rofi",
     href: "https://www.youtube.com/watch?v=GC_xfnEXtqs",
   },
