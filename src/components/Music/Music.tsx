@@ -78,7 +78,7 @@ const MUSIC: {
     href: "https://www.youtube.com/watch?v=RgVzeqPIt-8",
   },
   {
-    bpm: 116,
+    bpm: 117,
     title: "Battlestar Sonatica",
     href: "https://www.youtube.com/watch?v=5vcFFf9aa7k",
   },
@@ -108,13 +108,8 @@ const MUSIC: {
     href: "https://www.youtube.com/watch?v=GC_xfnEXtqs",
   },
   {
-    bpm: 40,
+    bpm: 115,
     title: "Space Me Out (Jody Wisternoff & James Grant Edit)",
     href: "https://www.youtube.com/watch?v=8AjzuJVp7pw",
   },
-  // {
-  // bpm:40,
-  //   title: "Three Quarks in a Row - Endless Space 2 OST",
-  //   href: "https://www.youtube.com/watch?v=MEvIBLiGDu8&list=PLtzah_dj5hUXssVw_j55Fnwjud0fZRle6&index=17",
-  // },
 ];

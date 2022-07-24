@@ -122,33 +122,36 @@ export function ColliderSphere() {
   const secondsPerBeat = 1 / bps;
   const nextBeat = useRef({ time: 0, number: 0, lerpSpeed: 1 });
   const nextPosition = useRef<[number, number, number]>([0, 0, 0]);
+
+  // TODO record nextBeat even when not autoMode, only move during autoMode
+
   useFrame(({ clock: { elapsedTime } }) => {
-    if (!bps || !playing || !autoMode) {
+    if (!bps || !playing) {
       return;
     }
     // set the first beat when they turn on the music
     if (!nextBeat.current.time) {
       nextBeat.current = {
         ...nextBeat.current,
-        number: 1,
+        number: 0,
         time: elapsedTime + secondsPerBeat,
       };
     }
 
     // time for the next beat
-    if (elapsedTime >= nextBeat.current.time) {
+    else if (elapsedTime >= nextBeat.current.time) {
       // beat it!
-      nextBeat.current = {
-        ...nextBeat.current,
-        number: nextBeat.current.number + 1,
-        time: nextBeat.current.time + secondsPerBeat,
-      };
-
       const beatNum: 1 | 2 | 3 | 4 = ((nextBeat.current.number % 4) + 1) as
         | 1
         | 2
         | 3
         | 4;
+
+      nextBeat.current = {
+        ...nextBeat.current,
+        number: nextBeat.current.number + 1,
+        time: nextBeat.current.time + secondsPerBeat,
+      };
 
       let minDistance = 0;
       // eslint-disable-next-line prefer-const
@@ -179,7 +182,7 @@ export function ColliderSphere() {
         maxDistance = colliderRadius * 2;
       }
 
-      // TODO on the first and third beats, intersect through the middle of the screen
+      // on the first and third beats, intersect through the middle of the screen
       const intersect = [1].includes(beatNum);
       nextPosition.current = getNextPosition(
         nextPosition.current,
@@ -189,19 +192,21 @@ export function ColliderSphere() {
         intersect
       );
     }
-    api.position.set(
-      THREE.MathUtils.lerp(
-        position.current[0],
-        nextPosition.current[0],
-        LERP_SPEED * 0.65 * nextBeat.current.lerpSpeed
-      ),
-      THREE.MathUtils.lerp(
-        position.current[1],
-        nextPosition.current[1],
-        LERP_SPEED * 0.65 * nextBeat.current.lerpSpeed
-      ),
-      0
-    );
+    if (autoMode) {
+      api.position.set(
+        THREE.MathUtils.lerp(
+          position.current[0],
+          nextPosition.current[0],
+          LERP_SPEED * 0.65 * nextBeat.current.lerpSpeed
+        ),
+        THREE.MathUtils.lerp(
+          position.current[1],
+          nextPosition.current[1],
+          LERP_SPEED * 0.65 * nextBeat.current.lerpSpeed
+        ),
+        0
+      );
+    }
   });
   return (
     <animated.mesh name="colliderSphere" ref={sphereRef} scale={scale}>
