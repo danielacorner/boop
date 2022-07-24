@@ -119,30 +119,82 @@ export function ColliderSphere() {
 
   // fake bpm-based dancing when music is playing
   const bps = bpm / 60;
-  const nextBeat = useRef(0);
-  const nextPosition = useRef([0, 0, 0]);
-  useFrame((state) => {
+  const secondsPerBeat = 1 / bps;
+  const nextBeat = useRef({ time: 0, number: 0, lerpSpeed: 1 });
+  const nextPosition = useRef<[number, number, number]>([0, 0, 0]);
+  useFrame(({ clock: { elapsedTime } }) => {
     if (!bps || !playing || !autoMode) {
       return;
     }
-    if (bps && !nextBeat.current) {
-      nextBeat.current = state.clock.elapsedTime + 1 / bps;
+    // set the first beat when they turn on the music
+    if (!nextBeat.current.time) {
+      nextBeat.current = {
+        ...nextBeat.current,
+        number: 1,
+        time: elapsedTime + secondsPerBeat,
+      };
     }
 
-    if (state.clock.elapsedTime >= nextBeat.current) {
-      nextBeat.current = nextBeat.current + 1 / bps;
-      nextPosition.current = [rfs(viewport.width), rfs(viewport.height), 0];
+    // time for the next beat
+    if (elapsedTime >= nextBeat.current.time) {
+      // beat it!
+      nextBeat.current = {
+        ...nextBeat.current,
+        number: nextBeat.current.number + 1,
+        time: nextBeat.current.time + secondsPerBeat,
+      };
+
+      const beatNum: 1 | 2 | 3 | 4 = ((nextBeat.current.number % 4) + 1) as
+        | 1
+        | 2
+        | 3
+        | 4;
+
+      let minDistance = 0;
+      // eslint-disable-next-line prefer-const
+      let maxDistance = Infinity;
+      // the first beat is 4x size
+      if (beatNum === 1) {
+        nextBeat.current = { ...nextBeat.current, lerpSpeed: 1 + rfs(0.25) };
+        minDistance = Math.min(
+          viewport.width * 0.75,
+          viewport.height * 0.75,
+          colliderRadius * 4
+        );
+      }
+      // the third beat is 2x size
+      else if (beatNum === 3) {
+        nextBeat.current = { ...nextBeat.current, lerpSpeed: 0.75 + rfs(0.25) };
+        minDistance = Math.min(
+          viewport.width * 0.75,
+          viewport.height * 0.75,
+          colliderRadius * 2
+        );
+        maxDistance = colliderRadius * 3; // ?
+      }
+      // second, fourth beats are 1x size
+      else if ([2, 4].includes(beatNum)) {
+        nextBeat.current = { ...nextBeat.current, lerpSpeed: 0.5 + rfs(0.25) };
+        minDistance = Math.min(viewport.width, viewport.height, colliderRadius);
+        maxDistance = colliderRadius * 2;
+      }
+
+      nextPosition.current = getNextPosition(
+        nextPosition.current,
+        { minDistance, maxDistance },
+        viewport
+      );
     }
     api.position.set(
       THREE.MathUtils.lerp(
         position.current[0],
         nextPosition.current[0],
-        LERP_SPEED * 0.75
+        LERP_SPEED * 0.65 * nextBeat.current.lerpSpeed
       ),
       THREE.MathUtils.lerp(
         position.current[1],
         nextPosition.current[1],
-        LERP_SPEED * 0.75
+        LERP_SPEED * 0.65 * nextBeat.current.lerpSpeed
       ),
       0
     );
@@ -157,5 +209,33 @@ export function ColliderSphere() {
         />
       </Sphere>
     </animated.mesh>
+  );
+}
+
+function getNextPosition(
+  currentPosition: [number, number, number],
+  { minDistance, maxDistance }: { minDistance: number; maxDistance: number },
+  viewport,
+  attemps = 0
+): [number, number, number] {
+  let nextPosition: [number, number, number] = [
+    rfs(viewport.width),
+    rfs(viewport.height),
+    0,
+  ];
+  const distance = getDistanceBetweenPoints(currentPosition, nextPosition);
+  if (distance < minDistance || (distance > maxDistance && attemps < 10)) {
+    nextPosition = getNextPosition(
+      currentPosition,
+      { minDistance, maxDistance },
+      viewport,
+      attemps + 1
+    );
+  }
+  return nextPosition;
+}
+function getDistanceBetweenPoints([x1, y1, z1], [x2, y2, z2]) {
+  return Math.sqrt(
+    Math.pow(x1 - x2, 2) + Math.pow(y1 - y2, 2) + Math.pow(z1 - z2, 2)
   );
 }

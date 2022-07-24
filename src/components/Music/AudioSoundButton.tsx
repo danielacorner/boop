@@ -63,7 +63,7 @@ const SoundButtonStyles = styled.div<{ isAudioPlaying: boolean }>`
   white-space: nowrap;
   display: flex;
   position: fixed;
-  opacity: 0.3;
+  opacity: 0.4;
   align-items: center;
   z-index: 9;
   .MuiButtonBase-root {
