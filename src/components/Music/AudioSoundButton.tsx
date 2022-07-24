@@ -1,5 +1,10 @@
 import styled from "styled-components";
-import { VolumeUp, VolumeOff } from "@mui/icons-material";
+import {
+  VolumeUp,
+  VolumeOff,
+  AutoFixHigh,
+  AutoFixOff,
+} from "@mui/icons-material";
 import { IconButton } from "@mui/material";
 import { useAtom, atom } from "jotai";
 import ReactPlayer from "react-player";
@@ -16,7 +21,7 @@ export const musicAtom = atom<{
 
 /** Mute button with hidden a <ReactPlayer/> */
 export function AudioSoundButton({ title, href, internal }) {
-  const [{ playing }, setMusic] = useAtom(musicAtom);
+  const [{ playing, autoMode }, setMusic] = useAtom(musicAtom);
 
   return (
     <>
@@ -33,7 +38,16 @@ export function AudioSoundButton({ title, href, internal }) {
             </a>
           </div>
         )}
+        {playing && (
+          <IconButton
+            className="btnAutoMode"
+            onClick={() => setMusic((p) => ({ ...p, autoMode: !autoMode }))}
+          >
+            {autoMode ? <AutoFixHigh /> : <AutoFixOff />}
+          </IconButton>
+        )}
       </SoundButtonStyles>
+
       {internal ? null : (
         <ReactPlayer
           style={{ visibility: "hidden", position: "fixed" }}
@@ -70,6 +84,11 @@ const SoundButtonStyles = styled.div<{ isAudioPlaying: boolean }>`
       text-decoration: none;
     }
     opacity: ${(p) => (p.isAudioPlaying ? 0.5 : 0)};
+  }
+  .MuiIconButton-root.btnAutoMode {
+    position: fixed;
+    bottom: 4px;
+    right: 4px;
   }
   &:hover,
   &:active {

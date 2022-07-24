@@ -12,7 +12,8 @@ import { musicAtom } from "./Music/AudioSoundButton";
 const LERP_SPEED = 0.4;
 
 export function ColliderSphere() {
-  const { viewport, size, performance } = useThree();
+  const { viewport, size } = useThree();
+  const [{ playing, bpm, autoMode }] = useAtom(musicAtom);
 
   // on double click, keep the sphere interactive with the clumps
   const [doubleclicked, setDoubleclicked] = useState(false);
@@ -51,6 +52,9 @@ export function ColliderSphere() {
 
   const touchingRef = useRef<[number, number, number] | null>(null);
   useFrame((state) => {
+    if (autoMode) {
+      return;
+    }
     const nextX =
       ((touchingRef.current?.[0] ?? state.pointer.x) * viewport.width) / 2;
     const nextY =
@@ -113,8 +117,7 @@ export function ColliderSphere() {
     },
   });
 
-  // TODO fake bpm-based dancing when music is playing
-  const [{ playing, bpm, autoMode }] = useAtom(musicAtom);
+  // fake bpm-based dancing when music is playing
   const bps = bpm / 60;
   const nextBeat = useRef(bps);
   useFrame((state) => {

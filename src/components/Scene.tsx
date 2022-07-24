@@ -238,10 +238,10 @@ function PhysicsScene() {
           texturePath={"ball_vangogh.jpg"}
           numNodes={num}
           materialProps={{
-            roughness: 0,
+            roughness: 1,
             emissive: null,
             metalness: 0,
-            envMapIntensity: 3,
+            envMapIntensity: 4,
             transmission: 0,
           }}
         />
