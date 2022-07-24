@@ -120,6 +120,7 @@ export function ColliderSphere() {
   // fake bpm-based dancing when music is playing
   const bps = bpm / 60;
   const nextBeat = useRef(0);
+  const nextPosition = useRef([0, 0, 0]);
   useFrame((state) => {
     if (!bps || !playing || !autoMode) {
       return;
@@ -127,24 +128,24 @@ export function ColliderSphere() {
     if (bps && !nextBeat.current) {
       nextBeat.current = state.clock.elapsedTime + 1 / bps;
     }
-    console.log(
-      "🌟🚨 ~ file: ColliderSphere.tsx ~ line 123 ~ ColliderSphere ~ nextBeat",
-      nextBeat.current
-    );
 
     if (state.clock.elapsedTime >= nextBeat.current) {
-      console.log(
-        "🌟🚨 ~ file: ColliderSphere.tsx ~ line 129 ~ useFrame ~ state.clock.elapsedTime",
-        state.clock.elapsedTime
-      );
-      console.log(
-        "🌟🚨 ~ file: ColliderSphere.tsx ~ line 118 ~ useFrame ~ state",
-        state
-      );
       nextBeat.current = nextBeat.current + 1 / bps;
-      api.position.set(rfs(viewport.width), rfs(viewport.height), 0);
-      // api.applyForce([0, 10, 0], position.current as [number, number, number]);
+      nextPosition.current = [rfs(viewport.width), rfs(viewport.height), 0];
     }
+    api.position.set(
+      THREE.MathUtils.lerp(
+        position.current[0],
+        nextPosition.current[0],
+        LERP_SPEED * 0.75
+      ),
+      THREE.MathUtils.lerp(
+        position.current[1],
+        nextPosition.current[1],
+        LERP_SPEED * 0.75
+      ),
+      0
+    );
   });
   return (
     <animated.mesh name="colliderSphere" ref={sphereRef} scale={scale}>

@@ -86,7 +86,6 @@ function DebugInDev({ children }) {
 function PhysicsScene() {
   const gpu = useDetectGPU();
   const num = gpu.tier > 2 ? 10 : 8;
-  const { xyz } = useControls({ xyz: 20 });
 
   return (
     <>
