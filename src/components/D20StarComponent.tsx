@@ -1,6 +1,6 @@
 import * as THREE from "three";
 import { useFrame } from "@react-three/fiber";
-import { useConvexPolyhedron } from "@react-three/cannon";
+import { PublicApi, useConvexPolyhedron } from "@react-three/cannon";
 import { useMemo, useRef, useState } from "react";
 import D20_Star from "../Models/D20_star";
 import { useMount } from "react-use";
@@ -20,7 +20,11 @@ const COMMON_MATERIAL_PROPS = {
 
 const DETAIL = 0;
 const STAR_SCALE = 1.6;
-export function D20StarComponent() {
+export function D20StarComponent({
+  position,
+}: {
+  position: [number, number, number];
+}) {
   const geo = useMemo(
     () =>
       toConvexProps(
@@ -45,28 +49,33 @@ export function D20StarComponent() {
     [doubleclicked]
   );
 
-  const d20Position = useRef([0, 0, 0]);
+  const d20Position = useRef<[number, number, number]>([0, 0, 0]);
   useMount(() => {
     api.position.subscribe((v) => (d20Position.current = v));
   });
-  useFrame((state) => {
-    if (!ref.current) {
-      return;
-    }
-    // Normalize the position and multiply by a negative force.
-    // This is enough to drive it towards the center-point.
-    api.applyForce(
-      new THREE.Vector3(
-        d20Position.current[0],
-        d20Position.current[1],
-        d20Position.current[2]
-      )
-        .normalize()
-        .multiplyScalar(-50)
-        .toArray(),
-      [0, 0, 0]
-    );
+  usePullSingleTowardsCenter({
+    api,
+    position,
+    d20Position,
   });
+  // useFrame((state) => {
+  //   if (!ref.current) {
+  //     return;
+  //   }
+  //   // Normalize the position and multiply by a negative force.
+  //   // This is enough to drive it towards the center-point.
+  //   api.applyForce(
+  //     new THREE.Vector3(
+  //       d20Position.current[0],
+  //       d20Position.current[1],
+  //       d20Position.current[2]
+  //     )
+  //       .normalize()
+  //       .multiplyScalar(-50)
+  //       .toArray(),
+  //     [0, 0, 0]
+  //   );
+  // });
   const [hovered, setHovered] = useState<THREE.Event | null>(null);
   const [hoveredNear, setHoveredNear] = useState<THREE.Event | null>(null);
   const [{ envMapIntensity, scale, emissive }] = useSpring(
@@ -131,4 +140,52 @@ export function D20StarComponent() {
       </animated.mesh>
     </>
   );
+}
+
+function usePullSingleTowardsCenter({
+  position,
+  api,
+  d20Position,
+}: {
+  position: [number, number, number] | null;
+  api: PublicApi;
+  d20Position: React.MutableRefObject<[number, number, number]>;
+}) {
+  useFrame(() => {
+    // api.applyForce(
+    //   new THREE.Vector3(
+
+    //     d20Position.current[0],
+    //     d20Position.current[1],
+    //     d20Position.current[2]
+    //   )
+    //     .normalize()
+    //     .multiplyScalar(-50)
+    //     .toArray(),
+    //   [0, 0, 0]
+    // );
+    // drive it towards center or a specified point
+
+    const force2 = new THREE.Vector3()
+      // add the position
+      .addVectors(
+        new THREE.Vector3(
+          d20Position.current[0],
+          d20Position.current[1],
+          d20Position.current[2]
+        ),
+        new THREE.Vector3(
+          position ? position[0] : 0,
+          position ? position[1] : 0,
+          position ? position[2] : 0
+        )
+      )
+      // then normalize and
+      // multiply by a negative scalar to send it towards that point
+      .normalize()
+      .multiplyScalar(-50)
+      .toArray();
+
+    api.applyForce(force2, [0, 0, 0]);
+  });
 }

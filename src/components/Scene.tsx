@@ -100,27 +100,29 @@ const INITIAL_POSITIONS: { [key: string]: [number, number, number] } = {
   marble: [0, 0, 0],
   icosa: [0, 0, 0],
   dodeca: [0, 0, 0],
+  d20: [0, 0, 0],
 };
 const SECONDARY_POSITIONS: { [key: string]: [number, number, number] } = {
-  galaxy: [1, 1, 0],
+  galaxy: [1, -1, 0],
   earth: [0, 0, 0],
-  moon: [1, 0, 0],
-  jupiter: [-1, 1, 0],
-  sun: [0, 1, 0],
+  moon: [0, 0, 0],
+  jupiter: [-1, -1, 0],
+  sun: [0, -3.2, 0],
   cell: [1, 0, 0],
-  glass: [1, 0, 0],
-  starry_night_shiny: [-1, -1, 0],
-  starry_night: [1, -1, 0],
-  marble: [0, -1, 0],
+  glass: [-1, 0, 0],
+  starry_night_shiny: [-1, 1, 0],
+  starry_night: [1, 1, 0],
+  marble: [0, 1, 0],
   icosa: [-1, 0, 0],
   dodeca: [-1, 0, 0],
+  d20: [0, -1, 0],
 };
 const positionsAtom = atom(INITIAL_POSITIONS);
 function PhysicsScene() {
   const gpu = useDetectGPU();
   const num = gpu.tier > 2 ? 10 : 8;
   const [positionsNormalized] = useAtom(positionsAtom);
-  const { size, viewport } = useThree();
+  const { viewport } = useThree();
   const positions = Object.entries(positionsNormalized).reduce(
     (acc, [key, [x, y, z]]) => {
       acc[key] = [x * viewport.width * 0.33, y * viewport.height * 0.33, z];
@@ -128,12 +130,12 @@ function PhysicsScene() {
     },
     {} as { [key: string]: [number, number, number] }
   );
-
+  const expanded = positions.dodeca[0] !== INITIAL_POSITIONS.dodeca[0];
   return (
     <>
       {/* <DebugInDev> */}
       <ColliderSphere />
-      <D20StarComponent />
+      <D20StarComponent position={positions.d20} />
       <MusicZoom />
 
       <>
@@ -162,7 +164,7 @@ function PhysicsScene() {
             envMapIntensity: 4,
             transmission: 0,
           }}
-          radius={BALL_RADIUS * 1.4}
+          radius={BALL_RADIUS * 1.4 * (expanded ? 0.6 : 1)}
           mass={BALL_MASS * 1.4 * 2}
           position={positions.earth}
         />
@@ -178,7 +180,12 @@ function PhysicsScene() {
             envMapIntensity: 3,
             transmission: 0,
           }}
-          radius={BALL_RADIUS * 1.2}
+          radius={
+            BALL_RADIUS *
+            1.2 *
+            // shrink when it's alone with the earth
+            (!expanded ? 1 : 0.25)
+          }
           mass={BALL_MASS * 2}
           position={positions.moon}
         />
@@ -194,7 +201,7 @@ function PhysicsScene() {
             envMapIntensity: 1.5,
             transmission: 0,
           }}
-          radius={BALL_RADIUS * 1.8}
+          radius={BALL_RADIUS * 1.8 * (expanded ? 1.5 : 1)}
           mass={BALL_MASS * 1.8 * 2}
           position={positions.jupiter}
         />
@@ -210,7 +217,7 @@ function PhysicsScene() {
             envMapIntensity: 4,
             transmission: 0,
           }}
-          radius={BALL_RADIUS * 2.4}
+          radius={BALL_RADIUS * 2.4 * (expanded ? 8 : 1)}
           mass={BALL_MASS * 2.4 * 2}
           position={positions.sun}
         />

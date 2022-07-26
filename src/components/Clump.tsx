@@ -1,8 +1,8 @@
 import { useTexture } from "@react-three/drei";
 import * as THREE from "three";
 import { useFrame } from "@react-three/fiber";
-import { PublicApi, useConvexPolyhedron, useSphere } from "@react-three/cannon";
-import { useEffect, useMemo, useRef, useState } from "react";
+import { PublicApi, useSphere } from "@react-three/cannon";
+import { useEffect, useMemo, useState } from "react";
 import {
   BALL_RADIUS,
   BALL_MASS,
@@ -10,8 +10,8 @@ import {
   GROUP1,
   GROUP2,
 } from "../utils/constants";
-import { rfs, toConvexProps, useEventListener } from "../utils/hooks";
-import { Vector3, Vector4 } from "three";
+import { rfs, useEventListener } from "../utils/hooks";
+import { Vector3 } from "three";
 const WHITE_PIXEL = "/white_pixel.png";
 export function Clump({
   materialProps = {} as any,
@@ -456,7 +456,7 @@ function SphereClump({
     </instancedMesh>
   );
 }
-function usePullTowardsCenter({
+export function usePullTowardsCenter({
   sphereRef,
   vec,
   position,
