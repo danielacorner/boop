@@ -34,17 +34,18 @@ export function AudioSoundButton({ title, href, bpm, internal }) {
         {playing && (
           <div className="soundInfo">
             <a href={href} target="_blank" rel="noopener noreferrer">
+              {/* <marquee scrollamount={3}>{title}</marquee> */}
               {title}
             </a>
+            {playing && (
+              <IconButton
+                className="btnAutoMode"
+                onClick={() => setMusic((p) => ({ ...p, autoMode: !autoMode }))}
+              >
+                {autoMode ? <AutoFixHigh /> : <AutoFixOff />}
+              </IconButton>
+            )}
           </div>
-        )}
-        {playing && (
-          <IconButton
-            className="btnAutoMode"
-            onClick={() => setMusic((p) => ({ ...p, autoMode: !autoMode }))}
-          >
-            {autoMode ? <AutoFixHigh /> : <AutoFixOff />}
-          </IconButton>
         )}
       </SoundButtonStyles>
 
@@ -63,7 +64,6 @@ const SoundButtonStyles = styled.div<{ isAudioPlaying: boolean }>`
   white-space: nowrap;
   display: flex;
   position: fixed;
-  opacity: 0.4;
   align-items: center;
   z-index: 9;
   .MuiButtonBase-root {
@@ -72,6 +72,11 @@ const SoundButtonStyles = styled.div<{ isAudioPlaying: boolean }>`
   bottom: 4px;
   left: 4px;
   .MuiSvgIcon-root {
+    opacity: 0.4;
+    &:hover,
+    &:active {
+      opacity: 0.7;
+    }
     width: 22px;
     height: 22px;
   }
@@ -82,19 +87,17 @@ const SoundButtonStyles = styled.div<{ isAudioPlaying: boolean }>`
       font-size: 12px;
       color: white;
       text-decoration: none;
+      opacity: ${(p) => (p.isAudioPlaying ? 0.5 : 0)};
+      &:hover,
+      &:active {
+        opacity: 1;
+      }
     }
-    opacity: ${(p) => (p.isAudioPlaying ? 0.5 : 0)};
   }
   .MuiIconButton-root.btnAutoMode {
     position: fixed;
     bottom: 4px;
     right: 4px;
-  }
-  &:hover,
-  &:active {
-    .soundInfo {
-      opacity: 1;
-    }
   }
   @media (min-width: 768px) {
     bottom: 8px;
@@ -111,6 +114,13 @@ const SoundButtonStyles = styled.div<{ isAudioPlaying: boolean }>`
       a {
         font-size: 14px;
       }
+      position: relative;
+    }
+    .MuiIconButton-root.btnAutoMode {
+      position: absolute;
+      right: -84px;
+      top: 0;
+      bottom: 0;
     }
   }
 `;

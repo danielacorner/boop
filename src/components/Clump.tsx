@@ -1,7 +1,7 @@
 import { useTexture } from "@react-three/drei";
 import * as THREE from "three";
 import { useFrame } from "@react-three/fiber";
-import { useConvexPolyhedron, useSphere } from "@react-three/cannon";
+import { PublicApi, useConvexPolyhedron, useSphere } from "@react-three/cannon";
 import { useEffect, useMemo, useRef, useState } from "react";
 import {
   BALL_RADIUS,
@@ -11,6 +11,7 @@ import {
   GROUP2,
 } from "../utils/constants";
 import { rfs, toConvexProps, useEventListener } from "../utils/hooks";
+import { Vector3, Vector4 } from "three";
 const WHITE_PIXEL = "/white_pixel.png";
 export function Clump({
   materialProps = {} as any,
@@ -185,34 +186,13 @@ function IcoClump({
   // );
 
   const nodes = useMemo(() => [...Array(numNodes)], [numNodes]);
-  useFrame((state) => {
-    if (!sphereRef.current) {
-      return;
-    }
-    for (let i = 0; i < nodes.length; i++) {
-      // Get current whereabouts of the instanced sphere
-      sphereRef.current.getMatrixAt(i, mat);
-      // Normalize the position and multiply by a negative force.
-      // This is enough to drive it towards the center-point.
-      api.at(i).applyForce(
-        position
-          ? new THREE.Vector3(position[0], position[1], position[2])
-              // .set(position[0], position[1], position[2])
-              // .setFromMatrixPosition(mat)
-              .setComponent(0, position[0])
-              .setComponent(1, position[1])
-              .setComponent(2, position[0])
-              .normalize()
-              .multiplyScalar(-50)
-              .toArray()
-          : vec
-              .setFromMatrixPosition(mat)
-              .normalize()
-              .multiplyScalar(-50)
-              .toArray(),
-        position ?? [0, 0, 0]
-      );
-    }
+  usePullTowardsCenter({
+    sphereRef,
+    numNodes: nodes.length,
+    vec,
+    position,
+    mat,
+    api,
   });
   useEffect(() => {
     if (!sphereRef.current) {
@@ -377,35 +357,15 @@ function SphereClump({
     [doubleclicked, mass, radius]
   );
   const nodes = useMemo(() => [...Array(numNodes)], [numNodes]);
-  useFrame((state) => {
-    if (!sphereRef.current) {
-      return;
-    }
-    for (let i = 0; i < nodes.length; i++) {
-      // Get current whereabouts of the instanced sphere
-      sphereRef.current.getMatrixAt(i, mat);
-      // Normalize the position and multiply by a negative force.
-      // This is enough to drive it towards the center-point.
-      api.at(i).applyForce(
-        position
-          ? new THREE.Vector3(position[0], position[1], position[2])
-              // .set(position[0], position[1], position[2])
-              // .setFromMatrixPosition(mat)
-              .setComponent(0, position[0])
-              .setComponent(1, position[1])
-              .setComponent(2, position[0])
-              .normalize()
-              .multiplyScalar(-50)
-              .toArray()
-          : vec
-              .setFromMatrixPosition(mat)
-              .normalize()
-              .multiplyScalar(-50)
-              .toArray(),
-        position ?? [0, 0, 0]
-      );
-    }
+  usePullTowardsCenter({
+    sphereRef,
+    numNodes: nodes.length,
+    vec,
+    position,
+    mat,
+    api,
   });
+
   useEffect(() => {
     if (!sphereRef.current) {
       return;
@@ -495,4 +455,49 @@ function SphereClump({
       ></meshPhysicalMaterial>
     </instancedMesh>
   );
+}
+function usePullTowardsCenter({
+  sphereRef,
+  vec,
+  position,
+  mat,
+  api,
+  numNodes,
+}: {
+  sphereRef: React.MutableRefObject<THREE.InstancedMesh | null>;
+  vec: THREE.Vector3;
+  position: [number, number, number] | null;
+  mat: THREE.Matrix4;
+  api: PublicApi;
+  numNodes: number;
+}) {
+  useFrame((state) => {
+    if (!sphereRef?.current) {
+      return;
+    }
+    for (let i = 0; i < numNodes; i++) {
+      // Get current whereabouts of the instanced sphere
+      sphereRef.current.getMatrixAt(i, mat);
+
+      // drive it towards center or a specified point
+
+      const force1 = vec.setFromMatrixPosition(mat);
+      const force2 = force1
+        // add the position
+        .addVectors(
+          force1,
+          new Vector3(
+            position ? position[0] : 0,
+            position ? position[1] : 0,
+            position ? position[2] : 0
+          )
+        )
+        // then normalize and
+        // multiply by a negative scalar to send it towards that point
+        .normalize()
+        .multiplyScalar(-50)
+        .toArray();
+      api.at(i).applyForce(force2, [0, 0, 0]);
+    }
+  });
 }

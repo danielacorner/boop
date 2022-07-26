@@ -79,7 +79,7 @@ const MUSIC: {
   },
   {
     bpm: 117,
-    title: "Battlestar Sonatica",
+    title: "Battlestar Sonatica - Bear McCreary",
     href: "https://www.youtube.com/watch?v=5vcFFf9aa7k",
   },
   {
@@ -104,7 +104,7 @@ const MUSIC: {
   },
   {
     bpm: 99,
-    title: "Stafrænn Hákon - P-Rofi",
+    title: "P-Rofi - Stafrænn Hákon",
     href: "https://www.youtube.com/watch?v=GC_xfnEXtqs",
   },
   // {
