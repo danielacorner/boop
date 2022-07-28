@@ -13,12 +13,7 @@ import { D20StarComponent } from "./D20StarComponent";
 import { Clump } from "./Clump";
 import { ColliderSphere } from "./ColliderSphere";
 import { BALL_MASS, BALL_RADIUS } from "../utils/constants";
-import { MusicZoom } from "./MusicZoom";
 import { FancyStars } from "./FancyStars";
-import { useState } from "react";
-import { IconButton } from "@mui/material";
-import { Apps, ZoomInMap, ZoomOutMap } from "@mui/icons-material";
-import styled from "styled-components";
 import { atom, useAtom } from "jotai";
 
 extend({ SSAOPass });
@@ -28,7 +23,6 @@ export const Scene = () => {
   const maxDpr = tier > 2 ? 2 : tier > 1 ? 0.8 : tier > 0 ? 0.8 : 0.6;
   return (
     <>
-      <SpreadOutButton />
       <Canvas
         style={{ position: "fixed", inset: 0 }}
         shadows
@@ -87,7 +81,7 @@ function DebugInDev({ children }) {
   );
 }
 /** positions in the range [-1, 1] - will get multiplied by viewport width/height */
-const INITIAL_POSITIONS: { [key: string]: [number, number, number] } = {
+export const INITIAL_POSITIONS: { [key: string]: [number, number, number] } = {
   galaxy: [0, 0, 0],
   earth: [0, 0, 0],
   moon: [0, 0, 0],
@@ -102,22 +96,23 @@ const INITIAL_POSITIONS: { [key: string]: [number, number, number] } = {
   dodeca: [0, 0, 0],
   d20: [0, 0, 0],
 };
-const SECONDARY_POSITIONS: { [key: string]: [number, number, number] } = {
-  galaxy: [1, -1, 0],
-  earth: [0, 0, 0],
-  moon: [0, 0, 0],
-  jupiter: [-1, -1, 0],
-  sun: [0, -3.2, 0],
-  cell: [1, 0, 0],
-  glass: [-1, 0, 0],
-  starry_night_shiny: [-1, 1, 0],
-  starry_night: [1, 1, 0],
-  marble: [0, 1, 0],
-  icosa: [-1, 0, 0],
-  dodeca: [-1, 0, 0],
-  d20: [0, -1, 0],
-};
-const positionsAtom = atom(INITIAL_POSITIONS);
+export const SECONDARY_POSITIONS: { [key: string]: [number, number, number] } =
+  {
+    galaxy: [1, -1, 0],
+    earth: [0, 0, 0],
+    moon: [0, 0, 0],
+    jupiter: [-1, -1, 0],
+    sun: [0, -3.2, 0],
+    cell: [1, 0, 0],
+    glass: [-1, 0, 0],
+    starry_night_shiny: [-1, 1, 0],
+    starry_night: [1, 1, 0],
+    marble: [0, 1, 0],
+    icosa: [-1, 0, 0],
+    dodeca: [-1, 0, 0],
+    d20: [0, -1, 0],
+  };
+export const positionsAtom = atom(INITIAL_POSITIONS);
 function PhysicsScene() {
   const gpu = useDetectGPU();
   const num = gpu.tier > 2 ? 10 : 8;
@@ -355,37 +350,3 @@ function Effects(props) {
     </EffectComposer>
   );
 }
-
-function SpreadOutButton() {
-  const [positions, setPositions] = useAtom(positionsAtom);
-
-  return (
-    <StyledIconButton
-      onClick={() => {
-        setPositions(
-          positions.dodeca === INITIAL_POSITIONS.dodeca
-            ? SECONDARY_POSITIONS
-            : INITIAL_POSITIONS
-        );
-      }}
-    >
-      {positions.dodeca === INITIAL_POSITIONS.dodeca ? (
-        <ZoomInMap />
-      ) : (
-        <ZoomOutMap />
-      )}
-    </StyledIconButton>
-  );
-}
-const StyledIconButton = styled(IconButton)`
-  &&&& {
-    opacity: 0.4;
-    position: fixed;
-    top: 0;
-    right: 0;
-    z-index: 1;
-    svg {
-      color: white;
-    }
-  }
-`;
