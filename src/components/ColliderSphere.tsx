@@ -7,13 +7,15 @@ import { useEventListener, getPosition, rfs } from "../utils/hooks";
 import { GROUP1, GROUP2 } from "../utils/constants";
 import { useSpring, animated } from "@react-spring/three";
 import { useAtom } from "jotai";
-import { musicAtom } from "./Music/AudioSoundButton";
+import { musicAtom } from "./Music/Music";
+import { MUSIC } from "./Music/MUSIC_DATA";
 
 const LERP_SPEED = 0.4;
 
 export function ColliderSphere() {
   const { viewport, size } = useThree();
-  const [{ playing, bpm, autoMode }] = useAtom(musicAtom);
+  const [{ playing, trackNumber, autoMode }] = useAtom(musicAtom);
+  const { bpm } = MUSIC[trackNumber];
 
   // on double click, keep the sphere interactive with the clumps
   const [doubleclicked, setDoubleclicked] = useState(false);

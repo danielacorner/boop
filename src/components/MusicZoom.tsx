@@ -4,7 +4,7 @@ import { useAtom } from "jotai";
 import { suspend } from "suspend-react";
 import { useRef, useState, useEffect } from "react";
 import * as THREE from "three";
-import { musicAtom } from "./Music/AudioSoundButton";
+import { musicAtom } from "./Music/Music";
 
 export function MusicZoom() {
   const [{ url }] = useAtom(musicUrlAtom);
