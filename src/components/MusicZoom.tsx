@@ -1,13 +1,13 @@
-import { useFrame, useLoader, useThree } from "@react-three/fiber";
-import { musicUrlAtom } from "./Music/Music";
+import { useLoader, useThree } from "@react-three/fiber";
 import { useAtom } from "jotai";
-import { suspend } from "suspend-react";
 import { useRef, useState, useEffect } from "react";
 import * as THREE from "three";
 import { musicAtom } from "./Music/Music";
+import { MUSIC } from "./Music/MUSIC_DATA";
 
 export function MusicZoom() {
-  const [{ url }] = useAtom(musicUrlAtom);
+  const [{ trackNumber }] = useAtom(musicAtom);
+  const { url } = MUSIC[trackNumber];
   // This will *not* re-create a new audio source, suspense is always cached,
   // so this will just access (or create and then cache) the source according to the url
   // const { data } = suspend(() => createAudio(musicUrl), [musicUrl]);

@@ -17,8 +17,8 @@ const isFirstTimeVisitAtom = atomWithStorage<boolean>(
   true
 );
 
-function randBetween(min: number, max: number) {
-  return Math.random() * (max - min) + min;
+function randIntBetween(min: number, max: number) {
+  return Math.floor(Math.random() * (max - min + 1)) + min;
 }
 
 export const musicAtom = atom<{
@@ -45,8 +45,8 @@ export function Music() {
       ? // first-time visitors always hear the same song
         0
       : // repeat visitors get a random song
-        randBetween(0, MUSIC.length - 1);
-    setMusic((p) => ({ ...p, internal: true, trackNumber }));
+        randIntBetween(0, MUSIC.length - 1);
+    setMusic((p) => ({ ...p, trackNumber: nextTrackNumber }));
     setIsFirstTimeVisit(false);
   });
 

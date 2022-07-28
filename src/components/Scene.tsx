@@ -136,7 +136,7 @@ function PhysicsScene() {
       {/* <DebugInDev> */}
       <ColliderSphere />
       <D20StarComponent position={positions.d20} />
-      <MusicZoom />
+      {/* <MusicZoom /> */}
 
       <>
         {/* galaxy */}
