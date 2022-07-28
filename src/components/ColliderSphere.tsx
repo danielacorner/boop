@@ -54,19 +54,19 @@ export function ColliderSphere() {
 
   const touchingRef = useRef<[number, number, number] | null>(null);
 
-  const [isTabActive, setIsTabActive] = useState(true);
+  const isTabActive = useRef(true);
   useEventListener("visibilitychange", () => {
     if (document.hidden) {
       console.log("not visible");
-      setIsTabActive(false);
+      isTabActive.current = false;
     } else {
       console.log("is visible");
-      setIsTabActive(true);
+      isTabActive.current = true;
     }
   });
 
   useFrame((state) => {
-    if (autoMode || !isTabActive) {
+    if (autoMode || !isTabActive.current) {
       return;
     }
     const nextX =
@@ -140,7 +140,7 @@ export function ColliderSphere() {
   // TODO record nextBeat even when not autoMode
 
   useFrame(({ clock: { elapsedTime } }) => {
-    if (!bps || !playing || !isTabActive) {
+    if (!bps || !playing || !isTabActive.current) {
       return;
     }
     // set the first beat when they turn on the music
