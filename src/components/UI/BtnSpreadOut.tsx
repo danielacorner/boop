@@ -2,7 +2,11 @@ import { IconButton } from "@mui/material";
 import { ZoomInMap, ZoomOutMap } from "@mui/icons-material";
 import styled from "styled-components";
 import { useAtom } from "jotai";
-import { positionsAtom, INITIAL_POSITIONS, SECONDARY_POSITIONS } from "./Scene";
+import {
+  positionsAtom,
+  INITIAL_POSITIONS,
+  SECONDARY_POSITIONS,
+} from "../Scene";
 
 export function SpreadOutButton() {
   const [positions, setPositions] = useAtom(positionsAtom);

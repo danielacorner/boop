@@ -7,8 +7,9 @@ import { useEventListener, getPosition, rfs } from "../utils/hooks";
 import { GROUP1, GROUP2 } from "../utils/constants";
 import { useSpring, animated } from "@react-spring/three";
 import { useAtom } from "jotai";
-import { musicAtom } from "./Music/Music";
-import { MUSIC } from "./Music/MUSIC_DATA";
+import { musicAtom } from "./UI/Music/Music";
+import { MUSIC } from "./UI/Music/MUSIC_DATA";
+import { INITIAL_POSITIONS, positionsAtom, SECONDARY_POSITIONS } from "./Scene";
 
 const LERP_SPEED = 0.4;
 
@@ -24,7 +25,10 @@ export function ColliderSphere() {
   });
 
   const gpu = useDetectGPU();
-  const colliderRadius = gpu.tier > 2 ? 3 : 2.3;
+  const [positions] = useAtom(positionsAtom);
+  const colliderRadius =
+    (gpu.tier > 2 ? 3 : 2.3) *
+    (positions.dodeca === SECONDARY_POSITIONS.dodeca ? 0.5 : 1);
   // const colliderRadius = gpu.tier > 2 ? 3 : 2;
 
   const shouldLerpRef = useRef<boolean>(true);

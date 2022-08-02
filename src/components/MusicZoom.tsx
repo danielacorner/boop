@@ -2,8 +2,8 @@ import { useLoader, useThree } from "@react-three/fiber";
 import { useAtom } from "jotai";
 import { useRef, useState, useEffect } from "react";
 import * as THREE from "three";
-import { musicAtom } from "./Music/Music";
-import { MUSIC } from "./Music/MUSIC_DATA";
+import { musicAtom } from "./UI/Music/Music";
+import { MUSIC } from "./UI/Music/MUSIC_DATA";
 
 export function MusicZoom() {
   const [{ trackNumber }] = useAtom(musicAtom);
