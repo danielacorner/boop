@@ -28,6 +28,7 @@ export function Clump({
   dodeca = false,
   radius = BALL_RADIUS,
   mass = BALL_MASS,
+  CustomMaterial = undefined as ((props: any) => JSX.Element) | undefined,
 }) {
   const mat = useMemo(() => new THREE.Matrix4(), []);
   const vec = useMemo(() => new THREE.Vector3(), []);
@@ -71,6 +72,7 @@ export function Clump({
     bumpMap,
     displacementMapPath,
     displacementMap,
+    CustomMaterial,
   };
   return icosa || dodeca ? <IcoClump {...props} /> : <SphereClump {...props} />;
 }
@@ -98,6 +100,7 @@ function IcoClump({
   bumpMap,
   displacementMapPath,
   displacementMap,
+  CustomMaterial,
 }: {
   radius: number;
   mass: number;
@@ -122,6 +125,7 @@ function IcoClump({
   bumpMap: THREE.Texture;
   displacementMapPath: string;
   displacementMap: THREE.Texture;
+  CustomMaterial?: (props: any) => JSX.Element;
 }) {
   // on double click...
   // the clump stops interacting with itself
@@ -216,7 +220,49 @@ function IcoClump({
     texturePath,
     coloredTexture,
   ]);
-
+  const matProps = {
+    map: texture,
+    roughnessMap: roughnessMap,
+    // normalMapType:THREE.ObjectSpaceNormalMap,
+    ...(roughnessMapPath === WHITE_PIXEL
+      ? {}
+      : {
+          roughnessMap,
+        }),
+    ...(normalMapPath === WHITE_PIXEL
+      ? {}
+      : {
+          normalMap,
+        }),
+    ...(aoMapPath === WHITE_PIXEL
+      ? {}
+      : {
+          aoMap,
+          aoMapIntensity: 0.5,
+        }),
+    ...(bumpMapPath === WHITE_PIXEL
+      ? {}
+      : {
+          bumpMap,
+        }),
+    ...(displacementMapPath === WHITE_PIXEL
+      ? {}
+      : {
+          displacementMap,
+        }),
+    // normalMap:normalMap,
+    ...{
+      // const baubleMaterial = new THREE.MeshPhysicalMaterial({
+      // color: "white",
+      // roughness,
+      // envMapIntensity,
+      // emissive: "emissive" in materialProps ? null : emissive,
+      // metalness,
+      // transmission,
+      ...materialProps,
+      // });
+    },
+  };
   return (
     <instancedMesh
       ref={sphereRef}
@@ -237,50 +283,11 @@ function IcoClump({
                       /> */}
         </sphereBufferGeometry>
       )}
-
-      <meshPhysicalMaterial
-        map={texture}
-        roughnessMap={roughnessMap}
-        // normalMapType={THREE.ObjectSpaceNormalMap}
-        {...(roughnessMapPath === WHITE_PIXEL
-          ? {}
-          : {
-              roughnessMap,
-            })}
-        {...(normalMapPath === WHITE_PIXEL
-          ? {}
-          : {
-              normalMap,
-            })}
-        {...(aoMapPath === WHITE_PIXEL
-          ? {}
-          : {
-              aoMap,
-              aoMapIntensity: 0.5,
-            })}
-        {...(bumpMapPath === WHITE_PIXEL
-          ? {}
-          : {
-              bumpMap,
-            })}
-        {...(displacementMapPath === WHITE_PIXEL
-          ? {}
-          : {
-              displacementMap,
-            })}
-        // normalMap={normalMap}
-        {...{
-          // const baubleMaterial = new THREE.MeshPhysicalMaterial({
-          // color: "white",
-          // roughness,
-          // envMapIntensity,
-          // emissive: "emissive" in materialProps ? null : emissive,
-          // metalness,
-          // transmission,
-          ...materialProps,
-          // });
-        }}
-      ></meshPhysicalMaterial>
+      {CustomMaterial ? (
+        <CustomMaterial {...matProps} />
+      ) : (
+        <meshPhysicalMaterial {...matProps} />
+      )}
     </instancedMesh>
   );
 }
@@ -308,6 +315,7 @@ function SphereClump({
   bumpMap,
   displacementMapPath,
   displacementMap,
+  CustomMaterial,
 }: {
   radius: number;
   mass: number;
@@ -332,6 +340,7 @@ function SphereClump({
   bumpMap: THREE.Texture;
   displacementMapPath: string;
   displacementMap: THREE.Texture;
+  CustomMaterial?: (props: any) => JSX.Element;
 }) {
   // on double click...
   // the clump stops interacting with itself
@@ -388,7 +397,47 @@ function SphereClump({
     texturePath,
     coloredTexture,
   ]);
-
+  const matProps = {
+    map: texture,
+    roughnessMap: roughnessMap,
+    // normalMapType:THREE.ObjectSpaceNormalMap,
+    ...(roughnessMapPath === WHITE_PIXEL
+      ? {}
+      : {
+          roughnessMap,
+        }),
+    ...(normalMapPath === WHITE_PIXEL
+      ? {}
+      : {
+          normalMap,
+        }),
+    ...(aoMapPath === WHITE_PIXEL
+      ? {}
+      : {
+          aoMap,
+          aoMapIntensity: 0.5,
+        }),
+    ...(bumpMapPath === WHITE_PIXEL
+      ? {}
+      : {
+          bumpMap,
+        }),
+    ...(displacementMapPath === WHITE_PIXEL
+      ? {}
+      : {
+          displacementMap,
+        }),
+    // normalMap:normalMap,
+    // const baubleMaterial = new THREE.MeshPhysicalMaterial({
+    // color: "white",
+    // roughness,
+    // envMapIntensity,
+    // emissive: "emissive" in materialProps ? null : emissive,
+    // metalness,
+    // transmission,
+    ...materialProps,
+    // });
+  };
   return (
     <instancedMesh
       ref={sphereRef}
@@ -409,50 +458,11 @@ function SphereClump({
                       /> */}
         </sphereBufferGeometry>
       )}
-
-      <meshPhysicalMaterial
-        map={texture}
-        roughnessMap={roughnessMap}
-        // normalMapType={THREE.ObjectSpaceNormalMap}
-        {...(roughnessMapPath === WHITE_PIXEL
-          ? {}
-          : {
-              roughnessMap,
-            })}
-        {...(normalMapPath === WHITE_PIXEL
-          ? {}
-          : {
-              normalMap,
-            })}
-        {...(aoMapPath === WHITE_PIXEL
-          ? {}
-          : {
-              aoMap,
-              aoMapIntensity: 0.5,
-            })}
-        {...(bumpMapPath === WHITE_PIXEL
-          ? {}
-          : {
-              bumpMap,
-            })}
-        {...(displacementMapPath === WHITE_PIXEL
-          ? {}
-          : {
-              displacementMap,
-            })}
-        // normalMap={normalMap}
-        {...{
-          // const baubleMaterial = new THREE.MeshPhysicalMaterial({
-          // color: "white",
-          // roughness,
-          // envMapIntensity,
-          // emissive: "emissive" in materialProps ? null : emissive,
-          // metalness,
-          // transmission,
-          ...materialProps,
-          // });
-        }}
-      ></meshPhysicalMaterial>
+      {CustomMaterial ? (
+        <CustomMaterial {...matProps} />
+      ) : (
+        <meshPhysicalMaterial {...matProps} />
+      )}
     </instancedMesh>
   );
 }
