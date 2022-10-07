@@ -2,31 +2,23 @@ import { IconButton } from "@mui/material";
 import { ZoomInMap, ZoomOutMap } from "@mui/icons-material";
 import styled from "styled-components";
 import { useAtom } from "jotai";
-import {
-  positionsAtom,
-  INITIAL_POSITIONS,
-  SECONDARY_POSITIONS,
-} from "../Scene";
+import { positionsAtom } from "../Scene";
+import { POSITIONS } from "../../utils/constants";
 
 export function SpreadOutButton() {
   const [positions, setPositions] = useAtom(positionsAtom);
 
+  const isInitialPosition = positions.dodeca === POSITIONS.initial.dodeca;
   return (
     <StyledIconButton
       className="SpreadOutButton"
       onClick={() => {
         setPositions(
-          positions.dodeca === INITIAL_POSITIONS.dodeca
-            ? SECONDARY_POSITIONS
-            : INITIAL_POSITIONS
+          isInitialPosition ? POSITIONS.secondary : POSITIONS.initial
         );
       }}
     >
-      {positions.dodeca === INITIAL_POSITIONS.dodeca ? (
-        <ZoomInMap />
-      ) : (
-        <ZoomOutMap />
-      )}
+      {isInitialPosition ? <ZoomInMap /> : <ZoomOutMap />}
     </StyledIconButton>
   );
 }
