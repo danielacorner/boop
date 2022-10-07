@@ -4,12 +4,11 @@ import { useFrame, useThree } from "@react-three/fiber";
 import { useSphere } from "@react-three/cannon";
 import { useEffect, useRef, useState } from "react";
 import { useEventListener, getPosition, rfs } from "../utils/hooks";
-import { GROUP1, GROUP2, POSITIONS } from "../utils/constants";
+import { GROUP1, GROUP2, POSITIONS, positionsAtom } from "../utils/constants";
 import { useSpring, animated } from "@react-spring/three";
 import { useAtom } from "jotai";
 import { musicAtom } from "./UI/Music/Music";
 import { MUSIC } from "./UI/Music/MUSIC_DATA";
-import { positionsAtom } from "./Scene";
 
 const LERP_SPEED = 0.4;
 

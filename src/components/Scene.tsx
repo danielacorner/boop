@@ -10,9 +10,14 @@ import { Debug, Physics } from "@react-three/cannon";
 import { D20StarComponent } from "./D20StarComponent";
 import { Clump } from "./Clump/Clump";
 import { ColliderSphere } from "./ColliderSphere";
-import { BALL_MASS, BALL_RADIUS, POSITIONS } from "../utils/constants";
+import {
+  BALL_MASS,
+  BALL_RADIUS,
+  POSITIONS,
+  positionsAtom,
+} from "../utils/constants";
 import { FancyStars } from "./FancyStars";
-import { atom, useAtom } from "jotai";
+import { useAtom } from "jotai";
 import { Effects } from "./Effects";
 
 import { shaderMaterial } from "@react-three/drei";
@@ -116,9 +121,10 @@ function DebugInDev({ children }) {
     <>{children}</>
   );
 }
-export const positionsAtom = atom(POSITIONS.initial);
+
 function PhysicsScene() {
   const [positionsNormalized] = useAtom(positionsAtom);
+
   const { viewport } = useThree();
   const positions = useMemo(
     () =>
@@ -148,7 +154,8 @@ function Clumpz({ positions }) {
       {/* shader galaxy */}
       <Clump
         texturePath={"ball_galaxy.jpg"}
-        numNodes={num * 6}
+        coloredTexture={true}
+        numNodes={num * 1}
         materialProps={{
           roughness: 0,
           emissive: null,
@@ -157,7 +164,7 @@ function Clumpz({ positions }) {
           transmission: 0,
         }}
         position={positions.galaxy}
-        CustomMaterial={(p) => <colorShiftMaterial {...p} />}
+        // CustomMaterial={(p) => <colorShiftMaterial {...p} />}
       />
       {/* galaxy */}
       <Clump

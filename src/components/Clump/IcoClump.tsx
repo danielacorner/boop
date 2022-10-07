@@ -1,5 +1,5 @@
 import * as THREE from "three";
-import { useSphere } from "@react-three/cannon";
+import { useBox, useSphere } from "@react-three/cannon";
 import { useEffect, useMemo, useState } from "react";
 import { COLORS, GROUP1, GROUP2 } from "../../utils/constants";
 import { rfs, useEventListener } from "../../utils/hooks";
@@ -64,10 +64,11 @@ export function IcoClump({
   useEventListener("dblclick", () => {
     setDoubleclicked(!doubleclicked);
   });
-
-  const [sphereRef, api] = useSphere<THREE.InstancedMesh>(
+  const rad = radius * 0.9;
+  const width = rad * 1.8;
+  const [sphereRef, api] = useBox<THREE.InstancedMesh>(
     () => ({
-      args: [radius * 0.9],
+      args: [width, width, width],
       mass,
       angularDamping: 0.75,
       linearDamping: 0.65,
@@ -76,22 +77,22 @@ export function IcoClump({
       rotation: [rfs(20), rfs(20), rfs(20)],
       collisionFilterMask: GROUP1,
       collisionFilterGroup: doubleclicked ? GROUP2 : GROUP1,
-      onCollide: ({ body, collisionFilters, contact, target }: any) => {
-        // manually spin the clump when the colliderSphere hits it (looks nicer -- otherwise it would just bounce without spinning)
-        if (body.name === "colliderSphere") {
-          for (let i = 0; i < nodes.length; i++) {
-            const torque = [
-              rfs(4 * contact.impactVelocity ** 2),
-              rfs(4 * contact.impactVelocity ** 2),
-              rfs(4 * contact.impactVelocity ** 2),
-            ];
-            api.at(i).applyTorque(torque as [number, number, number]);
-          }
-        }
-      },
+      // onCollide: ({ body, collisionFilters, contact, target }: any) => {
+      //   // manually spin the clump when the colliderSphere hits it (bc we are using useSphere for icosahedrons -- otherwise it would just bounce without spinning)
+      //   if (body.name === "colliderSphere") {
+      //     for (let i = 0; i < nodes.length; i++) {
+      //       const torque = [
+      //         rfs(4 * contact.impactVelocity ** 2),
+      //         rfs(4 * contact.impactVelocity ** 2),
+      //         rfs(4 * contact.impactVelocity ** 2),
+      //       ];
+      //       api.at(i).applyTorque(torque as [number, number, number]);
+      //     }
+      //   }
+      // },
     }),
     null,
-    [doubleclicked, mass, radius]
+    [doubleclicked, mass, width]
   );
   // ! tried using icosahedron geometry, but it doesn't work with instanced meshes
   // ! not working great - dodecas overlap with spheres

@@ -26,6 +26,7 @@ export function Clump({
   const vec = useMemo(() => new THREE.Vector3(), []);
 
   const texture = useTexture(texturePath, (...stuff) => {
+    // TODO fix wrapping
     console.log("useTexture", stuff);
   });
   const roughnessMap = useTexture(roughnessMapPath);

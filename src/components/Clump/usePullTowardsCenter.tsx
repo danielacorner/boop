@@ -1,7 +1,6 @@
 import * as THREE from "three";
 import { useFrame } from "@react-three/fiber";
 import { PublicApi } from "@react-three/cannon";
-import { Vector3 } from "three";
 
 export function usePullTowardsCenter({
   sphereRef,
@@ -32,7 +31,7 @@ export function usePullTowardsCenter({
         // add the position
         .addVectors(
           force1,
-          new Vector3(
+          new THREE.Vector3(
             position ? position[0] : 0,
             position ? position[1] : 0,
             position ? position[2] : 0

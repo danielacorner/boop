@@ -1,12 +1,12 @@
 import * as THREE from "three";
-import { useFrame } from "@react-three/fiber";
-import { PublicApi, useConvexPolyhedron } from "@react-three/cannon";
+import { useConvexPolyhedron } from "@react-three/cannon";
 import { useMemo, useRef, useState } from "react";
 import D20_Star from "../Models/D20_star";
 import { useMount } from "react-use";
 import { BALL_MASS, BALL_RADIUS, GROUP1, GROUP2 } from "../utils/constants";
 import { animated, useSpring } from "@react-spring/three";
 import { toConvexProps, useEventListener } from "../utils/hooks";
+import { usePullSingleTowardsCenter } from "./usePullSingleTowardsCenter";
 
 const COMMON_MATERIAL_PROPS = {
   transparent: true,
@@ -140,52 +140,4 @@ export function D20StarComponent({
       </animated.mesh>
     </>
   );
-}
-
-function usePullSingleTowardsCenter({
-  position,
-  api,
-  d20Position,
-}: {
-  position: [number, number, number] | null;
-  api: PublicApi;
-  d20Position: React.MutableRefObject<[number, number, number]>;
-}) {
-  useFrame(() => {
-    // api.applyForce(
-    //   new THREE.Vector3(
-
-    //     d20Position.current[0],
-    //     d20Position.current[1],
-    //     d20Position.current[2]
-    //   )
-    //     .normalize()
-    //     .multiplyScalar(-50)
-    //     .toArray(),
-    //   [0, 0, 0]
-    // );
-    // drive it towards center or a specified point
-
-    const force2 = new THREE.Vector3()
-      // add the position
-      .addVectors(
-        new THREE.Vector3(
-          d20Position.current[0],
-          d20Position.current[1],
-          d20Position.current[2]
-        ),
-        new THREE.Vector3(
-          position ? position[0] : 0,
-          position ? position[1] : 0,
-          position ? position[2] : 0
-        )
-      )
-      // then normalize and
-      // multiply by a negative scalar to send it towards that point
-      .normalize()
-      .multiplyScalar(-50)
-      .toArray();
-
-    api.applyForce(force2, [0, 0, 0]);
-  });
 }
