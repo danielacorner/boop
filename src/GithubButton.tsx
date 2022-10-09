@@ -3,7 +3,8 @@ import { GitHub } from "@mui/icons-material";
 import styled from "styled-components";
 
 export function GithubButton() {
-  return (
+  const isTabletOrLarger = window.innerWidth >= 768;
+  return isTabletOrLarger ? (
     <Styles>
       <a
         href="https://github.com/danielacorner/boop"
@@ -15,7 +16,7 @@ export function GithubButton() {
         </IconButton>
       </a>
     </Styles>
-  );
+  ) : null;
 }
 const Styles = styled.div`
   position: fixed;
