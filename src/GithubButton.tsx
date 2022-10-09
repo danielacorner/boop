@@ -3,8 +3,7 @@ import { GitHub } from "@mui/icons-material";
 import styled from "styled-components";
 
 export function GithubButton() {
-  const isTabletOrLarger = window.innerWidth >= 768;
-  return isTabletOrLarger ? (
+  return (
     <Styles>
       <a
         href="https://github.com/danielacorner/boop"
@@ -16,13 +15,17 @@ export function GithubButton() {
         </IconButton>
       </a>
     </Styles>
-  ) : null;
+  );
 }
 const Styles = styled.div`
   position: fixed;
   z-index: 10;
   bottom: 2px;
-  left: 2px;
+  right: 2px;
+  @media (min-width: 768px) {
+    left: 2px;
+    right: unset;
+  }
   opacity: 0.25;
   cursor: pointer;
   * {
