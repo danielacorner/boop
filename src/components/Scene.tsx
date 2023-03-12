@@ -52,7 +52,7 @@ const MIN_DPR = 0.6;
 const MAX_DPR = 0.8;
 const MAX_DPR_BY_TIER = {
   "0": MIN_DPR,
-  "1": MAX_DPR,
+  "1": 0.7,
   "2": MAX_DPR,
   "3": MAX_DPR,
 };
@@ -69,9 +69,9 @@ export const Scene = () => {
         shadows
         dpr={[1, maxDpr]}
         camera={{ position: [0, 0, 20], fov: 35, near: 1, far: 60 }}
-        performance={{ min: 0.75 }}
+        // performance={{ min: 0.75 }}
         // https://docs.pmnd.rs/react-three-fiber/advanced/scaling-performance
-        // performance={{ min: 0.75, max: 1 }}
+        performance={{ min: 0.75, max: 1 }}
         // gl={{ alpha: true, antialias: true }}
       >
         {/* <PerformanceMonitor
