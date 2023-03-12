@@ -44,17 +44,17 @@ export function IcoClump({
   coloredTexture: boolean;
   icosa: boolean;
   dodeca: boolean;
-  texture: THREE.Texture;
-  roughnessMap: THREE.Texture;
+  texture: THREE.Texture | null;
+  roughnessMap: THREE.Texture | null;
   roughnessMapPath: string;
   normalMapPath: string;
-  normalMap: THREE.Texture;
+  normalMap: THREE.Texture | null;
   aoMapPath: string;
-  aoMap: THREE.Texture;
+  aoMap: THREE.Texture | null;
   bumpMapPath: string;
-  bumpMap: THREE.Texture;
+  bumpMap: THREE.Texture | null;
   displacementMapPath: string;
-  displacementMap: THREE.Texture;
+  displacementMap: THREE.Texture | null;
   CustomMaterial?: (props: any) => JSX.Element;
 }) {
   // on double click...
@@ -205,17 +205,17 @@ export function IcoClump({
       args={[undefined, undefined, nodes.length]}
     >
       {icosa ? (
-        <icosahedronBufferGeometry args={[radius, 0]} />
+        <icosahedronGeometry args={[radius, 0]} />
       ) : dodeca ? (
-        <dodecahedronBufferGeometry args={[radius, 0]} />
+        <dodecahedronGeometry args={[radius, 0]} />
       ) : (
-        <sphereBufferGeometry args={[radius, 32, 32]}>
-          {/* <instancedBufferAttribute
+        <sphereGeometry args={[radius, 32, 32]}>
+          {/* <instancedAttribute
                                   attach="attributes-color"
                                   count={filteredNodesRandom.length}
                                   array={colorArray}
                                 /> */}
-        </sphereBufferGeometry>
+        </sphereGeometry>
       )}
       {CustomMaterial ? (
         <CustomMaterial {...matProps} />

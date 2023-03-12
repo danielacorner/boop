@@ -8,7 +8,7 @@ export function Effects(props) {
     <EffectComposer {...props}>
       <sSAOPass
         args={[scene, camera, 100, 100]}
-        kernelRadius={1.2}
+        kernelRadius={0.1}
         kernelSize={0}
       />
     </EffectComposer>

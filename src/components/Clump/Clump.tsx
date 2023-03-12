@@ -1,10 +1,13 @@
-import { useTexture } from "@react-three/drei";
-import * as THREE from "three";
 import { useMemo } from "react";
+import * as THREE from "three";
 import { BALL_RADIUS, BALL_MASS, COLORS } from "../../utils/constants";
 import { IcoClump } from "./IcoClump";
 import { SphereClump } from "./SphereClump";
+
 export const WHITE_PIXEL = "/white_pixel.png";
+const mat = new THREE.Matrix4();
+const vec = new THREE.Vector3();
+
 export function Clump({
   materialProps = {} as any,
   numNodes,
@@ -21,19 +24,13 @@ export function Clump({
   radius = BALL_RADIUS,
   mass = BALL_MASS,
   CustomMaterial = undefined as ((props: any) => JSX.Element) | undefined,
+  texture = null as null | THREE.Texture,
+  roughnessMap = null as null | THREE.Texture,
+  normalMap = null as null | THREE.Texture,
+  aoMap = null as null | THREE.Texture,
+  bumpMap = null as null | THREE.Texture,
+  displacementMap = null as null | THREE.Texture,
 }) {
-  const mat = useMemo(() => new THREE.Matrix4(), []);
-  const vec = useMemo(() => new THREE.Vector3(), []);
-
-  const texture = useTexture(texturePath, (...stuff) => {
-    // TODO fix wrapping
-    console.log("useTexture", stuff);
-  });
-  const roughnessMap = useTexture(roughnessMapPath);
-  const normalMap = useTexture(normalMapPath);
-  const aoMap = useTexture(aoMapPath);
-  const bumpMap = useTexture(bumpMapPath);
-  const displacementMap = useTexture(displacementMapPath);
   const colorArray = useMemo(
     () =>
       new Array(numNodes).fill(null).flatMap((_, i) => {
@@ -42,7 +39,6 @@ export function Clump({
       }),
     [numNodes]
   );
-
   const props = {
     radius,
     mass,

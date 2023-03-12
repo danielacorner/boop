@@ -8,7 +8,7 @@ export function usePullSingleTowardsCenter({
   d20Position,
 }: {
   position: [number, number, number] | null;
-  api: PublicApi;
+  api?: PublicApi;
   d20Position: React.MutableRefObject<[number, number, number]>;
 }) {
   useFrame(() => {
@@ -44,6 +44,9 @@ export function usePullSingleTowardsCenter({
       .multiplyScalar(-50)
       .toArray();
 
+    if (!api) {
+      return;
+    }
     api.applyForce(force2, [0, 0, 0]);
   });
 }

@@ -28,7 +28,7 @@ export function D20StarComponent({
   const geo = useMemo(
     () =>
       toConvexProps(
-        new THREE.IcosahedronBufferGeometry(BALL_RADIUS * STAR_SCALE, DETAIL)
+        new THREE.IcosahedronGeometry(BALL_RADIUS * STAR_SCALE, DETAIL)
       ),
     []
   );
@@ -100,7 +100,7 @@ export function D20StarComponent({
             setHoveredNear(null);
           }}
         >
-          <sphereBufferGeometry
+          <sphereGeometry
             attach="geometry"
             args={[BALL_RADIUS * STAR_SCALE * 2, 8, 8]}
           />
