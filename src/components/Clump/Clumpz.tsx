@@ -1,6 +1,6 @@
 import { useDetectGPU, useTexture } from "@react-three/drei";
-import { Clump } from "./Clump/Clump";
-import { BALL_MASS, BALL_RADIUS, POSITIONS } from "../utils/constants";
+import { Clump } from "./Clump";
+import { BALL_MASS, BALL_RADIUS, POSITIONS } from "../../utils/constants";
 
 export function Clumpz({ positions }) {
   const expanded = positions.dodeca[0] !== POSITIONS.initial.dodeca[0];
@@ -23,6 +23,7 @@ export function Clumpz({ positions }) {
   const ballSunTexture = useTexture("ball_sun.jpg");
   const ballCellTexture = useTexture("ball_cell.jpg");
   const ballVangoghTexture = useTexture("ball_vangogh.jpg");
+  const ballRomanescoTexture = useTexture("ball_romanesco.jpg");
   const ballMarbleTexture = useTexture("marble/marble_big.jpg");
 
   const planetNormalMap = useTexture("planet_normal.jpg");
@@ -184,8 +185,9 @@ export function Clumpz({ positions }) {
           transmission: 0,
         }}
         radius={BALL_RADIUS}
-        position={positions.starry_night_shiny}
+        position={positions.starry_night}
       />
+
       {/* starry night */}
       <Clump
         texture={ballVangoghTexture}
@@ -217,6 +219,21 @@ export function Clumpz({ positions }) {
           transmission: 0,
         }}
         position={positions.marble}
+      />
+      {/* romanesco */}
+      <Clump
+        texture={ballRomanescoTexture}
+        texturePath={"ball_romanesco.jpg"}
+        numNodes={num}
+        materialProps={{
+          roughness: 0.6,
+          metalness: 0.1,
+          envMapIntensity: 2,
+          transmission: 0,
+        }}
+        radius={BALL_RADIUS}
+        position={positions.romanesco}
+        // coloredTexture={true}
       />
       {/* shiny icosahedron */}
       <Clump

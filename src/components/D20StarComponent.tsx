@@ -1,3 +1,4 @@
+/* eslint-disable react/no-unknown-property */
 import * as THREE from "three";
 import { useConvexPolyhedron } from "@react-three/cannon";
 import { useMemo, useRef, useState } from "react";

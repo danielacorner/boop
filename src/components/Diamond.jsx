@@ -1,3 +1,4 @@
+/* eslint-disable react/no-unknown-property */
 import { MeshRefractionMaterial, useGLTF, CubeCamera } from "@react-three/drei";
 import { useLoader } from "@react-three/fiber";
 import { useControls } from "leva";

@@ -1,3 +1,4 @@
+/* eslint-disable react/no-unknown-property */
 import { Sphere, useDetectGPU } from "@react-three/drei";
 import * as THREE from "three";
 import { useFrame, useThree } from "@react-three/fiber";
@@ -9,6 +10,7 @@ import { useSpring, animated } from "@react-spring/three";
 import { useAtom } from "jotai";
 import { musicAtom } from "./UI/Music/Music";
 import { MUSIC } from "./UI/Music/MUSIC_DATA";
+import { useWhyDidYouUpdate } from "../utils/useWhyDidYouUpdate";
 
 const LERP_SPEED = 0.4;
 
@@ -225,9 +227,26 @@ export function ColliderSphere() {
       );
     }
   });
+  useWhyDidYouUpdate("Sphere", {
+    position,
+    touchingRef,
+    autoMode,
+    playing,
+    bpm,
+    viewport,
+    size,
+    isTabActive,
+    big,
+    scale,
+  });
   return (
     <animated.mesh name="colliderSphere" ref={sphereRef} scale={scale}>
-      <Sphere args={[colliderRadius, 32, 32]}>
+      <Sphere
+        args={[colliderRadius, 32, 32]}
+        matrixWorldAutoUpdate={undefined}
+        getObjectsByProperty={undefined}
+        getVertexPosition={undefined}
+      >
         <meshPhysicalMaterial
           transmission={1}
           thickness={colliderRadius / 2}

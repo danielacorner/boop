@@ -1,3 +1,4 @@
+/* eslint-disable react/no-unknown-property */
 import * as THREE from "three";
 import { useBox, useSphere } from "@react-three/cannon";
 import { useEffect, useMemo, useState } from "react";

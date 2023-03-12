@@ -1,5 +1,5 @@
 import { IconButton } from "@mui/material";
-import { ZoomInMap, ZoomOutMap } from "@mui/icons-material";
+import { AutoAwesome, ZoomOutMap } from "@mui/icons-material";
 import styled from "styled-components";
 import { useAtom } from "jotai";
 import { POSITIONS, positionsAtom } from "../../utils/constants";
@@ -17,7 +17,7 @@ export function SpreadOutButton() {
         );
       }}
     >
-      {isInitialPosition ? <ZoomInMap /> : <ZoomOutMap />}
+      {isInitialPosition ? <AutoAwesome /> : <ZoomOutMap />}
     </StyledIconButton>
   );
 }

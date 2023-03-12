@@ -1,3 +1,4 @@
+/* eslint-disable react/no-unknown-property */
 import { Effects as EffectComposer } from "@react-three/drei";
 import { extend, useThree } from "@react-three/fiber";
 import { SSAOPass } from "three-stdlib";
