@@ -20,8 +20,12 @@ export function GithubButton() {
 const Styles = styled.div`
   position: fixed;
   z-index: 10;
-  bottom: 2px;
+  top: 2px;
   left: 2px;
+  @media (min-width: 768px) {
+    bottom: 2px;
+    top: unset;
+  }
   opacity: 0.25;
   cursor: pointer;
   * {
