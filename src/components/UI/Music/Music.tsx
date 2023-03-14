@@ -13,6 +13,7 @@ import { MUSIC } from "./MUSIC_DATA";
 import { useMount } from "react-use";
 import { atomWithStorage } from "jotai/utils";
 import { isCameraMovingAtom } from "../../../store/store";
+import { animated, useSpring } from "@react-spring/web";
 
 const isFirstTimeVisitAtom = atomWithStorage<boolean>(
   "atoms:isFirstTimeVisit",
@@ -103,6 +104,13 @@ export function MusicButton(props) {
     { url, title, internal, trackNumber, playing, autoMode, bpm },
     setMusic,
   ] = useAtom(musicAtom);
+  const [springGrowHorizontallyFrom0] = useSpring(
+    {
+      from: { width: 0 },
+      to: { width: playing ? 100 : 0 },
+    },
+    [playing]
+  );
   return (
     <SoundButtonStyles {...{ isAudioPlaying: Boolean(playing) }} {...props}>
       <IconButton
@@ -111,14 +119,12 @@ export function MusicButton(props) {
       >
         {playing ? <VolumeUp /> : <VolumeOff />}
       </IconButton>
-      {playing && (
-        <div className="soundInfo">
-          <a href={url} target="_blank" rel="noopener noreferrer">
-            {/* <marquee scrollamount={3}>{title}</marquee> */}
-            {title}
-          </a>
-        </div>
-      )}
+      <animated.div style={springGrowHorizontallyFrom0} className="soundInfo">
+        <a href={url} target="_blank" rel="noopener noreferrer">
+          {/* <marquee scrollamount={3}>{title}</marquee> */}
+          {title}
+        </a>
+      </animated.div>
     </SoundButtonStyles>
   );
 }
@@ -142,19 +148,30 @@ export function AutoModeButton(props) {
 }
 export function SpinCameraButton(props) {
   const [isCameraMoving, setIsCameraMoving] = useAtom(isCameraMovingAtom);
+  const springAnimateRotateWhileCameraIsMoving = useSpring({
+    // spring animates the div by rotating it continuously while the camera is moving
+    from: { transform: "rotate(0turn)" },
+    to: { transform: `rotate(${isCameraMoving ? 1 : 0}turn)` },
+    config: isCameraMoving
+      ? { duration: 4 * 1000 }
+      : { duration: undefined, tension: 100, friction: 28, mass: 1 },
+    loop: isCameraMoving,
+  });
   return (
     <SoundButtonStyles {...props}>
-      <IconButton
+      <AnimatedIconButton
+        style={springAnimateRotateWhileCameraIsMoving}
         className={isCameraMoving ? "active" : ""}
         onClick={() => setIsCameraMoving((p) => !p)}
       >
         <ThreeSixty
           style={{ transform: `rotate(${isCameraMoving ? 0.5 : 0}turn)` }}
         />
-      </IconButton>
+      </AnimatedIconButton>
     </SoundButtonStyles>
   );
 }
+const AnimatedIconButton = animated(IconButton);
 const SoundButtonStyles = styled.div<{ isAudioPlaying: boolean }>`
   pointer-events: auto;
   white-space: nowrap;
