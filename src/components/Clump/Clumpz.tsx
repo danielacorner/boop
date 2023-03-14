@@ -36,21 +36,6 @@ export function Clumpz({ positions }) {
 
   return (
     <>
-      {/* shader galaxy */}
-      <Clump
-        texture={ballGalaxyTexture}
-        texturePath={"ball_galaxy.jpg"}
-        coloredTexture={true}
-        numNodes={num * 1}
-        materialProps={{
-          roughness: 0,
-          emissive: null,
-          metalness: 0.1,
-          envMapIntensity: 3,
-          transmission: 0,
-        }}
-        position={positions.galaxy}
-      />
       {/* galaxy */}
       <Clump
         texture={ballGalaxyTexture}
@@ -160,7 +145,7 @@ export function Clumpz({ positions }) {
       />
       {/* glassy */}
       <Clump
-        numNodes={num / 2}
+        numNodes={num}
         materialProps={{
           roughness: 0,
           emissive: null,
@@ -174,19 +159,6 @@ export function Clumpz({ positions }) {
       />
 
       {/* shiny starry night */}
-      <Clump
-        texture={ballVangoghTexture}
-        texturePath={"ball_vangogh.jpg"}
-        numNodes={num}
-        materialProps={{
-          roughness: 0,
-          metalness: 0.7,
-          envMapIntensity: 10,
-          transmission: 0,
-        }}
-        radius={BALL_RADIUS}
-        position={positions.starry_night}
-      />
 
       {/* starry night */}
       <Clump
@@ -226,9 +198,9 @@ export function Clumpz({ positions }) {
         texturePath={"ball_romanesco.jpg"}
         numNodes={num}
         materialProps={{
-          roughness: 0.6,
+          roughness: 0.2,
           metalness: 0.1,
-          envMapIntensity: 2,
+          envMapIntensity: 1.5,
           transmission: 0,
         }}
         radius={BALL_RADIUS}

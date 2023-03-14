@@ -1,6 +1,6 @@
 /* eslint-disable react/no-unknown-property */
 import * as THREE from "three";
-import { useSphere } from "@react-three/cannon";
+import { useBox, useSphere } from "@react-three/cannon";
 import { useEffect, useMemo, useState } from "react";
 import { COLORS, GROUP1, GROUP2 } from "../../utils/constants";
 import { rfs, useEventListener } from "../../utils/hooks";
@@ -66,9 +66,9 @@ export function SphereClump({
     setDoubleclicked(!doubleclicked);
   });
 
-  const [sphereRef, api] = useSphere<THREE.InstancedMesh>(
+  const [sphereRef, api] = useBox<THREE.InstancedMesh>(
     () => ({
-      args: [radius],
+      args: [radius * 2.1, radius * 2.1, radius * 2.1],
       mass,
       angularDamping: 0,
       linearDamping: 0.65,

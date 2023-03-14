@@ -1,5 +1,11 @@
 /* eslint-disable react/no-unknown-property */
-import { Sky, Environment, useDetectGPU, AdaptiveDpr } from "@react-three/drei";
+import {
+  Sky,
+  Environment,
+  useDetectGPU,
+  AdaptiveDpr,
+  PerformanceMonitor,
+} from "@react-three/drei";
 import { Canvas, useThree } from "@react-three/fiber";
 import { Physics } from "@react-three/cannon";
 import { D20StarComponent } from "./D20StarComponent";
@@ -8,7 +14,7 @@ import { positionsAtom } from "../utils/constants";
 import { FancyStars } from "./FancyStars";
 import { useAtom } from "jotai";
 import { Effects } from "./Effects";
-import { useMemo } from "react";
+import { useMemo, useState } from "react";
 import { Clumpz } from "./Clump/Clumpz";
 import { useWhyDidYouUpdate } from "../utils/useWhyDidYouUpdate";
 // import { RGBELoader } from "three-stdlib";
@@ -60,27 +66,27 @@ const MAX_DPR_BY_TIER = {
 export const Scene = () => {
   const { tier } = useDetectGPU();
   const maxDpr = MAX_DPR_BY_TIER[tier] ?? MIN_DPR;
-  // const [dpr, setDpr] = useState(maxDpr);
+  const [dpr, setDpr] = useState(maxDpr);
   return (
     <>
       <Canvas
         frameloop="demand"
         style={{ position: "fixed", inset: 0 }}
         shadows
-        dpr={[1, maxDpr]}
+        dpr={[1, dpr]}
         camera={{ position: [0, 0, 20], fov: 35, near: 1, far: 60 }}
         performance={{ min: 0.75 }}
         // https://docs.pmnd.rs/react-three-fiber/advanced/scaling-performance
         // performance={{ min: 0.75, max: 1 }}
         // gl={{ alpha: true, antialias: true }}
       >
-        {/* <PerformanceMonitor
-        // onIncline={() => setDpr(0.6)}
-        // onDecline={() => setDpr(0.4)}
-        // onChange={({ factor }) =>
-        //   setDpr(Math.round((0.5 + 1.5 * factor) * 10) / 10)
-        // }
-        /> */}
+        <PerformanceMonitor
+          onIncline={() => setDpr(MAX_DPR)}
+          onDecline={() => setDpr(MIN_DPR)}
+          // onChange={({ factor }) =>
+          //   setDpr(Math.round((0.5 + 1.5 * factor) * 10) / 10)
+          // }
+        />
         {/* <OrbitControls
           enablePan={process.env.NODE_ENV === "development"}
           enableRotate={process.env.NODE_ENV === "development"}
