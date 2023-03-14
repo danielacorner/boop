@@ -6,17 +6,18 @@ import {
   AdaptiveDpr,
   PerformanceMonitor,
 } from "@react-three/drei";
-import { Canvas, useThree } from "@react-three/fiber";
+import { Canvas, useThree, useFrame } from "@react-three/fiber";
 import { Physics } from "@react-three/cannon";
 import { D20StarComponent } from "./D20StarComponent";
 import { ColliderSphere } from "./ColliderSphere";
-import { positionsAtom } from "../utils/constants";
 import { FancyStars } from "./FancyStars";
 import { useAtom } from "jotai";
 import { Effects } from "./Effects";
 import { useMemo, useState } from "react";
 import { Clumpz } from "./Clump/Clumpz";
-import { useWhyDidYouUpdate } from "../utils/useWhyDidYouUpdate";
+import { musicAtom } from "./UI/Music/Music";
+import * as THREE from "three";
+import { isCameraMovingAtom, positionsAtom } from "../store/store";
 // import { RGBELoader } from "three-stdlib";
 // import Diamond from "./Diamond";
 // import { Clumpz } from "./Clumpz";
@@ -62,6 +63,7 @@ const MAX_DPR_BY_TIER = {
   "2": MAX_DPR,
   "3": MAX_DPR,
 };
+const INITIAL_CAMERA_POSITION: [number, number, number] = [0, 0, 20];
 
 export const Scene = () => {
   const { tier } = useDetectGPU();
@@ -74,7 +76,12 @@ export const Scene = () => {
         style={{ position: "fixed", inset: 0 }}
         shadows
         dpr={[1, dpr]}
-        camera={{ position: [0, 0, 20], fov: 35, near: 1, far: 60 }}
+        camera={{
+          position: INITIAL_CAMERA_POSITION,
+          fov: 35,
+          near: 1,
+          far: 60,
+        }}
         // performance={{ min: 0.75 }}
         // https://docs.pmnd.rs/react-three-fiber/advanced/scaling-performance
         performance={{ min: 0.75, max: 1 }}
@@ -100,6 +107,7 @@ export const Scene = () => {
           minDistance={2}
           maxDistance={32}
         /> */}
+        <MoveCameraWithMusic />
         <AdaptiveDpr pixelated={true} />
         <FancyStars />
         <ambientLight intensity={0.25} />
@@ -139,11 +147,7 @@ function PhysicsScene() {
       }, {} as { [key: string]: [number, number, number] }),
     [positionsNormalized, viewport.height, viewport.width]
   );
-  useWhyDidYouUpdate("PhysicsScene", {
-    positions,
-    viewport,
-    positionsNormalized,
-  });
+
   return (
     <>
       {/* <DebugInDev> */}
@@ -154,4 +158,31 @@ function PhysicsScene() {
       {/* </DebugInDev> */}
     </>
   );
+}
+
+const DISTANCE = 20;
+const SPEED = 1.7;
+function MoveCameraWithMusic() {
+  // move the camera in a circle when music is playing
+  const [isCameraMoving] = useAtom(isCameraMovingAtom);
+  const { camera } = useThree();
+  const [{ bpm }] = useAtom(musicAtom);
+  const speed = bpm * (SPEED / 125);
+  useFrame(({ clock }) => {
+    if (isCameraMoving) {
+      // animate the camera position smoothly
+      const t = clock.getElapsedTime();
+      const x = Math.cos(t * 0.33 * speed) * DISTANCE;
+      const y = Math.sin(t * 0.66 * speed) * DISTANCE;
+      const z = Math.sin(t * 0.99 * speed) * DISTANCE;
+      camera.position.lerp(new THREE.Vector3(x, y, z), 0.1);
+      camera.lookAt(0, 0, 0);
+    } else {
+      camera.lookAt(0, 0, 0);
+      // animate the camera from its current position back to the initial position using lerp
+      camera.position.lerp(new THREE.Vector3(...INITIAL_CAMERA_POSITION), 0.1);
+    }
+  });
+
+  return null;
 }

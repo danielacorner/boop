@@ -21,19 +21,14 @@ const COMMON_MATERIAL_PROPS = {
 
 const DETAIL = 0;
 const STAR_SCALE = 1.6;
+const icosahedronGeometrygeo = toConvexProps(
+  new THREE.IcosahedronGeometry(BALL_RADIUS * STAR_SCALE, DETAIL)
+);
 export function D20StarComponent({
   position,
 }: {
   position: [number, number, number];
 }) {
-  const geo = useMemo(
-    () =>
-      toConvexProps(
-        new THREE.IcosahedronGeometry(BALL_RADIUS * STAR_SCALE, DETAIL)
-      ),
-    []
-  );
-
   const [doubleclicked, setDoubleclicked] = useState(false);
   useEventListener("dblclick", () => {
     setDoubleclicked(!doubleclicked);
@@ -43,7 +38,7 @@ export function D20StarComponent({
     () => ({
       mass: BALL_MASS * 2, // approximate mass using volume of a sphere equation
       // https://threejs.org/docs/scenes/geometry-browser.html#IcosahedronGeometry
-      args: geo as any,
+      args: icosahedronGeometrygeo as any,
       collisionFilterMask: doubleclicked ? GROUP2 : GROUP1, // It can only collide with group 1 and 2
     }),
     null,

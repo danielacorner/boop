@@ -49,4 +49,3 @@ export const POSITIONS: { initial: Positions; secondary: Positions } = {
     d20: [0, -1, 0],
   },
 };
-export const positionsAtom = atom(POSITIONS.initial);

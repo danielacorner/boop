@@ -1,40 +1,38 @@
 import { IconButton } from "@mui/material";
-import { AutoAwesome, ZoomOutMap } from "@mui/icons-material";
+import { AutoAwesome } from "@mui/icons-material";
 import styled from "styled-components";
 import { useAtom } from "jotai";
-import { POSITIONS, positionsAtom } from "../../utils/constants";
+import { POSITIONS } from "../../utils/constants";
+import { positionsAtom } from "../../store/store";
 
-export function SpreadOutButton() {
+export function SpreadOutButton(props) {
   const [positions, setPositions] = useAtom(positionsAtom);
 
   const isInitialPosition = positions.dodeca === POSITIONS.initial.dodeca;
   return (
     <StyledIconButton
-      className="SpreadOutButton"
+      {...props}
+      className={isInitialPosition ? "" : "active"}
       onClick={() => {
         setPositions(
           isInitialPosition ? POSITIONS.secondary : POSITIONS.initial
         );
       }}
     >
-      {isInitialPosition ? <AutoAwesome /> : <ZoomOutMap />}
+      <AutoAwesome />
     </StyledIconButton>
   );
 }
 const StyledIconButton = styled(IconButton)`
   &&&& {
     opacity: 0.4;
-    position: fixed;
-    top: 0;
-    right: 0;
-    z-index: 1;
     svg {
       color: white;
     }
     width: 40px;
     height: 40px;
-    @media (min-width: 768px) {
-      right: calc(50vw - 20px);
+    &.active {
+      opacity: 1;
     }
   }
 `;
