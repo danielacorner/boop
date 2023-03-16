@@ -1,5 +1,5 @@
 /* eslint-disable react/no-unknown-property */
-import { Sphere, useDetectGPU } from "@react-three/drei";
+import { Sphere } from "@react-three/drei";
 import * as THREE from "three";
 import { useFrame, useThree } from "@react-three/fiber";
 import { useSphere } from "@react-three/cannon";
@@ -13,6 +13,7 @@ import { MUSIC } from "./UI/Music/MUSIC_DATA";
 import { positionsAtom } from "../store/store";
 
 const LERP_SPEED = 0.4;
+const COLLIDER_RADIUS = 2;
 
 export function ColliderSphere() {
   const { viewport, size } = useThree();
@@ -25,13 +26,11 @@ export function ColliderSphere() {
     setDoubleclicked(!doubleclicked);
   });
 
-  const gpu = useDetectGPU();
+  // const {tier} = useDetectGPU();
   const [positions] = useAtom(positionsAtom);
-  const isSecondaryPosition = positions.dodeca === POSITIONS.secondary.dodeca;
-  const multiplier = isSecondaryPosition ? 1.5 : 1;
-  const colliderRadius =
-    (gpu.tier > 2 ? 3 : 2.3) * (isSecondaryPosition ? 0.6 : 1);
-  // const colliderRadius = gpu.tier > 2 ? 3 : 2;
+  const isExpanded = positions.dodeca === POSITIONS.secondary.dodeca;
+  const colliderRadiusMultiplier = isExpanded ? 0.6 : 1;
+  const colliderRadius = colliderRadiusMultiplier * COLLIDER_RADIUS;
 
   const shouldLerpRef = useRef<boolean>(true);
 
@@ -123,16 +122,20 @@ export function ColliderSphere() {
   });
 
   // double click to change width
-  const [big, setBig] = useState(false);
+  const [dblClicked, setDblClicked] = useState(false);
   useEventListener("dblclick", (event) => {
-    setBig(true);
+    setDblClicked(true);
     const timer = setTimeout(() => {
-      setBig(false);
+      setDblClicked(false);
     }, 1000);
     return () => clearTimeout(timer);
   });
   const { scale } = useSpring({
-    scale: (big ? [1.2, 1.2, 1.2] : [1, 1, 1]) as [number, number, number],
+    scale: (dblClicked ? [1.2, 1.2, 1.2] : [1, 1, 1]) as [
+      number,
+      number,
+      number
+    ],
     config: {
       mass: 0.5,
       tension: 500,
@@ -146,8 +149,9 @@ export function ColliderSphere() {
   const nextBeat = useRef({ time: 0, number: 0, lerpSpeed: 1 });
   const nextPosition = useRef<[number, number, number]>([0, 0, 0]);
 
-  // TODO record nextBeat even when not autoMode
+  const moveDistanceMultiplier = isExpanded ? 1.5 : 1;
 
+  // TODO record nextBeat even when not autoMode
   useFrame(({ clock: { elapsedTime } }) => {
     if (!bps || !playing || !isTabActive.current) {
       return;
@@ -213,20 +217,27 @@ export function ColliderSphere() {
         viewport,
         0,
         intersect,
-        multiplier
+        moveDistanceMultiplier
       );
     }
+
     if (autoMode) {
       api.position.set(
         THREE.MathUtils.lerp(
           position.current[0],
           nextPosition.current[0],
-          LERP_SPEED * 0.65 * nextBeat.current.lerpSpeed * (1 / multiplier)
+          LERP_SPEED *
+            0.65 *
+            nextBeat.current.lerpSpeed *
+            (1 / moveDistanceMultiplier)
         ),
         THREE.MathUtils.lerp(
           position.current[1],
           nextPosition.current[1],
-          LERP_SPEED * 0.65 * nextBeat.current.lerpSpeed * (1 / multiplier)
+          LERP_SPEED *
+            0.65 *
+            nextBeat.current.lerpSpeed *
+            (1 / moveDistanceMultiplier)
         ),
         0
       );
@@ -236,7 +247,7 @@ export function ColliderSphere() {
   return (
     <animated.mesh name="colliderSphere" ref={sphereRef} scale={scale}>
       <Sphere
-        args={[colliderRadius, 32, 32]}
+        args={[COLLIDER_RADIUS, 32, 32]}
         matrixWorldAutoUpdate={undefined}
         getObjectsByProperty={undefined}
         getVertexPosition={undefined}

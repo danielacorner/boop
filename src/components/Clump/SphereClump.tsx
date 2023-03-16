@@ -1,11 +1,13 @@
 /* eslint-disable react/no-unknown-property */
 import * as THREE from "three";
 import { useSphere } from "@react-three/cannon";
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { COLORS, GROUP1, GROUP2 } from "../../utils/constants";
 import { rfs, useEventListener } from "../../utils/hooks";
 import { WHITE_PIXEL } from "./Clump";
 import { usePullTowardsCenter } from "./usePullTowardsCenter";
+import { useFrame } from "@react-three/fiber";
+import { IcosahedronGeometry } from "three";
 
 export function SphereClump({
   radius,
@@ -58,6 +60,7 @@ export function SphereClump({
   displacementMap: THREE.Texture | null;
   CustomMaterial?: (props: any) => JSX.Element;
 }) {
+  const radiusRef = useRef(radius);
   // on double click...
   // the clump stops interacting with itself
   // (but not with the collidersphere)
@@ -68,7 +71,7 @@ export function SphereClump({
 
   const [sphereRef, api] = useSphere<THREE.InstancedMesh>(
     () => ({
-      args: [radius],
+      args: [radiusRef.current],
       mass,
       angularDamping: 0,
       linearDamping: 0.65,
@@ -79,7 +82,7 @@ export function SphereClump({
       collisionFilterGroup: doubleclicked ? GROUP2 : GROUP1,
     }),
     null,
-    [doubleclicked, mass, radius]
+    [doubleclicked, mass, radiusRef.current]
   );
   const nodes = useMemo(() => [...Array(numNodes)], [numNodes]);
   usePullTowardsCenter({
@@ -156,6 +159,34 @@ export function SphereClump({
     ...materialProps,
     // });
   };
+
+  // animate the radius
+  const WOBBLE = 0.1;
+  const ANIMATE_SPEED = 0.5;
+  useFrame(({ clock }) => {
+    const t = clock.getElapsedTime();
+    const wobble = Math.abs(Math.sin(t) * WOBBLE) - WOBBLE / 2;
+    const nextRadius = radius + wobble;
+    // change radius using lerp
+    radiusRef.current = THREE.MathUtils.lerp(
+      radiusRef.current,
+      nextRadius,
+      0.1 * ANIMATE_SPEED
+    );
+    if (!sphereRef.current) {
+      return;
+    }
+    const geometry = sphereRef.current.geometry;
+    const position = geometry.attributes.position;
+    for (let i = 0; i < position.count; i++) {
+      const vertex = new THREE.Vector3();
+      vertex.fromBufferAttribute(position, i);
+      vertex.normalize().multiplyScalar(radiusRef.current);
+      position.setXYZ(i, vertex.x, vertex.y, vertex.z);
+    }
+    position.needsUpdate = true;
+  });
+
   return (
     <instancedMesh
       ref={sphereRef}
@@ -164,11 +195,11 @@ export function SphereClump({
       args={[undefined, undefined, nodes.length]}
     >
       {icosa ? (
-        <icosahedronGeometry args={[radius, 0]} />
+        <icosahedronGeometry args={[undefined, 0]} />
       ) : dodeca ? (
-        <dodecahedronGeometry args={[radius, 0]} />
+        <dodecahedronGeometry args={[undefined, 0]} />
       ) : (
-        <sphereGeometry args={[radius, 32, 32]}>
+        <sphereGeometry args={[undefined, 32, 32]}>
           {/* <instancedAttribute
                                   attach="attributes-color"
                                   count={filteredNodesRandom.length}
