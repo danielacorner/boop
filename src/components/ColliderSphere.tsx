@@ -28,8 +28,9 @@ export function ColliderSphere() {
   const gpu = useDetectGPU();
   const [positions] = useAtom(positionsAtom);
   const isSecondaryPosition = positions.dodeca === POSITIONS.secondary.dodeca;
+  const multiplier = isSecondaryPosition ? 1.5 : 1;
   const colliderRadius =
-    (gpu.tier > 2 ? 3 : 2.3) * (isSecondaryPosition ? 0.5 : 1);
+    (gpu.tier > 2 ? 3 : 2.3) * (isSecondaryPosition ? 0.6 : 1);
   // const colliderRadius = gpu.tier > 2 ? 3 : 2;
 
   const shouldLerpRef = useRef<boolean>(true);
@@ -55,7 +56,10 @@ export function ColliderSphere() {
 
   // subscribe to sphere position
   const position = useRef([0, 0, 0]);
-  useEffect(() => api.position.subscribe((v) => (position.current = v)), [api]);
+  useEffect(
+    () => api.position.subscribe((v) => (position.current = v)),
+    [api, colliderRadius]
+  );
 
   const touchingRef = useRef<[number, number, number] | null>(null);
 
@@ -208,7 +212,8 @@ export function ColliderSphere() {
         { minDistance, maxDistance },
         viewport,
         0,
-        intersect
+        intersect,
+        multiplier
       );
     }
     if (autoMode) {
@@ -216,12 +221,12 @@ export function ColliderSphere() {
         THREE.MathUtils.lerp(
           position.current[0],
           nextPosition.current[0],
-          LERP_SPEED * 0.65 * nextBeat.current.lerpSpeed
+          LERP_SPEED * 0.65 * nextBeat.current.lerpSpeed * (1 / multiplier)
         ),
         THREE.MathUtils.lerp(
           position.current[1],
           nextPosition.current[1],
-          LERP_SPEED * 0.65 * nextBeat.current.lerpSpeed
+          LERP_SPEED * 0.65 * nextBeat.current.lerpSpeed * (1 / multiplier)
         ),
         0
       );
@@ -251,11 +256,12 @@ function getNextPosition(
   { minDistance, maxDistance }: { minDistance: number; maxDistance: number },
   viewport,
   attemps = 0,
-  intersect: boolean
+  intersect: boolean,
+  multiplier: number
 ): [number, number, number] {
   const initialNextPosition: [number, number, number] = [
-    rfs(viewport.width),
-    rfs(viewport.height),
+    rfs(viewport.width) * multiplier,
+    rfs(viewport.height) * multiplier,
     0,
   ];
   let nextPosition = initialNextPosition;
@@ -270,13 +276,17 @@ function getNextPosition(
     ];
   }
   const distance = getDistanceBetweenPoints(currentPosition, nextPosition);
-  if (distance < minDistance || (distance > maxDistance && attemps < 10)) {
+  if (
+    distance < minDistance ||
+    (distance > maxDistance * multiplier && attemps < 10)
+  ) {
     nextPosition = getNextPosition(
       currentPosition,
       { minDistance, maxDistance },
       viewport,
       attemps + 1,
-      intersect
+      intersect,
+      multiplier
     );
   }
   return nextPosition;
