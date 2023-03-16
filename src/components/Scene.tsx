@@ -107,7 +107,7 @@ export const Scene = () => {
           minDistance={2}
           maxDistance={32}
         /> */}
-        <MoveCameraWithMusic />
+        <MoveCamera />
         <AdaptiveDpr pixelated={true} />
         <FancyStars />
         <ambientLight intensity={0.25} />
@@ -162,7 +162,7 @@ function PhysicsScene() {
 
 const DISTANCE = 20;
 const SPEED = 1.7;
-function MoveCameraWithMusic() {
+function MoveCamera() {
   // move the camera in a circle when music is playing
   const [isCameraMoving] = useAtom(isCameraMovingAtom);
   const { camera } = useThree();
@@ -172,9 +172,10 @@ function MoveCameraWithMusic() {
     if (isCameraMoving) {
       // animate the camera position smoothly
       const t = clock.getElapsedTime();
-      const x = Math.cos(t * 0.33 * speed) * DISTANCE;
-      const y = Math.sin(t * 0.66 * speed) * DISTANCE;
-      const z = Math.sin(t * 0.99 * speed) * DISTANCE;
+      const cycle = (t % 100) / SPEED;
+      const x = Math.cos(t * 0.33 * (speed + cycle / 100)) * DISTANCE;
+      const y = Math.sin(t * 0.66 * (speed + cycle / 200)) * DISTANCE;
+      const z = Math.sin(t * 0.99 * (speed + cycle / 300)) * DISTANCE;
       camera.position.lerp(new THREE.Vector3(x, y, z), 0.1);
       camera.lookAt(0, 0, 0);
     } else {

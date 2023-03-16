@@ -226,18 +226,12 @@ export function ColliderSphere() {
         THREE.MathUtils.lerp(
           position.current[0],
           nextPosition.current[0],
-          LERP_SPEED *
-            0.65 *
-            nextBeat.current.lerpSpeed *
-            (1 / moveDistanceMultiplier)
+          LERP_SPEED * nextBeat.current.lerpSpeed * (1 / moveDistanceMultiplier)
         ),
         THREE.MathUtils.lerp(
           position.current[1],
           nextPosition.current[1],
-          LERP_SPEED *
-            0.65 *
-            nextBeat.current.lerpSpeed *
-            (1 / moveDistanceMultiplier)
+          LERP_SPEED * nextBeat.current.lerpSpeed * (1 / moveDistanceMultiplier)
         ),
         0
       );
