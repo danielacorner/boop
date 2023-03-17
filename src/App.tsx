@@ -5,6 +5,7 @@ import {
   AutoModeButton,
   Music,
   MusicButton,
+  ShuffleButton,
   SpinCameraButton,
 } from "./components/UI/Music/Music";
 import { GithubButton } from "./GithubButton";
@@ -26,10 +27,11 @@ export default App;
 function ControlsOverlay() {
   return (
     <ControlsOverlayStyles>
-      <SpreadOutButton className="btn-spread" />
-      <MusicButton className="btn-music" />
-      <AutoModeButton className="btn-automode" />
-      <SpinCameraButton className="btn-spin" />
+      <MusicButton />
+      <ShuffleButton />
+      <AutoModeButton />
+      <SpreadOutButton />
+      <SpinCameraButton />
       <GithubButton className="btn-github" />
     </ControlsOverlayStyles>
   );
@@ -37,11 +39,20 @@ function ControlsOverlay() {
 const ControlsOverlayStyles = styled.div`
   position: fixed;
   z-index: 10;
-  bottom: 20px;
+  bottom: 32px;
+  left: 0;
+  right: 0;
   display: flex;
-  gap: 1em;
+  gap: 0.5em;
   justify-content: center;
   width: 100%;
+  .btn-github {
+    transform: scale(0.7);
+    transform-origin: bottom left;
+    position: fixed;
+    bottom: 0px;
+    left: 0px;
+  }
   @media (min-width: 768px) {
   }
 `;

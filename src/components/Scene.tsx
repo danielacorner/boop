@@ -161,18 +161,18 @@ function PhysicsScene() {
 }
 
 const DISTANCE = 20;
-const SPEED = 1.7;
+const CAMERA_SPIN_SPEED = 1;
 function MoveCamera() {
   // move the camera in a circle when music is playing
   const [isCameraMoving] = useAtom(isCameraMovingAtom);
   const { camera } = useThree();
   const [{ bpm }] = useAtom(musicAtom);
-  const speed = bpm * (SPEED / 125);
+  const speed = bpm * (CAMERA_SPIN_SPEED / 125);
   useFrame(({ clock }) => {
     if (isCameraMoving) {
       // animate the camera position smoothly
       const t = clock.getElapsedTime();
-      const cycle = (t % 100) / SPEED;
+      const cycle = (t % 100) / CAMERA_SPIN_SPEED;
       const x = Math.cos(t * 0.33 * (speed + cycle / 100)) * DISTANCE;
       const y = Math.sin(t * 0.66 * (speed + cycle / 200)) * DISTANCE;
       const z = Math.sin(t * 0.99 * (speed + cycle / 300)) * DISTANCE;

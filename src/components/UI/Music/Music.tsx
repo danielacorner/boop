@@ -5,6 +5,7 @@ import {
   AutoFixHigh,
   AutoFixOff,
   ThreeSixty,
+  Shuffle,
 } from "@mui/icons-material";
 import { IconButton } from "@mui/material";
 import { useAtom, atom } from "jotai";
@@ -146,6 +147,33 @@ export function AutoModeButton(props) {
     </SoundButtonStyles>
   );
 }
+export function ShuffleButton(props) {
+  const [
+    { url, title, internal, trackNumber, playing, autoMode, bpm },
+    setMusic,
+  ] = useAtom(musicAtom);
+  return (
+    <SoundButtonStyles {...props}>
+      <IconButton
+        disabled={!playing}
+        onClick={() => {
+          const nextTrackNumber = getNewRandomNumber(
+            trackNumber,
+            0,
+            MUSIC.length - 1
+          );
+          setMusic((p) => ({
+            ...p,
+            trackNumber: nextTrackNumber,
+            ...MUSIC[nextTrackNumber],
+          }));
+        }}
+      >
+        <Shuffle />
+      </IconButton>
+    </SoundButtonStyles>
+  );
+}
 export function SpinCameraButton(props) {
   const [isCameraMoving, setIsCameraMoving] = useAtom(isCameraMovingAtom);
   const springAnimateRotateWhileCameraIsMoving = useSpring({
@@ -182,7 +210,8 @@ const SoundButtonStyles = styled.div<{ isAudioPlaying: boolean }>`
     &.Mui-disabled {
       color: hsla(0, 100%, 100%, 0.5);
     }
-    &.active {
+    &.active,
+    &:active {
       .MuiSvgIcon-root {
         opacity: 1;
       }

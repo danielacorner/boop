@@ -12,7 +12,7 @@ import { musicAtom } from "./UI/Music/Music";
 import { MUSIC } from "./UI/Music/MUSIC_DATA";
 import { positionsAtom } from "../store/store";
 
-const LERP_SPEED = 0.4;
+const LERP_SPEED = 0.35;
 const COLLIDER_RADIUS = 2;
 
 export function ColliderSphere() {
@@ -29,7 +29,10 @@ export function ColliderSphere() {
   // const {tier} = useDetectGPU();
   const [positions] = useAtom(positionsAtom);
   const isExpanded = positions.dodeca === POSITIONS.secondary.dodeca;
-  const colliderRadiusMultiplier = isExpanded ? 0.6 : 1;
+  const colliderRadiusMultiplier =
+    (isExpanded ? 1.2 : 1) *
+    (size.width > 720 ? 1.2 : 1) *
+    (autoMode ? 1.4 : 1);
   const colliderRadius = colliderRadiusMultiplier * COLLIDER_RADIUS;
 
   const shouldLerpRef = useRef<boolean>(true);
@@ -131,11 +134,9 @@ export function ColliderSphere() {
     return () => clearTimeout(timer);
   });
   const { scale } = useSpring({
-    scale: (dblClicked ? [1.2, 1.2, 1.2] : [1, 1, 1]) as [
-      number,
-      number,
-      number
-    ],
+    scale: [1, 1, 1].map(
+      (d) => d * (dblClicked ? 1.2 : 1) * colliderRadiusMultiplier
+    ) as [number, number, number],
     config: {
       mass: 0.5,
       tension: 500,
