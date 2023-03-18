@@ -2,7 +2,7 @@
 import * as THREE from "three";
 import { useSphere } from "@react-three/cannon";
 import { useEffect, useMemo, useRef, useState } from "react";
-import { COLORS, GROUP1, GROUP2, BALL_RADIUS } from "../../utils/constants";
+import { COLORS, GROUP1, GROUP2 } from "../../utils/constants";
 import { rfs, useEventListener } from "../../utils/hooks";
 import { WHITE_PIXEL } from "./Clump";
 import { usePullTowardsCenter } from "./usePullTowardsCenter";
@@ -11,28 +11,28 @@ import { usePositions } from "../../store/store";
 
 export type SphereClumpProps = {
   radius: number;
-  mass: number;
+  mass?: number;
   numNodes: any;
   mat: THREE.Matrix4;
   position: [number, number, number] | null;
   vec: THREE.Vector3;
-  colorArray: string[];
-  materialProps: any;
-  texturePath: string;
-  coloredTexture: boolean;
-  icosa: boolean;
-  dodeca: boolean;
-  texture: THREE.Texture | null;
-  roughnessMap: THREE.Texture | null;
-  roughnessMapPath: string;
-  normalMapPath: string;
-  normalMap: THREE.Texture | null;
-  aoMapPath: string;
-  aoMap: THREE.Texture | null;
-  bumpMapPath: string;
-  bumpMap: THREE.Texture | null;
-  displacementMapPath: string;
-  displacementMap: THREE.Texture | null;
+  colorArray?: string[];
+  materialProps?: any;
+  texturePath?: string;
+  coloredTexture?: boolean;
+  icosa?: boolean;
+  dodeca?: boolean;
+  texture?: THREE.Texture | any | null;
+  roughnessMap?: THREE.Texture | any | null;
+  roughnessMapPath?: string;
+  normalMapPath?: string;
+  normalMap?: THREE.Texture | any | null;
+  aoMapPath?: string;
+  aoMap?: THREE.Texture | any | null;
+  bumpMapPath?: string;
+  bumpMap?: THREE.Texture | any | null;
+  displacementMapPath?: string;
+  displacementMap?: THREE.Texture | any | null;
   CustomMaterial?: (props: any) => JSX.Element;
 };
 
@@ -99,7 +99,7 @@ export function SphereClump({
 
   // set color
   useEffect(() => {
-    if (!sphereRef.current) {
+    if (!sphereRef.current || !colorArray) {
       return;
     }
     for (let index = 0; index < colorArray.length; index++) {
@@ -113,12 +113,12 @@ export function SphereClump({
       sphereRef.current.setColorAt(index, new THREE.Color(color));
     }
   }, [
-    colorArray.length,
     nodes,
     sphereRef,
     materialProps.transmission,
     texturePath,
     coloredTexture,
+    colorArray,
   ]);
 
   const matProps = {
@@ -164,7 +164,7 @@ export function SphereClump({
   };
 
   // animate the radius
-  const WOBBLE = 0.1;
+  const WOBBLE = 0.05;
   const ANIMATE_SPEED = 1;
   useFrame(({ clock }) => {
     const t = clock.getElapsedTime();

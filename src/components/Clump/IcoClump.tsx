@@ -111,7 +111,7 @@ export function IcoClump({
 
   // set color
   useEffect(() => {
-    if (!sphereRef.current) {
+    if (!sphereRef.current || !colorArray) {
       return;
     }
     for (let index = 0; index < colorArray.length; index++) {
@@ -125,7 +125,7 @@ export function IcoClump({
       sphereRef.current.setColorAt(index, new THREE.Color(color));
     }
   }, [
-    colorArray.length,
+    colorArray,
     nodes,
     sphereRef,
     materialProps.transmission,

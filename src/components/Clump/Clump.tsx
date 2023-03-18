@@ -7,7 +7,15 @@ import { SphereClump, SphereClumpProps } from "./SphereClump";
 export const WHITE_PIXEL = "/white_pixel.png";
 const mat = new THREE.Matrix4();
 const vec = new THREE.Vector3();
-
+type ClumpProps = Omit<
+  SphereClumpProps,
+  "colorArray" | "radius" | "mat" | "vec"
+> & {
+  radius?: number;
+  colorArray?: string[];
+  mat?: THREE.Matrix4;
+  vec?: THREE.Vector3;
+};
 export function Clump({
   materialProps = {} as any,
   numNodes,
@@ -30,7 +38,7 @@ export function Clump({
   aoMap = null as null | THREE.Texture,
   bumpMap = null as null | THREE.Texture,
   displacementMap = null as null | THREE.Texture,
-}: Omit<SphereClumpProps, "colorArray">) {
+}: ClumpProps) {
   const colorArray = useMemo(
     () =>
       new Array(numNodes).fill(null).flatMap((_, i) => {

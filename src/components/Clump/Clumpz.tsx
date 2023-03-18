@@ -155,7 +155,7 @@ export function Clumpz({ positions }) {
           transmission: 1,
           thickness: BALL_RADIUS * 7,
         }}
-        radius={BALL_RADIUS}
+        radius={BALL_RADIUS * 1.2}
         position={positions.glass}
       />
 
@@ -211,7 +211,7 @@ export function Clumpz({ positions }) {
       {/* shiny icosahedron */}
       <Clump
         icosa={true}
-        numNodes={num}
+        numNodes={num * 3}
         materialProps={{
           roughness: 0,
           emissive: null,
@@ -227,7 +227,7 @@ export function Clumpz({ positions }) {
       {/* shiny dodecaahedron */}
       <Clump
         dodeca={true}
-        numNodes={num}
+        numNodes={num * 6}
         materialProps={{
           roughness: 0,
           emissive: null,
@@ -236,7 +236,7 @@ export function Clumpz({ positions }) {
           transmission: 1,
           thickness: BALL_RADIUS * 1.2,
         }}
-        radius={BALL_RADIUS * 1.2}
+        radius={BALL_RADIUS * 1.2 * 0.5}
         mass={BALL_MASS}
         position={positions.dodeca}
       />
