@@ -1,11 +1,12 @@
 /* eslint-disable react/no-unknown-property */
 import * as THREE from "three";
-import { useBox, useSphere } from "@react-three/cannon";
+import { useBox } from "@react-three/cannon";
 import { useEffect, useMemo, useState } from "react";
 import { COLORS, GROUP1, GROUP2 } from "../../utils/constants";
 import { rfs, useEventListener } from "../../utils/hooks";
 import { WHITE_PIXEL } from "./Clump";
 import { usePullTowardsCenter } from "./usePullTowardsCenter";
+import { SphereClumpProps } from "./SphereClump";
 
 export function IcoClump({
   radius,
@@ -32,32 +33,7 @@ export function IcoClump({
   displacementMapPath,
   displacementMap,
   CustomMaterial,
-}: {
-  radius: number;
-  mass: number;
-  numNodes: any;
-  mat: THREE.Matrix4;
-  position: [number, number, number] | null;
-  vec: THREE.Vector3;
-  colorArray: string[];
-  materialProps: any;
-  texturePath: string;
-  coloredTexture: boolean;
-  icosa: boolean;
-  dodeca: boolean;
-  texture: THREE.Texture | null;
-  roughnessMap: THREE.Texture | null;
-  roughnessMapPath: string;
-  normalMapPath: string;
-  normalMap: THREE.Texture | null;
-  aoMapPath: string;
-  aoMap: THREE.Texture | null;
-  bumpMapPath: string;
-  bumpMap: THREE.Texture | null;
-  displacementMapPath: string;
-  displacementMap: THREE.Texture | null;
-  CustomMaterial?: (props: any) => JSX.Element;
-}) {
+}: SphereClumpProps) {
   // on double click...
   // the clump stops interacting with itself
   // (but not with the collidersphere)

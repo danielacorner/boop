@@ -29,7 +29,7 @@ export function ColliderSphere() {
   // const {tier} = useDetectGPU();
   const { isExpanded } = usePositions();
   const colliderRadiusMultiplier =
-    (isExpanded ? 1.2 : 1) *
+    (isExpanded ? 0.8 : 1) *
     (size.width > 720 ? 1.2 : 1) *
     (autoMode ? 1.4 : 1);
   const colliderRadius = colliderRadiusMultiplier * COLLIDER_RADIUS;

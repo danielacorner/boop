@@ -2,12 +2,39 @@
 import * as THREE from "three";
 import { useSphere } from "@react-three/cannon";
 import { useEffect, useMemo, useRef, useState } from "react";
-import { COLORS, GROUP1, GROUP2 } from "../../utils/constants";
+import { COLORS, GROUP1, GROUP2, BALL_RADIUS } from "../../utils/constants";
 import { rfs, useEventListener } from "../../utils/hooks";
 import { WHITE_PIXEL } from "./Clump";
 import { usePullTowardsCenter } from "./usePullTowardsCenter";
 import { useFrame } from "@react-three/fiber";
-import { IcosahedronGeometry } from "three";
+import { usePositions } from "../../store/store";
+
+export type SphereClumpProps = {
+  radius: number;
+  mass: number;
+  numNodes: any;
+  mat: THREE.Matrix4;
+  position: [number, number, number] | null;
+  vec: THREE.Vector3;
+  colorArray: string[];
+  materialProps: any;
+  texturePath: string;
+  coloredTexture: boolean;
+  icosa: boolean;
+  dodeca: boolean;
+  texture: THREE.Texture | null;
+  roughnessMap: THREE.Texture | null;
+  roughnessMapPath: string;
+  normalMapPath: string;
+  normalMap: THREE.Texture | null;
+  aoMapPath: string;
+  aoMap: THREE.Texture | null;
+  bumpMapPath: string;
+  bumpMap: THREE.Texture | null;
+  displacementMapPath: string;
+  displacementMap: THREE.Texture | null;
+  CustomMaterial?: (props: any) => JSX.Element;
+};
 
 export function SphereClump({
   radius,
@@ -34,33 +61,9 @@ export function SphereClump({
   displacementMapPath,
   displacementMap,
   CustomMaterial,
-}: {
-  radius: number;
-  mass: number;
-  numNodes: any;
-  mat: THREE.Matrix4;
-  position: [number, number, number] | null;
-  vec: THREE.Vector3;
-  colorArray: string[];
-  materialProps: any;
-  texturePath: string;
-  coloredTexture: boolean;
-  icosa: boolean;
-  dodeca: boolean;
-  texture: THREE.Texture | null;
-  roughnessMap: THREE.Texture | null;
-  roughnessMapPath: string;
-  normalMapPath: string;
-  normalMap: THREE.Texture | null;
-  aoMapPath: string;
-  aoMap: THREE.Texture | null;
-  bumpMapPath: string;
-  bumpMap: THREE.Texture | null;
-  displacementMapPath: string;
-  displacementMap: THREE.Texture | null;
-  CustomMaterial?: (props: any) => JSX.Element;
-}) {
+}: SphereClumpProps) {
   const radiusRef = useRef(radius);
+  const { isExpanded } = usePositions();
   // on double click...
   // the clump stops interacting with itself
   // (but not with the collidersphere)
@@ -71,8 +74,8 @@ export function SphereClump({
 
   const [sphereRef, api] = useSphere<THREE.InstancedMesh>(
     () => ({
-      args: [radiusRef.current],
-      mass,
+      args: [radius],
+      mass: mass,
       angularDamping: 0,
       linearDamping: 0.65,
       angularVelocity: [rfs(0.8), rfs(0.8), rfs(0.8)],
@@ -82,7 +85,7 @@ export function SphereClump({
       collisionFilterGroup: doubleclicked ? GROUP2 : GROUP1,
     }),
     null,
-    [doubleclicked, mass, radiusRef.current]
+    [doubleclicked, mass, radius]
   );
   const nodes = useMemo(() => [...Array(numNodes)], [numNodes]);
   usePullTowardsCenter({
@@ -162,16 +165,16 @@ export function SphereClump({
 
   // animate the radius
   const WOBBLE = 0.1;
-  const ANIMATE_SPEED = 0.5;
+  const ANIMATE_SPEED = 1;
   useFrame(({ clock }) => {
     const t = clock.getElapsedTime();
     const wobble = Math.abs(Math.sin(t) * WOBBLE) - WOBBLE / 2;
-    const nextRadius = radius + wobble;
+    const nextRadius = radius + (isExpanded ? wobble : 0);
     // change radius using lerp
     radiusRef.current = THREE.MathUtils.lerp(
       radiusRef.current,
       nextRadius,
-      0.1 * ANIMATE_SPEED
+      0.1 * ANIMATE_SPEED * (isExpanded ? 0.5 : 1)
     );
     if (!sphereRef.current) {
       return;

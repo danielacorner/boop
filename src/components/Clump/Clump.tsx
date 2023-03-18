@@ -2,7 +2,7 @@ import { useMemo } from "react";
 import * as THREE from "three";
 import { BALL_RADIUS, BALL_MASS, COLORS } from "../../utils/constants";
 import { IcoClump } from "./IcoClump";
-import { SphereClump } from "./SphereClump";
+import { SphereClump, SphereClumpProps } from "./SphereClump";
 
 export const WHITE_PIXEL = "/white_pixel.png";
 const mat = new THREE.Matrix4();
@@ -30,7 +30,7 @@ export function Clump({
   aoMap = null as null | THREE.Texture,
   bumpMap = null as null | THREE.Texture,
   displacementMap = null as null | THREE.Texture,
-}) {
+}: Omit<SphereClumpProps, "colorArray">) {
   const colorArray = useMemo(
     () =>
       new Array(numNodes).fill(null).flatMap((_, i) => {
@@ -39,7 +39,7 @@ export function Clump({
       }),
     [numNodes]
   );
-  const props = {
+  const props: SphereClumpProps = {
     radius,
     mass,
     numNodes,
