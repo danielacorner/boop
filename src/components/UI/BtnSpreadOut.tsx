@@ -1,22 +1,18 @@
 import { IconButton } from "@mui/material";
 import { AutoAwesome } from "@mui/icons-material";
 import styled from "styled-components";
-import { useAtom } from "jotai";
+import { usePositions } from "../../store/store";
 import { POSITIONS } from "../../utils/constants";
-import { positionsAtom } from "../../store/store";
 
 export function SpreadOutButton(props) {
-  const [positions, setPositions] = useAtom(positionsAtom);
+  const { isExpanded, setPositions } = usePositions();
 
-  const isInitialPosition = positions.dodeca === POSITIONS.initial.dodeca;
   return (
     <StyledIconButton
       {...props}
-      className={isInitialPosition ? "" : "active"}
+      className={!isExpanded ? "" : "active"}
       onClick={() => {
-        setPositions(
-          isInitialPosition ? POSITIONS.secondary : POSITIONS.initial
-        );
+        setPositions(!isExpanded ? POSITIONS.secondary : POSITIONS.initial);
       }}
     >
       <AutoAwesome />

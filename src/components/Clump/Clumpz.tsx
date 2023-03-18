@@ -1,9 +1,10 @@
 import { useDetectGPU, useTexture } from "@react-three/drei";
 import { Clump } from "./Clump";
-import { BALL_MASS, BALL_RADIUS, POSITIONS } from "../../utils/constants";
+import { BALL_MASS, BALL_RADIUS } from "../../utils/constants";
+import { usePositions } from "../../store/store";
 
 export function Clumpz({ positions }) {
-  const expanded = positions.dodeca[0] !== POSITIONS.initial.dodeca[0];
+  const { isExpanded } = usePositions();
   const gpu = useDetectGPU();
   // const num = 2;
   const num = 8;
@@ -63,7 +64,7 @@ export function Clumpz({ positions }) {
           envMapIntensity: 4,
           transmission: 0,
         }}
-        radius={BALL_RADIUS * 1.4 * (expanded ? 0.6 : 1)}
+        radius={BALL_RADIUS * 1.4 * (isExpanded ? 0.6 : 1)}
         mass={BALL_MASS * 1.4 * 2}
         position={positions.earth}
       />
@@ -85,7 +86,7 @@ export function Clumpz({ positions }) {
           BALL_RADIUS *
           1.2 *
           // shrink when it's alone with the earth
-          (!expanded ? 1 : 0.25)
+          (!isExpanded ? 1 : 0.25)
         }
         mass={BALL_MASS * 2}
         position={positions.moon}
@@ -104,7 +105,7 @@ export function Clumpz({ positions }) {
           envMapIntensity: 1.5,
           transmission: 0,
         }}
-        radius={BALL_RADIUS * 1.8 * (expanded ? 1.5 : 1)}
+        radius={BALL_RADIUS * 1.8 * (isExpanded ? 1.5 : 1)}
         mass={BALL_MASS * 1.8 * 2}
         position={positions.jupiter}
       />
@@ -121,7 +122,7 @@ export function Clumpz({ positions }) {
           envMapIntensity: 4,
           transmission: 0,
         }}
-        radius={BALL_RADIUS * 2.4 * (expanded ? 8 : 1)}
+        radius={BALL_RADIUS * 2.4 * (isExpanded ? 8 : 1)}
         mass={BALL_MASS * 2.4 * 2}
         position={positions.sun}
       />

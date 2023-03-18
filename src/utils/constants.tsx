@@ -1,4 +1,3 @@
-import { atom } from "jotai";
 import palettes from "nice-color-palettes";
 export const COLORS = [
   ...palettes[0],

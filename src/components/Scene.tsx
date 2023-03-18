@@ -17,7 +17,7 @@ import { useMemo, useState } from "react";
 import { Clumpz } from "./Clump/Clumpz";
 import { musicAtom } from "./UI/Music/Music";
 import * as THREE from "three";
-import { isCameraMovingAtom, positionsAtom } from "../store/store";
+import { isCameraMovingAtom, usePositions } from "../store/store";
 // import { RGBELoader } from "three-stdlib";
 // import Diamond from "./Diamond";
 // import { Clumpz } from "./Clumpz";
@@ -136,7 +136,7 @@ export const Scene = () => {
   );
 };
 function PhysicsScene() {
-  const [positionsNormalized] = useAtom(positionsAtom);
+  const { positions: positionsNormalized } = usePositions();
 
   const { viewport } = useThree();
   const positions = useMemo(

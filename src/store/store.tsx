@@ -1,5 +1,13 @@
-import { atom } from "jotai";
+import { atom, useAtom } from "jotai";
 import { POSITIONS } from "../utils/constants";
 
 export const isCameraMovingAtom = atom(false);
-export const positionsAtom = atom(POSITIONS.initial);
+const positionsAtom = atom(POSITIONS.initial);
+export function usePositions() {
+  const [positions, setPositions] = useAtom(positionsAtom);
+  return {
+    positions,
+    setPositions,
+    isExpanded: positions.dodeca[0] !== POSITIONS.initial.dodeca[0],
+  };
+}
