@@ -252,7 +252,7 @@ export function Clumpz({ positions }) {
           transmission: 1,
           thickness: BALL_RADIUS * 1.2,
         }}
-        radius={BALL_RADIUS * 1.2 * 0.5}
+        radius={BALL_RADIUS * 1.2 * 0.8}
         mass={BALL_MASS}
         position={positions.dodeca}
       />

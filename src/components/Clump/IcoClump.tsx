@@ -180,8 +180,9 @@ export function IcoClump({
       {icosa ? (
         <icosahedronGeometry args={[radius, 0]} />
       ) : dodeca ? (
-        <dodecahedronGeometry args={[radius, 0]} />
+        <octahedronGeometry args={[radius, 0]} />
       ) : (
+        // <dodecahedronGeometry args={[radius, 0]} />
         <sphereGeometry args={[radius, 32, 32]}>
           {/* <instancedAttribute
                                   attach="attributes-color"
