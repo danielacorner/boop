@@ -16,21 +16,21 @@ export const MUSIC: {
     title: "Is This Our Earth? - Lane 8",
     url: "https://www.youtube.com/watch?v=rs80mrSQliM",
   },
-  {
-    bpm: 110,
-    title: "Welcome to Lunar Industries - Moon OST",
-    url: "https://www.youtube.com/watch?v=WUraLNrTVeg",
-  },
-  {
-    bpm: 78,
-    title: "Memories (Someone We'll Never Know) - Moon OST",
-    url: "https://www.youtube.com/watch?v=XSJJuDLtCqY",
-  },
-  {
-    bpm: 66,
-    title: "The Nursery - Moon OST",
-    url: "https://www.youtube.com/watch?v=RgVzeqPIt-8",
-  },
+  // {
+  //   bpm: 110,
+  //   title: "Welcome to Lunar Industries - Moon OST",
+  //   url: "https://www.youtube.com/watch?v=WUraLNrTVeg",
+  // },
+  // {
+  //   bpm: 78,
+  //   title: "Memories (Someone We'll Never Know) - Moon OST",
+  //   url: "https://www.youtube.com/watch?v=XSJJuDLtCqY",
+  // },
+  // {
+  //   bpm: 66,
+  //   title: "The Nursery - Moon OST",
+  //   url: "https://www.youtube.com/watch?v=RgVzeqPIt-8",
+  // },
   {
     bpm: 117,
     title: "Battlestar Sonatica - Bear McCreary",
@@ -56,11 +56,11 @@ export const MUSIC: {
     title: "Tristram - Diablo 2 OST",
     url: "https://www.youtube.com/watch?v=VWziHqEd0Uw&t=1372s",
   },
-  {
-    bpm: 99,
-    title: "P-Rofi - Stafrænn Hákon",
-    url: "https://www.youtube.com/watch?v=GC_xfnEXtqs",
-  },
+  // {
+  //   bpm: 99,
+  //   title: "P-Rofi - Stafrænn Hákon",
+  //   url: "https://www.youtube.com/watch?v=GC_xfnEXtqs",
+  // },
   // {
   //   bpm: 115,
   //   title: "Space Me Out (Jody Wisternoff & James Grant Edit)",

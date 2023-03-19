@@ -7,7 +7,7 @@ export function Clumpz({ positions }) {
   const { isExpanded } = usePositions();
   const gpu = useDetectGPU();
   // const num = 2;
-  const num = 6 + 4 * gpu.tier;
+  const num = 8 + 4 * (gpu.tier - 1);
 
   // const texture = useLoader(
   //   RGBELoader as any,
@@ -237,7 +237,7 @@ export function Clumpz({ positions }) {
       {/* shiny icosahedron */}
       <Clump
         icosa={true}
-        numNodes={num * (gpu.tier > 1 ? 3 : 2)}
+        numNodes={num * (gpu.tier > 1 ? 3 : 1)}
         materialProps={{
           roughness: 0,
           emissive: null,
@@ -253,7 +253,7 @@ export function Clumpz({ positions }) {
       {/* shiny dodecaahedron */}
       <Clump
         dodeca={true}
-        numNodes={num * (gpu.tier > 1 ? 6 : 3)}
+        numNodes={num * (gpu.tier > 1 ? 6 : 2)}
         materialProps={{
           roughness: 0,
           emissive: null,
