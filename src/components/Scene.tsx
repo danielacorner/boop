@@ -9,7 +9,6 @@ import {
 import { Canvas, useThree, useFrame } from "@react-three/fiber";
 import { Physics } from "@react-three/cannon";
 import { D20StarComponent } from "./D20StarComponent";
-import { ColliderSphere } from "./ColliderSphere";
 import { FancyStars } from "./FancyStars";
 import { useAtom } from "jotai";
 import { Effects } from "./Effects";
@@ -18,6 +17,7 @@ import { Clumpz } from "./Clump/Clumpz";
 import { musicAtom } from "./UI/Music/Music";
 import * as THREE from "three";
 import { isCameraMovingAtom, usePositions } from "../store/store";
+import { Collider } from "./Collider/Collider";
 // import { RGBELoader } from "three-stdlib";
 // import Diamond from "./Diamond";
 // import { Clumpz } from "./Clumpz";
@@ -151,7 +151,7 @@ function PhysicsScene() {
   return (
     <>
       {/* <DebugInDev> */}
-      <ColliderSphere />
+      <Collider />
       <D20StarComponent position={positions.d20} />
       {/* <MusicZoom /> */}
       <Clumpz {...{ positions }} />
@@ -159,7 +159,6 @@ function PhysicsScene() {
     </>
   );
 }
-
 const DISTANCE = 20;
 const CAMERA_SPIN_SPEED = 1;
 function MoveCamera() {

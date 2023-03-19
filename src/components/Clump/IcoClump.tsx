@@ -53,7 +53,7 @@ export function IcoClump({
       position: [rfs(20), rfs(20), rfs(20)],
       rotation: [rfs(20), rfs(20), rfs(20)],
       collisionFilterMask: GROUP1,
-      collisionFilterGroup: doubleclicked ? GROUP2 : GROUP1,
+      collisionFilterGroup: /* doubleclicked ? GROUP2 :  */ GROUP1,
       // onCollide: ({ body, collisionFilters, contact, target }: any) => {
       //   // manually spin the clump when the colliderSphere hits it (bc we are using useSphere for icosahedrons -- otherwise it would just bounce without spinning)
       //   if (body.name === "colliderSphere") {
@@ -69,7 +69,7 @@ export function IcoClump({
       // },
     }),
     null,
-    [doubleclicked, mass, width]
+    [/* doubleclicked, */ mass, width]
   );
   // ! tried using icosahedron geometry, but it doesn't work with instanced meshes
   // ! not working great - dodecas overlap with spheres

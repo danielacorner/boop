@@ -1,12 +1,12 @@
 /* eslint-disable react/no-unknown-property */
 import * as THREE from "three";
 import { useConvexPolyhedron } from "@react-three/cannon";
-import { useMemo, useRef, useState } from "react";
+import { useRef, useState } from "react";
 import D20_Star from "../Models/D20_star";
 import { useMount } from "react-use";
-import { BALL_MASS, BALL_RADIUS, GROUP1, GROUP2 } from "../utils/constants";
+import { BALL_MASS, BALL_RADIUS, GROUP1 } from "../utils/constants";
 import { animated, useSpring } from "@react-spring/three";
-import { toConvexProps, useEventListener } from "../utils/hooks";
+import { toConvexProps } from "../utils/hooks";
 import { usePullSingleTowardsCenter } from "./usePullSingleTowardsCenter";
 
 const COMMON_MATERIAL_PROPS = {
@@ -29,20 +29,15 @@ export function D20StarComponent({
 }: {
   position: [number, number, number];
 }) {
-  const [doubleclicked, setDoubleclicked] = useState(false);
-  useEventListener("dblclick", () => {
-    setDoubleclicked(!doubleclicked);
-  });
-
   const [ref, api] = useConvexPolyhedron<THREE.InstancedMesh>(
     () => ({
       mass: BALL_MASS * 2, // approximate mass using volume of a sphere equation
       // https://threejs.org/docs/scenes/geometry-browser.html#IcosahedronGeometry
       args: icosahedronGeometrygeo as any,
-      collisionFilterMask: doubleclicked ? GROUP2 : GROUP1, // It can only collide with group 1 and 2
+      collisionFilterMask: /* doubleclicked ? GROUP2 :  */ GROUP1, // It can only collide with group 1 and 2
     }),
-    null,
-    [doubleclicked]
+    null
+    // [doubleclicked]
   );
 
   const d20Position = useRef<[number, number, number]>([0, 0, 0]);
@@ -122,7 +117,7 @@ export function D20StarComponent({
               {...COMMON_MATERIAL_PROPS}
               color={"#e3deee"}
               emissive={emissive}
-              depthTest={hoveredNear || doubleclicked ? false : true}
+              depthTest={hoveredNear ? false : true}
               depthWrite={true}
               metalness={0.9}
               roughness={0}

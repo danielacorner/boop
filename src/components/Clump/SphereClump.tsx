@@ -64,13 +64,6 @@ export function SphereClump({
 }: SphereClumpProps) {
   const radiusRef = useRef(radius);
   const { isExpanded } = usePositions();
-  // on double click...
-  // the clump stops interacting with itself
-  // (but not with the collidersphere)
-  const [doubleclicked, setDoubleclicked] = useState(false);
-  useEventListener("dblclick", () => {
-    setDoubleclicked(!doubleclicked);
-  });
 
   const [sphereRef, api] = useSphere<THREE.InstancedMesh>(
     () => ({
@@ -82,10 +75,10 @@ export function SphereClump({
       position: [rfs(20), rfs(20), rfs(20)],
       rotation: [rfs(20), rfs(20), rfs(20)],
       collisionFilterMask: GROUP1,
-      collisionFilterGroup: doubleclicked ? GROUP2 : GROUP1,
+      collisionFilterGroup: /* doubleclicked ? GROUP2 : */ GROUP1,
     }),
     null,
-    [doubleclicked, mass, radius]
+    [mass, radius]
   );
   const nodes = useMemo(() => [...Array(numNodes)], [numNodes]);
   usePullTowardsCenter({
