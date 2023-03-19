@@ -7,7 +7,7 @@ export function Clumpz({ positions }) {
   const { isExpanded } = usePositions();
   const gpu = useDetectGPU();
   // const num = 2;
-  const num = 8;
+  const num = 6 + 4 * gpu.tier;
 
   // const texture = useLoader(
   //   RGBELoader as any,
@@ -126,6 +126,22 @@ export function Clumpz({ positions }) {
         mass={BALL_MASS * 2.4 * 2}
         position={positions.sun}
       />
+      {/* <Clump
+        texture={ballSunTexture}
+        texturePath={"ball_sun.jpg"}
+        // normalMapPath={"wavy-normal.jpg"}
+        numNodes={1}
+        materialProps={{
+          roughness: 0.5,
+          emissive: "#c04b14",
+          metalness: 0.1,
+          envMapIntensity: 4,
+          transmission: 0,
+        }}
+        radius={BALL_RADIUS * 2.4 * (isExpanded ? 8 : 1)}
+        mass={BALL_MASS * 2.4 * 2}
+        position={positions.sun}
+      /> */}
       {/* colored cell */}
       <Clump
         texture={ballCellTexture}
@@ -211,7 +227,7 @@ export function Clumpz({ positions }) {
       {/* shiny icosahedron */}
       <Clump
         icosa={true}
-        numNodes={num * 3}
+        numNodes={num * (gpu.tier > 1 ? 3 : 2)}
         materialProps={{
           roughness: 0,
           emissive: null,
@@ -227,7 +243,7 @@ export function Clumpz({ positions }) {
       {/* shiny dodecaahedron */}
       <Clump
         dodeca={true}
-        numNodes={num * 6}
+        numNodes={num * (gpu.tier > 1 ? 6 : 3)}
         materialProps={{
           roughness: 0,
           emissive: null,

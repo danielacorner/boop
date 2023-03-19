@@ -1,5 +1,5 @@
 /* eslint-disable react/no-unknown-property */
-import { Sphere } from "@react-three/drei";
+import { Sphere, useDetectGPU } from "@react-three/drei";
 import * as THREE from "three";
 import { useFrame, useThree } from "@react-three/fiber";
 import { useSphere } from "@react-three/cannon";
@@ -26,12 +26,13 @@ export function ColliderSphere() {
     setDoubleclicked(!doubleclicked);
   });
 
-  // const {tier} = useDetectGPU();
+  const gpu = useDetectGPU();
   const { isExpanded } = usePositions();
   const colliderRadiusMultiplier =
     (isExpanded ? 0.8 : 1) *
     (size.width > 720 ? 1.2 : 1) *
-    (autoMode ? 1.4 : 1);
+    (autoMode ? 1.4 : 1) *
+    (1 + gpu.tier * 0.2);
   const colliderRadius = colliderRadiusMultiplier * COLLIDER_RADIUS;
 
   const shouldLerpRef = useRef<boolean>(true);
