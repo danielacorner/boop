@@ -7,7 +7,7 @@ export function Clumpz({ positions }) {
   const { isExpanded } = usePositions();
   const gpu = useDetectGPU();
   // const num = 2;
-  const num = 8 + 4 * (gpu.tier - 1);
+  const num = 8 + 2 * (gpu.tier - 1);
 
   // const texture = useLoader(
   //   RGBELoader as any,

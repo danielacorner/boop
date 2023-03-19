@@ -64,18 +64,6 @@ export function ColliderSphere() {
 
   return (
     <animated.mesh name="colliderSphere" ref={sphereRef} scale={scale}>
-      <Icosahedron
-        args={[colliderRadius, 0]}
-        matrixWorldAutoUpdate={undefined}
-        getObjectsByProperty={undefined}
-        getVertexPosition={undefined}
-      >
-        <meshPhysicalMaterial
-          transmission={1}
-          thickness={colliderRadius / 2}
-          roughness={0}
-        />
-      </Icosahedron>
       <Sphere
         args={[colliderRadius, 32]}
         matrixWorldAutoUpdate={undefined}

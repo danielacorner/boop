@@ -1,6 +1,6 @@
 /* eslint-disable react/no-unknown-property */
 import { Icosahedron } from "@react-three/drei";
-import { useConvexPolyhedron } from "@react-three/cannon";
+import { useConvexPolyhedron, useSphere } from "@react-three/cannon";
 import { useEffect, useMemo, useRef } from "react";
 import { toConvexProps, useEventListener } from "../../../utils/hooks";
 import { useSpring, animated } from "@react-spring/three";
@@ -8,26 +8,21 @@ import { useMoveWithMouse } from "../useMoveWithMouse";
 import { useCollider } from "../useCollider";
 import { useDanceToMusic } from "../useDanceToMusic";
 import { useChangeShape } from "../useShape";
-import * as THREE from "three";
 import { useIsTabActive } from "../useIsTabActive";
 import { useDoubleClicked } from "../useDoubleClicked";
 
 export function ColliderInvisible() {
   const { colliderRadius } = useCollider();
-  const icosahedronGeometrygeo = useMemo(
-    () => toConvexProps(new THREE.IcosahedronGeometry(colliderRadius)),
-    [colliderRadius]
-  );
-  const [sphereRef, api] = useConvexPolyhedron<THREE.InstancedMesh>(
+
+  const [sphereRef, api] = useSphere<any>(
     () => ({
       name: "colliderSphere",
       type: "Kinematic",
-      mass: 2, // approximate mass using volume of a sphere equation
-      // https://threejs.org/docs/scenes/geometry-browser.html#IcosahedronGeometry
-      args: icosahedronGeometrygeo as any,
+      args: [colliderRadius * 2],
       position: [0, 0, 0],
     }),
-    null
+    null,
+    [colliderRadius]
   );
 
   const shouldLerpRef = useRef<boolean>(true);
