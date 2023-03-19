@@ -45,6 +45,13 @@ export function ColliderInvisible() {
     setDblClicked(false);
   });
 
+  useEffect(()=>{
+if(dblClicked){
+changeShape()
+setDblClicked(false)
+}
+}, [dblClicked])
+
   const { scale } = useSpring({
     scale: [1, 1, 1].map((d) => d * (dblClicked ? 1.2 : 1)) as [
       number,
