@@ -1,27 +1,19 @@
 /* eslint-disable react/no-unknown-property */
-import { Box, Icosahedron, Sphere } from "@react-three/drei";
-import { useConvexPolyhedron, useSphere } from "@react-three/cannon";
-import { useEffect, useMemo, useRef, useState } from "react";
+import { Icosahedron } from "@react-three/drei";
+import { useConvexPolyhedron } from "@react-three/cannon";
+import { useEffect, useMemo, useRef } from "react";
 import { toConvexProps, useEventListener } from "../../utils/hooks";
-import { GROUP1, GROUP2 } from "../../utils/constants";
+import { COLLIDER_RADIUS } from "../../utils/constants";
 import { useSpring, animated } from "@react-spring/three";
 import { useMoveWithMouse } from "./useMoveWithMouse";
 import { useCollider } from "./useCollider";
 import { useDanceToMusic } from "./useDanceToMusic";
-import { useShape } from "./useShape";
+import { useChangeShape } from "./useShape";
 import * as THREE from "three";
 import { useIsTabActive } from "./useIsTabActive";
-
-export const LERP_SPEED = 0.35;
-export const COLLIDER_RADIUS = 2;
+import { useDoubleClicked } from "./useDoubleClicked";
 
 export function ColliderInvisible() {
-  // on double click, keep the sphere interactive with the clumps
-  // const [doubleclicked, setDoubleclicked] = useState(false);
-  // useEventListener("dblclick", () => {
-  //   setDoubleclicked(!doubleclicked);
-  // });
-
   const { colliderRadius, colliderRadiusMultiplier } = useCollider();
   const icosahedronGeometrygeo = useMemo(
     () => toConvexProps(new THREE.IcosahedronGeometry(colliderRadius)),
@@ -36,11 +28,10 @@ export function ColliderInvisible() {
       args: icosahedronGeometrygeo as any,
       // collisionFilterMask: doubleclicked ? GROUP2 : GROUP1, // It can only collide with group 1 and 2
       position: [0, 0, 0],
-      collisionFilterGroup: GROUP1, // Put the sphere in group 1
-      collisionFilterMask: GROUP1 | GROUP2, // It can only collide with group 1 and 2
+      // collisionFilterGroup: GROUP1, // Put the sphere in group 1
+      // collisionFilterMask: GROUP1 | GROUP2, // It can only collide with group 1 and 2
     }),
     null
-    // ,[doubleclicked]
   );
 
   const shouldLerpRef = useRef<boolean>(true);
@@ -56,12 +47,12 @@ export function ColliderInvisible() {
   useMoveWithMouse({ isTabActive, position, api, shouldLerpRef });
 
   // double click to change width
-  const [dblClicked, setDblClicked] = useState(false);
+  const [dblClicked, setDblClicked] = useDoubleClicked();
+  const changeShape = useChangeShape();
   useEventListener("dblclick", (event) => {
-    setDblClicked(true);
+    changeShape();
+    setDblClicked(false);
   });
-
-  const [, setShape] = useShape();
 
   const { scale } = useSpring({
     scale: [1, 1, 1].map(
@@ -74,8 +65,7 @@ export function ColliderInvisible() {
     },
     onRest: () => {
       if (dblClicked) {
-        setDblClicked(false);
-        setShape("sphere");
+        // changeShape();
       }
     },
   });

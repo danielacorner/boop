@@ -74,8 +74,8 @@ export function SphereClump({
       angularVelocity: [rfs(0.8), rfs(0.8), rfs(0.8)],
       position: [rfs(20), rfs(20), rfs(20)],
       rotation: [rfs(20), rfs(20), rfs(20)],
-      collisionFilterMask: GROUP1,
-      collisionFilterGroup: /* doubleclicked ? GROUP2 : */ GROUP1,
+      // collisionFilterMask: GROUP1,
+      // collisionFilterGroup: /* doubleclicked ? GROUP2 : */ GROUP1,
     }),
     null,
     [mass, radius]

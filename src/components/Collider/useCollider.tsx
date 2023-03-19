@@ -1,13 +1,13 @@
 import { useDetectGPU } from "@react-three/drei";
 import { useThree } from "@react-three/fiber";
-import { useAtom } from "jotai";
-import { musicAtom } from "../UI/Music/Music";
+
 import { usePositions } from "../../store/store";
-import { COLLIDER_RADIUS } from "./ColliderIcosa";
+import { COLLIDER_RADIUS } from "../../utils/constants";
+import { useMusic } from "../UI/Music/Music";
 
 export function useCollider() {
   const { size } = useThree();
-  const [{ autoMode }] = useAtom(musicAtom);
+  const [{ autoMode }] = useMusic();
   const gpu = useDetectGPU();
   const { isExpanded } = usePositions();
   const colliderRadiusMultiplier =

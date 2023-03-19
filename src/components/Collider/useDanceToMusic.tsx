@@ -6,7 +6,7 @@ import { useAtom } from "jotai";
 import { musicAtom } from "../UI/Music/Music";
 import { MUSIC } from "../UI/Music/MUSIC_DATA";
 import { usePositions } from "../../store/store";
-import { LERP_SPEED } from "./ColliderSphere";
+import { COLLIDER_LERP_SPEED } from "../../utils/constants";
 
 export function useDanceToMusic({
   api,
@@ -103,12 +103,16 @@ export function useDanceToMusic({
         THREE.MathUtils.lerp(
           position.current[0],
           nextPosition.current[0],
-          LERP_SPEED * nextBeat.current.lerpSpeed * (1 / moveDistanceMultiplier)
+          COLLIDER_LERP_SPEED *
+            nextBeat.current.lerpSpeed *
+            (1 / moveDistanceMultiplier)
         ),
         THREE.MathUtils.lerp(
           position.current[1],
           nextPosition.current[1],
-          LERP_SPEED * nextBeat.current.lerpSpeed * (1 / moveDistanceMultiplier)
+          COLLIDER_LERP_SPEED *
+            nextBeat.current.lerpSpeed *
+            (1 / moveDistanceMultiplier)
         ),
         0
       );

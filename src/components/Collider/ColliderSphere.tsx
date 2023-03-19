@@ -3,16 +3,14 @@ import { Box, Icosahedron, Sphere } from "@react-three/drei";
 import { useSphere } from "@react-three/cannon";
 import { useEffect, useRef, useState } from "react";
 import { useEventListener } from "../../utils/hooks";
-import { GROUP1, GROUP2 } from "../../utils/constants";
+import { COLLIDER_RADIUS, GROUP1, GROUP2 } from "../../utils/constants";
 import { useSpring, animated } from "@react-spring/three";
 import { useMoveWithMouse } from "./useMoveWithMouse";
 import { useCollider } from "./useCollider";
 import { useDanceToMusic } from "./useDanceToMusic";
-import { useShape } from "./useShape";
+import { useChangeShape, useShape } from "./useShape";
 import { useIsTabActive } from "./useIsTabActive";
-
-export const LERP_SPEED = 0.35;
-export const COLLIDER_RADIUS = 2;
+import { useDoubleClicked } from "./useDoubleClicked";
 
 export function ColliderSphere() {
   // on double click, keep the sphere interactive with the clumps
@@ -35,8 +33,8 @@ export function ColliderSphere() {
       type: "Kinematic",
       args: [colliderRadius],
       position: [0, 0, 0],
-      collisionFilterGroup: GROUP1, // Put the sphere in group 1
-      collisionFilterMask: GROUP1 | GROUP2, // It can only collide with group 1 and 2
+      // collisionFilterGroup: GROUP1, // Put the sphere in group 1
+      // collisionFilterMask: GROUP1 | GROUP2, // It can only collide with group 1 and 2
       // collisionFilterMask: GROUP2 | GROUP3, // It can only collide with group 2 and 3
       // collisionFilterMask,
     }),
@@ -55,16 +53,8 @@ export function ColliderSphere() {
   useMoveWithMouse({ isTabActive, position, api, shouldLerpRef });
 
   // double click to change width
-  const [dblClicked, setDblClicked] = useState(false);
-  useEventListener("dblclick", (event) => {
-    setDblClicked(true);
-    // const timer = setTimeout(() => {
-    //   setDblClicked(false);
-    // }, 1000);
-    // return () => clearTimeout(timer);
-  });
-
-  const [, setShape] = useShape();
+  const [dblClicked, setDblClicked] = useDoubleClicked();
+  const changeShape = useChangeShape();
 
   const { scale } = useSpring({
     scale: [1, 1, 1].map(
@@ -78,7 +68,7 @@ export function ColliderSphere() {
     onRest: () => {
       if (dblClicked) {
         setDblClicked(false);
-        setShape("icosa");
+        changeShape();
       }
     },
   });

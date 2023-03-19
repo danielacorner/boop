@@ -14,6 +14,9 @@ export const GROUP1 = 1;
 export const GROUP2 = 2;
 export const GROUP3 = 4;
 
+export const COLLIDER_RADIUS = 2;
+export const COLLIDER_LERP_SPEED = 0.35;
+
 /** positions in the range [-1, 1] - will get multiplied by viewport width/height */
 type Positions = { [key: string]: [number, number, number] };
 export const POSITIONS: { initial: Positions; secondary: Positions } = {

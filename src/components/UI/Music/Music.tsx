@@ -1,11 +1,8 @@
-import styled from "styled-components";
 import {
   VolumeUp,
   VolumeOff,
   AutoFixHigh,
   AutoFixOff,
-  ThreeSixty,
-  Shuffle,
 } from "@mui/icons-material";
 import { IconButton } from "@mui/material";
 import { useAtom, atom } from "jotai";
@@ -13,8 +10,8 @@ import ReactPlayer from "react-player";
 import { MUSIC } from "./MUSIC_DATA";
 import { useMount } from "react-use";
 import { atomWithStorage } from "jotai/utils";
-import { isCameraMovingAtom } from "../../../store/store";
 import { animated, useSpring } from "@react-spring/web";
+import { SoundButtonStyles } from "./SoundButtonStyles";
 
 const isFirstTimeVisitAtom = atomWithStorage<boolean>(
   "atoms:isFirstTimeVisit",
@@ -24,7 +21,9 @@ const isFirstTimeVisitAtom = atomWithStorage<boolean>(
 function randIntBetween(min: number, max: number) {
   return Math.floor(Math.random() * (max - min + 1)) + min;
 }
-
+export function useMusic() {
+  return useAtom(musicAtom);
+}
 export const musicAtom = atom<{
   playing: boolean;
   autoMode: boolean;
@@ -92,7 +91,7 @@ export function Music() {
     </>
   );
 }
-function getNewRandomNumber(prevNum, min, max) {
+export function getNewRandomNumber(prevNum, min, max) {
   let nextNum = prevNum;
   while (nextNum === prevNum) {
     nextNum = Math.floor(Math.random() * (max - min + 1)) + min;
@@ -147,131 +146,3 @@ export function AutoModeButton(props) {
     </SoundButtonStyles>
   );
 }
-export function ShuffleButton(props) {
-  const [
-    { url, title, internal, trackNumber, playing, autoMode, bpm },
-    setMusic,
-  ] = useAtom(musicAtom);
-  return (
-    <SoundButtonStyles {...props}>
-      <IconButton
-        disabled={!playing}
-        onClick={() => {
-          const nextTrackNumber = getNewRandomNumber(
-            trackNumber,
-            0,
-            MUSIC.length - 1
-          );
-          setMusic((p) => ({
-            ...p,
-            trackNumber: nextTrackNumber,
-            ...MUSIC[nextTrackNumber],
-          }));
-        }}
-      >
-        <Shuffle />
-      </IconButton>
-    </SoundButtonStyles>
-  );
-}
-export function SpinCameraButton(props) {
-  const [isCameraMoving, setIsCameraMoving] = useAtom(isCameraMovingAtom);
-  const springAnimateRotateWhileCameraIsMoving = useSpring({
-    // spring animates the div by rotating it continuously while the camera is moving
-    from: { transform: "rotate(0turn)" },
-    to: { transform: `rotate(${isCameraMoving ? 1 : 0}turn)` },
-    config: isCameraMoving
-      ? { duration: 4 * 1000 }
-      : { duration: undefined, tension: 100, friction: 28, mass: 1 },
-    loop: isCameraMoving,
-  });
-  return (
-    <SoundButtonStyles {...props}>
-      <AnimatedIconButton
-        style={springAnimateRotateWhileCameraIsMoving}
-        className={isCameraMoving ? "active" : ""}
-        onClick={() => setIsCameraMoving((p) => !p)}
-      >
-        <ThreeSixty
-          style={{ transform: `rotate(${isCameraMoving ? 0.5 : 0}turn)` }}
-        />
-      </AnimatedIconButton>
-    </SoundButtonStyles>
-  );
-}
-const AnimatedIconButton = animated(IconButton);
-const SoundButtonStyles = styled.div<{ isAudioPlaying: boolean }>`
-  pointer-events: auto;
-  white-space: nowrap;
-  display: flex;
-  align-items: center;
-  .MuiButtonBase-root {
-    color: hsla(0, 100%, 100%, 1);
-    &.Mui-disabled {
-      color: hsla(0, 100%, 100%, 0.5);
-    }
-    &.active,
-    &:active {
-      .MuiSvgIcon-root {
-        opacity: 1;
-      }
-    }
-  }
-  .MuiSvgIcon-root {
-    opacity: 0.4;
-    &:hover,
-    &:active {
-      opacity: 0.7;
-    }
-    width: 22px;
-    height: 22px;
-  }
-  .soundInfo {
-    margin-top: -3px;
-    font-family: system-ui;
-    position: relative;
-    overflow: hidden;
-    width: 100px;
-    height: 100%;
-    display: flex;
-    align-items: center;
-    a {
-      width: 100%;
-      position: absolute;
-      animation: scroll-left 10s linear infinite;
-      font-size: 12px;
-      color: white;
-      text-decoration: none;
-      opacity: ${(p) => (p.isAudioPlaying ? 0.5 : 0)};
-      &:hover,
-      &:active {
-        opacity: 1;
-      }
-    }
-  }
-
-  @keyframes scroll-left {
-    0% {
-      transform: translateX(90%);
-    }
-    100% {
-      transform: translateX(-90%);
-    }
-  }
-
-  @media (min-width: 768px) {
-    display: flex;
-    justify-content: center;
-    .MuiSvgIcon-root {
-      width: 24px;
-      height: 24px;
-    }
-    .soundInfo {
-      margin-top: -2px;
-      a {
-        font-size: 14px;
-      }
-      position: relative;
-    }
-  }
-`;

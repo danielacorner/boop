@@ -1,9 +1,9 @@
 /* eslint-disable react/no-unknown-property */
 import * as THREE from "three";
 import { useBox } from "@react-three/cannon";
-import { useEffect, useMemo, useState } from "react";
-import { COLORS, GROUP1, GROUP2 } from "../../utils/constants";
-import { rfs, useEventListener } from "../../utils/hooks";
+import { useEffect, useMemo } from "react";
+import { COLORS, GROUP1 } from "../../utils/constants";
+import { rfs } from "../../utils/hooks";
 import { WHITE_PIXEL } from "./Clump";
 import { usePullTowardsCenter } from "./usePullTowardsCenter";
 import { SphereClumpProps } from "./SphereClump";
@@ -37,10 +37,6 @@ export function IcoClump({
   // on double click...
   // the clump stops interacting with itself
   // (but not with the collidersphere)
-  const [doubleclicked, setDoubleclicked] = useState(false);
-  useEventListener("dblclick", () => {
-    setDoubleclicked(!doubleclicked);
-  });
   const rad = radius * 0.9;
   const width = rad * 1.8;
   const [sphereRef, api] = useBox<THREE.InstancedMesh>(
@@ -52,8 +48,8 @@ export function IcoClump({
       angularVelocity: [rfs(0.8), rfs(0.8), rfs(0.8)],
       position: [rfs(20), rfs(20), rfs(20)],
       rotation: [rfs(20), rfs(20), rfs(20)],
-      collisionFilterMask: GROUP1,
-      collisionFilterGroup: /* doubleclicked ? GROUP2 :  */ GROUP1,
+      // collisionFilterMask: GROUP1,
+      // collisionFilterGroup: GROUP1,
       // onCollide: ({ body, collisionFilters, contact, target }: any) => {
       //   // manually spin the clump when the colliderSphere hits it (bc we are using useSphere for icosahedrons -- otherwise it would just bounce without spinning)
       //   if (body.name === "colliderSphere") {
@@ -69,7 +65,7 @@ export function IcoClump({
       // },
     }),
     null,
-    [/* doubleclicked, */ mass, width]
+    [mass, width]
   );
   // ! tried using icosahedron geometry, but it doesn't work with instanced meshes
   // ! not working great - dodecas overlap with spheres

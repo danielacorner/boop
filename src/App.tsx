@@ -5,11 +5,13 @@ import {
   AutoModeButton,
   Music,
   MusicButton,
-  ShuffleButton,
-  SpinCameraButton,
 } from "./components/UI/Music/Music";
+import { SpinCameraButton } from "./components/UI/Music/SpinCameraButton";
+import { ShuffleButton } from "./components/UI/Music/ShuffleButton";
 import { GithubButton } from "./GithubButton";
 import styled from "styled-components";
+import { useEventListener } from "./utils/hooks";
+import { useDoubleClicked } from "./components/Collider/useDoubleClicked";
 
 function App() {
   return (
@@ -18,8 +20,17 @@ function App() {
       <Scene />
       <Music />
       <ControlsOverlay />
+      <TrackDoubleClick />
     </>
   );
+}
+
+function TrackDoubleClick() {
+  const [, setDoubleclicked] = useDoubleClicked();
+  useEventListener("dblclick", () => {
+    setDoubleclicked(true);
+  });
+  return null;
 }
 
 export default App;

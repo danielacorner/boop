@@ -8,6 +8,7 @@ import eslint from "vite-plugin-eslint";
 export default defineConfig({
   server: {
     port: 3000,
+    hmr: true,
   },
   // This changes the out put dir from dist to build
   // comment this out if that isn't relevant for your project

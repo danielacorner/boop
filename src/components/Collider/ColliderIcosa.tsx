@@ -1,31 +1,25 @@
 /* eslint-disable react/no-unknown-property */
 import { Icosahedron } from "@react-three/drei";
 import { useConvexPolyhedron } from "@react-three/cannon";
-import { useEffect, useMemo, useRef, useState } from "react";
-import { toConvexProps, useEventListener } from "../../utils/hooks";
-import { GROUP1, GROUP2 } from "../../utils/constants";
+import { useEffect, useMemo, useRef } from "react";
+import { toConvexProps } from "../../utils/hooks";
+import { COLLIDER_RADIUS, GROUP1, GROUP2 } from "../../utils/constants";
 import { useSpring, animated } from "@react-spring/three";
 import { useMoveWithMouse } from "./useMoveWithMouse";
 import { useCollider } from "./useCollider";
 import { useDanceToMusic } from "./useDanceToMusic";
-import { useShape } from "./useShape";
+import { useChangeShape, useShape } from "./useShape";
 import * as THREE from "three";
 import { useIsTabActive } from "./useIsTabActive";
 import { useSpin } from "./useSpin";
-
-export const LERP_SPEED = 0.35;
-export const COLLIDER_RADIUS = 2;
-
+import { useDoubleClicked } from "./useDoubleClicked";
+const ICOSA_MULT = 1.2;
 export function ColliderIcosa() {
-  // on double click, keep the sphere interactive with the clumps
-  // const [doubleclicked, setDoubleclicked] = useState(false);
-  // useEventListener("dblclick", () => {
-  //   setDoubleclicked(!doubleclicked);
-  // });
-
-  const { colliderRadius, colliderRadiusMultiplier } = useCollider();
+  const { colliderRadius: colliderRadius0, colliderRadiusMultiplier } =
+    useCollider();
+  const colliderRadius = colliderRadius0 * ICOSA_MULT;
   const icosahedronGeometrygeo = useMemo(
-    () => toConvexProps(new THREE.IcosahedronGeometry(colliderRadius)),
+    () => toConvexProps(new THREE.IcosahedronGeometry(colliderRadius * 1.3)),
     [colliderRadius]
   );
   const [sphereRef, api] = useConvexPolyhedron<THREE.InstancedMesh>(
@@ -35,13 +29,11 @@ export function ColliderIcosa() {
       mass: 2, // approximate mass using volume of a sphere equation
       // https://threejs.org/docs/scenes/geometry-browser.html#IcosahedronGeometry
       args: icosahedronGeometrygeo as any,
-      // collisionFilterMask: doubleclicked ? GROUP2 : GROUP1, // It can only collide with group 1 and 2
       position: [0, 0, 0],
-      collisionFilterGroup: GROUP1, // Put the sphere in group 1
-      collisionFilterMask: GROUP1 | GROUP2, // It can only collide with group 1 and 2
+      // collisionFilterGroup: GROUP1, // Put the sphere in group 1
+      // collisionFilterMask: GROUP1 | GROUP2, // It can only collide with group 1 and 2
     }),
     null
-    // ,[doubleclicked]
   );
   useSpin(api);
 
@@ -58,12 +50,9 @@ export function ColliderIcosa() {
   useMoveWithMouse({ isTabActive, position, api, shouldLerpRef });
 
   // double click to change width
-  const [dblClicked, setDblClicked] = useState(false);
-  useEventListener("dblclick", (event) => {
-    setDblClicked(true);
-  });
+  const [dblClicked, setDblClicked] = useDoubleClicked();
 
-  const [, setShape] = useShape();
+  const changeShape = useChangeShape();
 
   const { scale } = useSpring({
     scale: [1, 1, 1].map(
@@ -77,7 +66,7 @@ export function ColliderIcosa() {
     onRest: () => {
       if (dblClicked) {
         setDblClicked(false);
-        setShape("box");
+        changeShape();
       }
     },
   });
@@ -88,7 +77,7 @@ export function ColliderIcosa() {
   return (
     <animated.mesh name="colliderSphere" ref={sphereRef} scale={scale}>
       <Icosahedron
-        args={[COLLIDER_RADIUS, 0]}
+        args={[COLLIDER_RADIUS * ICOSA_MULT, 0]}
         matrixWorldAutoUpdate={undefined}
         getObjectsByProperty={undefined}
         getVertexPosition={undefined}

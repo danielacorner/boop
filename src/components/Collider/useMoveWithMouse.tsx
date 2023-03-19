@@ -4,7 +4,7 @@ import { useRef } from "react";
 import { useEventListener, getPosition } from "../../utils/hooks";
 import { useAtom } from "jotai";
 import { musicAtom } from "../UI/Music/Music";
-import { LERP_SPEED } from "./ColliderIcosa";
+import { COLLIDER_LERP_SPEED } from "../../utils/constants";
 
 export function useMoveWithMouse({
   isTabActive,
@@ -25,8 +25,16 @@ export function useMoveWithMouse({
       ((touchingRef.current?.[0] ?? state.pointer.x) * viewport.width) / 2;
     const nextY =
       ((touchingRef.current?.[1] ?? state.pointer.y) * viewport.height) / 2;
-    const nextXL = THREE.MathUtils.lerp(position.current[0], nextX, LERP_SPEED);
-    const nextYL = THREE.MathUtils.lerp(position.current[1], nextY, LERP_SPEED);
+    const nextXL = THREE.MathUtils.lerp(
+      position.current[0],
+      nextX,
+      COLLIDER_LERP_SPEED
+    );
+    const nextYL = THREE.MathUtils.lerp(
+      position.current[1],
+      nextY,
+      COLLIDER_LERP_SPEED
+    );
     return api.position.set(
       shouldLerpRef.current ? nextXL : nextX,
       shouldLerpRef.current ? nextYL : nextY,
