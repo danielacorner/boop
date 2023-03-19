@@ -10,8 +10,7 @@ import { SpinCameraButton } from "./components/UI/Music/SpinCameraButton";
 import { ShuffleButton } from "./components/UI/Music/ShuffleButton";
 import { GithubButton } from "./GithubButton";
 import styled from "styled-components";
-import { useEventListener } from "./utils/hooks";
-import { useDoubleClicked } from "./components/Collider/useDoubleClicked";
+import { TrackDoubleClick } from "./TrackDoubleClick";
 
 function App() {
   return (
@@ -23,14 +22,6 @@ function App() {
       <TrackDoubleClick />
     </>
   );
-}
-
-function TrackDoubleClick() {
-  const [, setDoubleclicked] = useDoubleClicked();
-  useEventListener("dblclick", () => {
-    setDoubleclicked(true);
-  });
-  return null;
 }
 
 export default App;

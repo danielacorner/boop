@@ -13,7 +13,7 @@ export function useCollider() {
   const colliderRadiusMultiplier =
     (isExpanded ? 0.8 : 1) *
     (size.width > 720 ? 1.2 : 1) *
-    (autoMode ? 1.4 : 1) *
+    (autoMode ? 1.2 : 1) *
     (1 + gpu.tier * 0.1);
   const colliderRadius = colliderRadiusMultiplier * COLLIDER_RADIUS;
   return { colliderRadius, colliderRadiusMultiplier };

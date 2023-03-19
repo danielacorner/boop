@@ -1,13 +1,14 @@
 /* eslint-disable react/no-unknown-property */
 import * as THREE from "three";
 import { useSphere } from "@react-three/cannon";
-import { useEffect, useMemo, useRef, useState } from "react";
-import { COLORS, GROUP1, GROUP2 } from "../../utils/constants";
-import { rfs, useEventListener } from "../../utils/hooks";
+import { useEffect, useMemo, useRef } from "react";
+import { COLORS } from "../../utils/constants";
+import { rfs } from "../../utils/hooks";
 import { WHITE_PIXEL } from "./Clump";
 import { usePullTowardsCenter } from "./usePullTowardsCenter";
 import { useFrame } from "@react-three/fiber";
 import { usePositions } from "../../store/store";
+import { useShape } from "../Collider/useShape";
 
 export type SphereClumpProps = {
   radius: number;
@@ -62,9 +63,8 @@ export function SphereClump({
   displacementMap,
   CustomMaterial,
 }: SphereClumpProps) {
-  const radiusRef = useRef(radius);
-  const { isExpanded } = usePositions();
-
+  // const radiusRef = useRef(radius);
+  // const [shape] = useShape();
   const [sphereRef, api] = useSphere<THREE.InstancedMesh>(
     () => ({
       args: [radius],
@@ -74,8 +74,6 @@ export function SphereClump({
       angularVelocity: [rfs(0.8), rfs(0.8), rfs(0.8)],
       position: [rfs(20), rfs(20), rfs(20)],
       rotation: [rfs(20), rfs(20), rfs(20)],
-      // collisionFilterMask: GROUP1,
-      // collisionFilterGroup: /* doubleclicked ? GROUP2 : */ GROUP1,
     }),
     null,
     [mass, radius]
@@ -157,31 +155,31 @@ export function SphereClump({
   };
 
   // animate the radius
-  const WOBBLE = 0.05;
-  const ANIMATE_SPEED = 1;
-  useFrame(({ clock }) => {
-    const t = clock.getElapsedTime();
-    const wobble = Math.abs(Math.sin(t) * WOBBLE) - WOBBLE / 2;
-    const nextRadius = radius + (isExpanded ? wobble : 0);
-    // change radius using lerp
-    radiusRef.current = THREE.MathUtils.lerp(
-      radiusRef.current,
-      nextRadius,
-      0.1 * ANIMATE_SPEED * (isExpanded ? 0.5 : 1)
-    );
-    if (!sphereRef.current) {
-      return;
-    }
-    const geometry = sphereRef.current.geometry;
-    const position = geometry.attributes.position;
-    for (let i = 0; i < position.count; i++) {
-      const vertex = new THREE.Vector3();
-      vertex.fromBufferAttribute(position, i);
-      vertex.normalize().multiplyScalar(radiusRef.current);
-      position.setXYZ(i, vertex.x, vertex.y, vertex.z);
-    }
-    position.needsUpdate = true;
-  });
+  // const WOBBLE = 0.05;
+  // const ANIMATE_SPEED = 1;
+  // useFrame(({ clock }) => {
+  //   const t = clock.getElapsedTime();
+  //   const wobble = Math.abs(Math.sin(t) * WOBBLE) - WOBBLE / 2;
+  //   const nextRadius = radius + (isExpanded ? wobble : 0);
+  //   // change radius using lerp
+  //   radiusRef.current = THREE.MathUtils.lerp(
+  //     radiusRef.current,
+  //     nextRadius,
+  //     0.1 * ANIMATE_SPEED * (isExpanded ? 0.5 : 1)
+  //   );
+  //   if (!sphereRef.current) {
+  //     return;
+  //   }
+  //   const geometry = sphereRef.current.geometry;
+  //   const position = geometry.attributes.position;
+  //   for (let i = 0; i < position.count; i++) {
+  //     const vertex = new THREE.Vector3();
+  //     vertex.fromBufferAttribute(position, i);
+  //     vertex.normalize().multiplyScalar(radiusRef.current);
+  //     position.setXYZ(i, vertex.x, vertex.y, vertex.z);
+  //   }
+  //   position.needsUpdate = true;
+  // });
 
   return (
     <instancedMesh
@@ -191,11 +189,11 @@ export function SphereClump({
       args={[undefined, undefined, nodes.length]}
     >
       {icosa ? (
-        <icosahedronGeometry args={[undefined, 0]} />
+        <icosahedronGeometry args={[radius, 0]} />
       ) : dodeca ? (
-        <dodecahedronGeometry args={[undefined, 0]} />
+        <dodecahedronGeometry args={[radius, 0]} />
       ) : (
-        <sphereGeometry args={[undefined, 32, 32]}>
+        <sphereGeometry args={[radius, 32, 32]}>
           {/* <instancedAttribute
                                   attach="attributes-color"
                                   count={filteredNodesRandom.length}

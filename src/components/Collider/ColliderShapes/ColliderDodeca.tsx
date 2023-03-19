@@ -1,22 +1,27 @@
 /* eslint-disable react/no-unknown-property */
-import { Icosahedron } from "@react-three/drei";
+import { Dodecahedron } from "@react-three/drei";
 import { useConvexPolyhedron } from "@react-three/cannon";
 import { useEffect, useMemo, useRef } from "react";
-import { toConvexProps, useEventListener } from "../../utils/hooks";
-import { COLLIDER_RADIUS } from "../../utils/constants";
+import { toConvexProps } from "../../../utils/hooks";
 import { useSpring, animated } from "@react-spring/three";
-import { useMoveWithMouse } from "./useMoveWithMouse";
-import { useCollider } from "./useCollider";
-import { useDanceToMusic } from "./useDanceToMusic";
-import { useChangeShape } from "./useShape";
+import { useMoveWithMouse } from "../useMoveWithMouse";
+import { useCollider } from "../useCollider";
+import { useDanceToMusic } from "../useDanceToMusic";
+import { useChangeShape } from "../useShape";
 import * as THREE from "three";
-import { useIsTabActive } from "./useIsTabActive";
-import { useDoubleClicked } from "./useDoubleClicked";
-
-export function ColliderInvisible() {
-  const { colliderRadius, colliderRadiusMultiplier } = useCollider();
-  const icosahedronGeometrygeo = useMemo(
-    () => toConvexProps(new THREE.IcosahedronGeometry(colliderRadius)),
+import { useIsTabActive } from "../useIsTabActive";
+import { useSpin } from "../useSpin";
+import { useDoubleClicked } from "../useDoubleClicked";
+const ICOSA_MULT = 1.2;
+export function ColliderDodeca() {
+  const { colliderRadius: colliderRadius0, colliderRadiusMultiplier } =
+    useCollider();
+  const colliderRadius = colliderRadius0 * ICOSA_MULT;
+  const dodecahedronGeometrygeo = useMemo(
+    () =>
+      toConvexProps(
+        new THREE.DodecahedronBufferGeometry(colliderRadius * 1.3, 0)
+      ),
     [colliderRadius]
   );
   const [sphereRef, api] = useConvexPolyhedron<THREE.InstancedMesh>(
@@ -25,14 +30,13 @@ export function ColliderInvisible() {
       type: "Kinematic",
       mass: 2, // approximate mass using volume of a sphere equation
       // https://threejs.org/docs/scenes/geometry-browser.html#IcosahedronGeometry
-      args: icosahedronGeometrygeo as any,
-      // collisionFilterMask: doubleclicked ? GROUP2 : GROUP1, // It can only collide with group 1 and 2
+      args: dodecahedronGeometrygeo as any,
       position: [0, 0, 0],
-      // collisionFilterGroup: GROUP1, // Put the sphere in group 1
-      // collisionFilterMask: GROUP1 | GROUP2, // It can only collide with group 1 and 2
     }),
-    null
+    null,
+    [dodecahedronGeometrygeo]
   );
+  useSpin(api);
 
   const shouldLerpRef = useRef<boolean>(true);
 
@@ -48,16 +52,15 @@ export function ColliderInvisible() {
 
   // double click to change width
   const [dblClicked, setDblClicked] = useDoubleClicked();
+
   const changeShape = useChangeShape();
-  useEventListener("dblclick", (event) => {
-    changeShape();
-    setDblClicked(false);
-  });
 
   const { scale } = useSpring({
-    scale: [1, 1, 1].map(
-      (d) => d * (dblClicked ? 1.2 : 1) * colliderRadiusMultiplier
-    ) as [number, number, number],
+    scale: [1, 1, 1].map((d) => d * (dblClicked ? 1.2 : 1)) as [
+      number,
+      number,
+      number
+    ],
     config: {
       mass: 0.5,
       tension: 500,
@@ -65,7 +68,8 @@ export function ColliderInvisible() {
     },
     onRest: () => {
       if (dblClicked) {
-        // changeShape();
+        setDblClicked(false);
+        changeShape();
       }
     },
   });
@@ -75,8 +79,8 @@ export function ColliderInvisible() {
 
   return (
     <animated.mesh name="colliderSphere" ref={sphereRef} scale={scale}>
-      <Icosahedron
-        args={[COLLIDER_RADIUS, -1]}
+      <Dodecahedron
+        args={[colliderRadius * ICOSA_MULT, 0]}
         matrixWorldAutoUpdate={undefined}
         getObjectsByProperty={undefined}
         getVertexPosition={undefined}
@@ -86,7 +90,7 @@ export function ColliderInvisible() {
           thickness={colliderRadius / 2}
           roughness={0}
         />
-      </Icosahedron>
+      </Dodecahedron>
     </animated.mesh>
   );
 }

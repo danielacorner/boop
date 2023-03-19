@@ -2,24 +2,20 @@
 import { Icosahedron } from "@react-three/drei";
 import { useConvexPolyhedron } from "@react-three/cannon";
 import { useEffect, useMemo, useRef } from "react";
-import { toConvexProps } from "../../utils/hooks";
-import { COLLIDER_RADIUS, GROUP1, GROUP2 } from "../../utils/constants";
+import { toConvexProps, useEventListener } from "../../../utils/hooks";
 import { useSpring, animated } from "@react-spring/three";
-import { useMoveWithMouse } from "./useMoveWithMouse";
-import { useCollider } from "./useCollider";
-import { useDanceToMusic } from "./useDanceToMusic";
-import { useChangeShape, useShape } from "./useShape";
+import { useMoveWithMouse } from "../useMoveWithMouse";
+import { useCollider } from "../useCollider";
+import { useDanceToMusic } from "../useDanceToMusic";
+import { useChangeShape } from "../useShape";
 import * as THREE from "three";
-import { useIsTabActive } from "./useIsTabActive";
-import { useSpin } from "./useSpin";
-import { useDoubleClicked } from "./useDoubleClicked";
-const ICOSA_MULT = 1.2;
-export function ColliderIcosa() {
-  const { colliderRadius: colliderRadius0, colliderRadiusMultiplier } =
-    useCollider();
-  const colliderRadius = colliderRadius0 * ICOSA_MULT;
+import { useIsTabActive } from "../useIsTabActive";
+import { useDoubleClicked } from "../useDoubleClicked";
+
+export function ColliderInvisible() {
+  const { colliderRadius } = useCollider();
   const icosahedronGeometrygeo = useMemo(
-    () => toConvexProps(new THREE.IcosahedronGeometry(colliderRadius * 1.3)),
+    () => toConvexProps(new THREE.IcosahedronGeometry(colliderRadius)),
     [colliderRadius]
   );
   const [sphereRef, api] = useConvexPolyhedron<THREE.InstancedMesh>(
@@ -30,12 +26,9 @@ export function ColliderIcosa() {
       // https://threejs.org/docs/scenes/geometry-browser.html#IcosahedronGeometry
       args: icosahedronGeometrygeo as any,
       position: [0, 0, 0],
-      // collisionFilterGroup: GROUP1, // Put the sphere in group 1
-      // collisionFilterMask: GROUP1 | GROUP2, // It can only collide with group 1 and 2
     }),
     null
   );
-  useSpin(api);
 
   const shouldLerpRef = useRef<boolean>(true);
 
@@ -51,13 +44,18 @@ export function ColliderIcosa() {
 
   // double click to change width
   const [dblClicked, setDblClicked] = useDoubleClicked();
-
   const changeShape = useChangeShape();
+  useEventListener("dblclick", (event) => {
+    changeShape();
+    setDblClicked(false);
+  });
 
   const { scale } = useSpring({
-    scale: [1, 1, 1].map(
-      (d) => d * (dblClicked ? 1.2 : 1) * colliderRadiusMultiplier
-    ) as [number, number, number],
+    scale: [1, 1, 1].map((d) => d * (dblClicked ? 1.2 : 1)) as [
+      number,
+      number,
+      number
+    ],
     config: {
       mass: 0.5,
       tension: 500,
@@ -65,8 +63,7 @@ export function ColliderIcosa() {
     },
     onRest: () => {
       if (dblClicked) {
-        setDblClicked(false);
-        changeShape();
+        // changeShape();
       }
     },
   });
@@ -77,7 +74,7 @@ export function ColliderIcosa() {
   return (
     <animated.mesh name="colliderSphere" ref={sphereRef} scale={scale}>
       <Icosahedron
-        args={[COLLIDER_RADIUS * ICOSA_MULT, 0]}
+        args={[colliderRadius, -1]}
         matrixWorldAutoUpdate={undefined}
         getObjectsByProperty={undefined}
         getVertexPosition={undefined}

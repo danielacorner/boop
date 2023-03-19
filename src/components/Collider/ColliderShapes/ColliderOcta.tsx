@@ -1,28 +1,24 @@
 /* eslint-disable react/no-unknown-property */
-import { Dodecahedron } from "@react-three/drei";
+import { Octahedron } from "@react-three/drei";
 import { useConvexPolyhedron } from "@react-three/cannon";
 import { useEffect, useMemo, useRef } from "react";
-import { toConvexProps } from "../../utils/hooks";
-import { COLLIDER_RADIUS, GROUP1, GROUP2 } from "../../utils/constants";
+import { toConvexProps } from "../../../utils/hooks";
 import { useSpring, animated } from "@react-spring/three";
-import { useMoveWithMouse } from "./useMoveWithMouse";
-import { useCollider } from "./useCollider";
-import { useDanceToMusic } from "./useDanceToMusic";
-import { useChangeShape } from "./useShape";
+import { useMoveWithMouse } from "../useMoveWithMouse";
+import { useCollider } from "../useCollider";
+import { useDanceToMusic } from "../useDanceToMusic";
+import { useChangeShape } from "../useShape";
 import * as THREE from "three";
-import { useIsTabActive } from "./useIsTabActive";
-import { useSpin } from "./useSpin";
-import { useDoubleClicked } from "./useDoubleClicked";
+import { useIsTabActive } from "../useIsTabActive";
+import { useSpin } from "../useSpin";
+import { useDoubleClicked } from "../useDoubleClicked";
 const ICOSA_MULT = 1.2;
-export function ColliderDodeca() {
+export function ColliderOcta() {
   const { colliderRadius: colliderRadius0, colliderRadiusMultiplier } =
     useCollider();
   const colliderRadius = colliderRadius0 * ICOSA_MULT;
   const dodecahedronGeometrygeo = useMemo(
-    () =>
-      toConvexProps(
-        new THREE.DodecahedronBufferGeometry(colliderRadius * 1.3, 0)
-      ),
+    () => toConvexProps(new THREE.OctahedronBufferGeometry(colliderRadius)),
     [colliderRadius]
   );
   const [sphereRef, api] = useConvexPolyhedron<THREE.InstancedMesh>(
@@ -33,10 +29,9 @@ export function ColliderDodeca() {
       // https://threejs.org/docs/scenes/geometry-browser.html#IcosahedronGeometry
       args: dodecahedronGeometrygeo as any,
       position: [0, 0, 0],
-      // collisionFilterGroup: GROUP1, // Put the sphere in group 1
-      // collisionFilterMask: GROUP1 | GROUP2, // It can only collide with group 1 and 2
     }),
-    null
+    null,
+    [dodecahedronGeometrygeo]
   );
   useSpin(api);
 
@@ -51,16 +46,17 @@ export function ColliderDodeca() {
   const isTabActive = useIsTabActive();
 
   useMoveWithMouse({ isTabActive, position, api, shouldLerpRef });
+  const changeShape = useChangeShape();
 
   // double click to change width
   const [dblClicked, setDblClicked] = useDoubleClicked();
 
-  const changeShape = useChangeShape();
-
   const { scale } = useSpring({
-    scale: [1, 1, 1].map(
-      (d) => d * (dblClicked ? 1.2 : 1) * colliderRadiusMultiplier
-    ) as [number, number, number],
+    scale: [1, 1, 1].map((d) => d * (dblClicked ? 1.2 : 1)) as [
+      number,
+      number,
+      number
+    ],
     config: {
       mass: 0.5,
       tension: 500,
@@ -79,8 +75,8 @@ export function ColliderDodeca() {
 
   return (
     <animated.mesh name="colliderSphere" ref={sphereRef} scale={scale}>
-      <Dodecahedron
-        args={[COLLIDER_RADIUS * ICOSA_MULT, 0]}
+      <Octahedron
+        args={[colliderRadius * ICOSA_MULT, 0]}
         matrixWorldAutoUpdate={undefined}
         getObjectsByProperty={undefined}
         getVertexPosition={undefined}
@@ -90,7 +86,7 @@ export function ColliderDodeca() {
           thickness={colliderRadius / 2}
           roughness={0}
         />
-      </Dodecahedron>
+      </Octahedron>
     </animated.mesh>
   );
 }

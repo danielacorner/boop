@@ -48,8 +48,6 @@ export function IcoClump({
       angularVelocity: [rfs(0.8), rfs(0.8), rfs(0.8)],
       position: [rfs(20), rfs(20), rfs(20)],
       rotation: [rfs(20), rfs(20), rfs(20)],
-      // collisionFilterMask: GROUP1,
-      // collisionFilterGroup: GROUP1,
       // onCollide: ({ body, collisionFilters, contact, target }: any) => {
       //   // manually spin the clump when the colliderSphere hits it (bc we are using useSphere for icosahedrons -- otherwise it would just bounce without spinning)
       //   if (body.name === "colliderSphere") {
@@ -88,8 +86,6 @@ export function IcoClump({
   //     angularVelocity: [rfs(0.8), rfs(0.8), rfs(0.8)],
   //     position: [rfs(20), rfs(20), rfs(20)],
   //     rotation: [rfs(20), rfs(20), rfs(20)],
-  //     collisionFilterMask: GROUP1,
-  //     collisionFilterGroup: doubleclicked ? GROUP2 : GROUP1,
   //   }),
   //   null,
   //   [doubleclicked, mass, geo]

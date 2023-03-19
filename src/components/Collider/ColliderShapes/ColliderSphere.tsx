@@ -1,45 +1,29 @@
 /* eslint-disable react/no-unknown-property */
-import { Box, Icosahedron, Sphere } from "@react-three/drei";
+import { Icosahedron, Sphere } from "@react-three/drei";
 import { useSphere } from "@react-three/cannon";
-import { useEffect, useRef, useState } from "react";
-import { useEventListener } from "../../utils/hooks";
-import { COLLIDER_RADIUS, GROUP1, GROUP2 } from "../../utils/constants";
+import { useEffect, useRef } from "react";
 import { useSpring, animated } from "@react-spring/three";
-import { useMoveWithMouse } from "./useMoveWithMouse";
-import { useCollider } from "./useCollider";
-import { useDanceToMusic } from "./useDanceToMusic";
-import { useChangeShape, useShape } from "./useShape";
-import { useIsTabActive } from "./useIsTabActive";
-import { useDoubleClicked } from "./useDoubleClicked";
+import { useMoveWithMouse } from "../useMoveWithMouse";
+import { useCollider } from "../useCollider";
+import { useDanceToMusic } from "../useDanceToMusic";
+import { useChangeShape } from "../useShape";
+import { useIsTabActive } from "../useIsTabActive";
+import { useDoubleClicked } from "../useDoubleClicked";
 
 export function ColliderSphere() {
-  // on double click, keep the sphere interactive with the clumps
-  // const [doubleclicked, setDoubleclicked] = useState(false);
-  // useEventListener("dblclick", () => {
-  //   setDoubleclicked(!doubleclicked);
-  // });
-
-  const { colliderRadius, colliderRadiusMultiplier } = useCollider();
+  const { colliderRadius } = useCollider();
 
   const shouldLerpRef = useRef<boolean>(true);
 
-  // A collision is allowed if
-  // (bodyA.collisionFilterGroup & bodyB.collisionFilterMask) && (bodyB.collisionFilterGroup & bodyA.collisionFilterMask)
-  //  These are indeed bitwise operations. https://en.wikipedia.org/wiki/Bitwise_operation#Truth_table_for_all_binary_logical_operators
-  // examples https://github.com/schteppe/cannon.js/blob/master/demos/collisionFilter.html#L50
   const [sphereRef, api] = useSphere<any>(
     () => ({
       name: "colliderSphere",
       type: "Kinematic",
       args: [colliderRadius],
       position: [0, 0, 0],
-      // collisionFilterGroup: GROUP1, // Put the sphere in group 1
-      // collisionFilterMask: GROUP1 | GROUP2, // It can only collide with group 1 and 2
-      // collisionFilterMask: GROUP2 | GROUP3, // It can only collide with group 2 and 3
-      // collisionFilterMask,
     }),
     null,
-    [/* doubleclicked, */ colliderRadius]
+    [colliderRadius]
   );
 
   // subscribe to sphere position
@@ -57,9 +41,11 @@ export function ColliderSphere() {
   const changeShape = useChangeShape();
 
   const { scale } = useSpring({
-    scale: [1, 1, 1].map(
-      (d) => d * (dblClicked ? 1.2 : 1) * colliderRadiusMultiplier
-    ) as [number, number, number],
+    scale: [1, 1, 1].map((d) => d * (dblClicked ? 1.2 : 1)) as [
+      number,
+      number,
+      number
+    ],
     config: {
       mass: 0.5,
       tension: 500,
@@ -79,7 +65,7 @@ export function ColliderSphere() {
   return (
     <animated.mesh name="colliderSphere" ref={sphereRef} scale={scale}>
       <Icosahedron
-        args={[COLLIDER_RADIUS, 0]}
+        args={[colliderRadius, 0]}
         matrixWorldAutoUpdate={undefined}
         getObjectsByProperty={undefined}
         getVertexPosition={undefined}
@@ -91,7 +77,7 @@ export function ColliderSphere() {
         />
       </Icosahedron>
       <Sphere
-        args={[COLLIDER_RADIUS, 32]}
+        args={[colliderRadius, 32]}
         matrixWorldAutoUpdate={undefined}
         getObjectsByProperty={undefined}
         getVertexPosition={undefined}

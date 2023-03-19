@@ -34,7 +34,6 @@ export function D20StarComponent({
       mass: BALL_MASS * 2, // approximate mass using volume of a sphere equation
       // https://threejs.org/docs/scenes/geometry-browser.html#IcosahedronGeometry
       args: icosahedronGeometrygeo as any,
-      // collisionFilterMask: /* doubleclicked ? GROUP2 :  */ GROUP1, // It can only collide with group 1 and 2
     }),
     null
     // [doubleclicked]

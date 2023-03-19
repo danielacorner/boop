@@ -41,7 +41,7 @@ export function Clumpz({ positions }) {
       <Clump
         texture={ballGalaxyTexture}
         texturePath={"ball_galaxy.jpg"}
-        numNodes={num * 0.5}
+        numNodes={Math.ceil(num * 0.5)}
         materialProps={{
           roughness: 0,
           emissive: null,
@@ -50,6 +50,8 @@ export function Clumpz({ positions }) {
           transmission: 0,
         }}
         position={positions.galaxy}
+        radius={BALL_RADIUS}
+        mass={BALL_MASS * 1.4}
       />
 
       {/* earth */}
@@ -159,6 +161,8 @@ export function Clumpz({ positions }) {
         }}
         coloredTexture={true}
         position={positions.cell}
+        radius={BALL_RADIUS}
+        mass={BALL_MASS * 1.4 * 2}
       />
       {/* glassy */}
       <Clump
@@ -172,6 +176,7 @@ export function Clumpz({ positions }) {
           thickness: BALL_RADIUS * 7,
         }}
         radius={BALL_RADIUS * 1.2}
+        mass={BALL_MASS * 1.4 * 2}
         position={positions.glass}
       />
 
@@ -189,6 +194,8 @@ export function Clumpz({ positions }) {
           envMapIntensity: 4,
           transmission: 0,
         }}
+        radius={BALL_RADIUS}
+        mass={BALL_MASS * 1.4 * 2}
         position={positions.starry_night}
       />
       {/* marble */}
@@ -208,6 +215,8 @@ export function Clumpz({ positions }) {
           transmission: 0,
         }}
         position={positions.marble}
+        radius={BALL_RADIUS}
+        mass={BALL_MASS * 1.4 * 2}
       />
       {/* romanesco */}
       <Clump
@@ -221,6 +230,7 @@ export function Clumpz({ positions }) {
           transmission: 0,
         }}
         radius={BALL_RADIUS}
+        mass={BALL_MASS * 1.4 * 2}
         position={positions.romanesco}
         // coloredTexture={true}
       />
