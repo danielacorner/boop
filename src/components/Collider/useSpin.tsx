@@ -13,5 +13,5 @@ export function useSpin(api) {
       return;
     }
     api.angularVelocity.set(rfs(SPIN), rfs(SPIN), rfs(SPIN));
-  }, secondsPerBeat);
+  }, secondsPerBeat * 1000);
 }
