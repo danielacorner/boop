@@ -237,7 +237,7 @@ export function Clumpz({ positions }) {
       {/* shiny icosahedron */}
       <Clump
         icosa={true}
-        numNodes={num * (gpu.tier > 1 ? 3 : 1)}
+        numNodes={num * (gpu.tier > 1 ? 2 : 1)}
         materialProps={{
           roughness: 0,
           emissive: null,
@@ -253,14 +253,14 @@ export function Clumpz({ positions }) {
       {/* shiny dodecaahedron */}
       <Clump
         dodeca={true}
-        numNodes={num * (gpu.tier > 1 ? 6 : 2)}
+        numNodes={num * (gpu.tier > 1 ? 2 : 1)}
         materialProps={{
-          roughness: 0,
+          roughness: 0.1,
           emissive: null,
-          metalness: 0,
-          envMapIntensity: 5,
-          transmission: 1,
-          thickness: BALL_RADIUS * 1.2,
+          metalness: 0.3,
+          envMapIntensity: 2.5,
+          transmission: 0.9,
+          thickness: BALL_RADIUS * 0.8,
         }}
         radius={BALL_RADIUS * 1.2 * 0.8}
         mass={BALL_MASS}
