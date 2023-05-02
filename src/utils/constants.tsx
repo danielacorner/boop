@@ -1,4 +1,4 @@
-import { atom } from "jotai";
+import { atomWithStorage } from "jotai/utils";
 import palettes from "nice-color-palettes";
 export const COLORS = [
   ...palettes[0],
@@ -9,6 +9,8 @@ export const COLORS = [
 
 export const BALL_RADIUS = 0.4;
 export const BALL_MASS = 1;
+
+export const PULL_FORCE = 2.4;
 
 // Collision filter groups - must be powers of 2!
 export const GROUP1 = 1;
@@ -58,9 +60,9 @@ export const MIN_DPR = 0.6;
 export const MAX_DPR = 0.8;
 export const MAX_DPR_BY_TIER = {
   "0": MIN_DPR,
-  "1": 0.7,
+  "1": MIN_DPR,
   "2": MAX_DPR,
   "3": MAX_DPR,
 };
 
-export const dprAtom = atom(MIN_DPR);
+export const dprAtom = atomWithStorage("dpr", MIN_DPR);

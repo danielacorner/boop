@@ -1,7 +1,7 @@
 /* eslint-disable react/no-unknown-property */
 import { Canvas } from "@react-three/offscreen";
 import { lazy } from "react";
-import { INITIAL_CAMERA_POSITION, dprAtom } from "../utils/constants";
+import { INITIAL_CAMERA_POSITION, MAX_DPR, dprAtom } from "../utils/constants";
 import { useAtom } from "jotai";
 
 // This is the fallback component that will be rendered on the main thread
@@ -20,10 +20,10 @@ export const SceneOffscreen = () => {
       <Canvas
         worker={worker}
         fallback={<Scene />}
-        shadows
+        shadows={dpr === MAX_DPR}
         frameloop="demand"
         style={{ position: "fixed", inset: 0 }}
-        dpr={[1, dpr]}
+        dpr={[0.4, dpr]}
         camera={{
           position: INITIAL_CAMERA_POSITION,
           fov: 35,
@@ -32,7 +32,7 @@ export const SceneOffscreen = () => {
         }}
         // performance={{ min: 0.75 }}
         // https://docs.pmnd.rs/react-three-fiber/advanced/scaling-performance
-        performance={{ min: 0.75, max: 1 }}
+        performance={{ min: 1, max: 1 }}
         // gl={{ alpha: true, antialias: true }}
       />
     </>

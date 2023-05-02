@@ -1,7 +1,7 @@
 import * as THREE from "three";
 import { useFrame } from "@react-three/fiber";
 import { PublicApi } from "@react-three/cannon";
-
+import { PULL_FORCE } from "../../utils/constants";
 export function usePullTowardsCenter({
   sphereRef,
   vec,
@@ -40,7 +40,7 @@ export function usePullTowardsCenter({
         // then normalize and
         // multiply by a negative scalar to send it towards that point
         .normalize()
-        .multiplyScalar(-50)
+        .multiplyScalar(-50 * PULL_FORCE)
         .toArray();
       const apiAtI = api.at(i);
       apiAtI?.applyForce(force2, [0, 0, 0]);

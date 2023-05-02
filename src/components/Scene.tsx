@@ -5,6 +5,7 @@ import {
   AdaptiveDpr,
   useDetectGPU,
   PerformanceMonitor,
+  AdaptiveEvents,
 } from "@react-three/drei";
 import { useThree, useFrame } from "@react-three/fiber";
 import { Physics } from "@react-three/cannon";
@@ -30,22 +31,9 @@ const Scene = () => {
   return (
     <>
       <AdaptDprManually />
-
-      {/* <OrbitControls
-              enablePan={process.env.NODE_ENV === "development"}
-              enableRotate={process.env.NODE_ENV === "development"}
-              enableZoom={true}
-              // minAzimuthAngle={0}
-              // maxAzimuthAngle={0}
-              // minPolarAngle={Math.PI / 2}
-              // maxPolarAngle={Math.PI / 2}
-              // minZoom={0}
-              // maxZoom={0}
-              minDistance={2}
-              maxDistance={32}
-            /> */}
       <MoveCamera />
       <AdaptiveDpr pixelated={true} />
+      <AdaptiveEvents />
       <FancyStars />
       <ambientLight intensity={0.25} />
       <spotLight
@@ -100,7 +88,7 @@ function PhysicsScene() {
 }
 
 function AdaptDprManually() {
-  const { tier } = useDetectGPU();
+  const { tier, fps } = useDetectGPU();
   const maxDpr = MAX_DPR_BY_TIER[tier] ?? MIN_DPR;
   const [, setDpr] = useAtom(dprAtom);
   useEffect(() => {
@@ -108,7 +96,10 @@ function AdaptDprManually() {
     return () => {
       setDpr(MIN_DPR);
     };
-  }, [maxDpr, setDpr]);
+  }, [fps, maxDpr, setDpr, tier]);
+  useEffect(() => {
+    console.log("⭐🎈  file: Scene.tsx:101  AdaptDprManually  fps:", fps);
+  }, [fps]);
   return (
     <PerformanceMonitor
       onIncline={() => setDpr(MAX_DPR)}
