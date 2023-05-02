@@ -1,3 +1,4 @@
+import { atom } from "jotai";
 import palettes from "nice-color-palettes";
 export const COLORS = [
   ...palettes[0],
@@ -51,3 +52,15 @@ export const POSITIONS: { initial: Positions; secondary: Positions } = {
     d20: [0, -1, 0],
   },
 };
+export const INITIAL_CAMERA_POSITION: [number, number, number] = [0, 0, 20];
+
+export const MIN_DPR = 0.6;
+export const MAX_DPR = 0.8;
+export const MAX_DPR_BY_TIER = {
+  "0": MIN_DPR,
+  "1": 0.7,
+  "2": MAX_DPR,
+  "3": MAX_DPR,
+};
+
+export const dprAtom = atom(MIN_DPR);

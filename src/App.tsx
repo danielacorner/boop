@@ -1,5 +1,5 @@
 import { Loader } from "@react-three/drei";
-import { Scene } from "./components/Scene";
+import { SceneOffscreen } from "./components/SceneOffscreen";
 import { SpreadOutButton } from "./components/UI/BtnSpreadOut";
 import {
   AutoModeButton,
@@ -16,7 +16,7 @@ function App() {
   return (
     <>
       <Loader />
-      <Scene />
+      <SceneOffscreen />
       <Music />
       <ControlsOverlay />
       <TrackDoubleClick />
