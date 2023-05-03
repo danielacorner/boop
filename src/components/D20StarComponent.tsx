@@ -1,10 +1,10 @@
 /* eslint-disable react/no-unknown-property */
 import * as THREE from "three";
 import { useConvexPolyhedron } from "@react-three/cannon";
-import { useRef, useState } from "react";
+import { useRef, useState, useTransition } from "react";
 import D20_Star from "../Models/D20_star";
 import { useMount } from "react-use";
-import { BALL_MASS, BALL_RADIUS, GROUP1 } from "../utils/constants";
+import { BALL_MASS, BALL_RADIUS } from "../utils/constants";
 import { animated, useSpring } from "@react-spring/three";
 import { toConvexProps } from "../utils/hooks";
 import { usePullSingleTowardsCenter } from "./usePullSingleTowardsCenter";
@@ -76,6 +76,7 @@ export function D20StarComponent({
     },
     [hovered, hoveredNear]
   );
+  const [isPending, startTransition] = useTransition();
 
   return (
     <>
@@ -84,10 +85,14 @@ export function D20StarComponent({
         <mesh
           visible={false}
           onPointerOver={(e) => {
-            setHoveredNear(e.object);
+            startTransition(() => {
+              setHoveredNear(e.object);
+            });
           }}
           onPointerOut={(e) => {
-            setHoveredNear(null);
+            startTransition(() => {
+              setHoveredNear(null);
+            });
           }}
         >
           <sphereGeometry
