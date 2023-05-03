@@ -10,7 +10,7 @@ export const COLORS = [
 export const BALL_RADIUS = 0.4;
 export const BALL_MASS = 1;
 
-export const PULL_FORCE = 2.4;
+export const PULL_FORCE = 1.5;
 
 // Collision filter groups - must be powers of 2!
 export const GROUP1 = 1;

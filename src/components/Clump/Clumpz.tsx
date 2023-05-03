@@ -252,21 +252,22 @@ export function Clumpz({ positions }) {
         position={positions.icosa}
       />
       {/* shiny dodecahedron */}
-      {/* <Clump
+      <Clump
         dodeca={true}
+        coloredTexture={true}
         numNodes={num * (gpu.tier > 1 ? 2 : 1)}
         materialProps={{
           roughness: 0.1,
-          emissive: null,
-          metalness: 0.3,
-          envMapIntensity: 2.5,
+          emissive: "#3a3a00",
+          metalness: 0.1,
+          envMapIntensity: 2.0,
           transmission: 0.9,
           thickness: BALL_RADIUS * 0.8,
         }}
         radius={BALL_RADIUS * 1.2 * 0.8}
         mass={BALL_MASS}
         position={positions.dodeca}
-      /> */}
+      />
     </>
   );
 }
