@@ -26,7 +26,14 @@ import {
   MIN_DPR,
   dprAtom,
 } from "../utils/constants";
-
+function AdaptivePixelRatio() {
+  const current = useThree((state) => state.performance.current);
+  const setPixelRatio = useThree((state) => state.setPixelRatio);
+  useEffect(() => {
+    setPixelRatio(window.devicePixelRatio * current);
+  }, [current]);
+  return null;
+}
 const Scene = () => {
   return (
     <>

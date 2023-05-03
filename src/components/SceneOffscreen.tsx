@@ -21,7 +21,7 @@ export const SceneOffscreen = () => {
         worker={worker}
         fallback={<Scene />}
         shadows={dpr === MAX_DPR}
-        frameloop="demand"
+        // frameloop="demand"
         style={{ position: "fixed", inset: 0 }}
         dpr={[0.4, dpr]}
         camera={{

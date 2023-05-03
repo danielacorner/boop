@@ -6,18 +6,18 @@ import { PULL_FORCE } from "../utils/constants";
 export function usePullSingleTowardsCenter({
   position,
   api,
-  d20Position,
+  pulledItem,
 }: {
-  position: [number, number, number] | null;
+  position?: [number, number, number] | null;
   api?: PublicApi;
-  d20Position: React.MutableRefObject<[number, number, number]>;
+  pulledItem: React.MutableRefObject<[number, number, number]>;
 }) {
   useFrame(() => {
     // api.applyForce(
     //   new THREE.Vector3(
-    //     d20Position.current[0],
-    //     d20Position.current[1],
-    //     d20Position.current[2]
+    //     pulledItem.current[0],
+    //     pulledItem.current[1],
+    //     pulledItem.current[2]
     //   )
     //     .normalize()
     //     .multiplyScalar(-50)
@@ -29,9 +29,9 @@ export function usePullSingleTowardsCenter({
       // add the position
       .addVectors(
         new THREE.Vector3(
-          d20Position.current[0],
-          d20Position.current[1],
-          d20Position.current[2]
+          pulledItem.current[0],
+          pulledItem.current[1],
+          pulledItem.current[2]
         ),
         new THREE.Vector3(
           position ? position[0] : 0,

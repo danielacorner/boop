@@ -46,7 +46,7 @@ export function D20StarComponent({
   usePullSingleTowardsCenter({
     api,
     position,
-    d20Position,
+    pulledItem: d20Position,
   });
   // useFrame((state) => {
   //   if (!ref.current) {
