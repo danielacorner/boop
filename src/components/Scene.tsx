@@ -26,14 +26,7 @@ import {
   MIN_DPR,
   dprAtom,
 } from "../utils/constants";
-function AdaptivePixelRatio() {
-  const current = useThree((state) => state.performance.current);
-  const setPixelRatio = useThree((state) => state.setPixelRatio);
-  useEffect(() => {
-    setPixelRatio(window.devicePixelRatio * current);
-  }, [current]);
-  return null;
-}
+
 const Scene = () => {
   return (
     <>
@@ -117,6 +110,7 @@ function AdaptDprManually() {
 
 const DISTANCE = 20;
 const CAMERA_SPIN_SPEED = 1;
+const INITIAL_CAM_POS = new THREE.Vector3(...INITIAL_CAMERA_POSITION);
 function MoveCamera() {
   // move the camera in a circle when music is playing
   const [isCameraMoving] = useAtom(isCameraMovingAtom);
@@ -136,7 +130,7 @@ function MoveCamera() {
     } else {
       camera.lookAt(0, 0, 0);
       // animate the camera from its current position back to the initial position using lerp
-      camera.position.lerp(new THREE.Vector3(...INITIAL_CAMERA_POSITION), 0.1);
+      camera.position.lerp(INITIAL_CAM_POS, 0.1);
     }
   });
 

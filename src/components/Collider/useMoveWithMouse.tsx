@@ -22,9 +22,11 @@ export function useMoveWithMouse({
       return;
     }
     const nextX =
-      ((touchingRef.current?.[0] ?? state.pointer.x) * viewport.width) / 2;
+      ((touchingRef.current?.[0] ?? state.get().pointer.x) * viewport.width) /
+      2;
     const nextY =
-      ((touchingRef.current?.[1] ?? state.pointer.y) * viewport.height) / 2;
+      ((touchingRef.current?.[1] ?? state.get().pointer.y) * viewport.height) /
+      2;
     const nextXL = THREE.MathUtils.lerp(
       position.current[0],
       nextX,

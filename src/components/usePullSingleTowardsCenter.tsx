@@ -3,6 +3,7 @@ import { useFrame } from "@react-three/fiber";
 import { PublicApi } from "@react-three/cannon";
 import { PULL_FORCE } from "../utils/constants";
 
+const CENTER_VEC = new THREE.Vector3(0, 0, 0);
 export function usePullSingleTowardsCenter({
   position,
   api,
@@ -33,11 +34,9 @@ export function usePullSingleTowardsCenter({
           pulledItem.current[1],
           pulledItem.current[2]
         ),
-        new THREE.Vector3(
-          position ? position[0] : 0,
-          position ? position[1] : 0,
-          position ? position[2] : 0
-        )
+        position
+          ? new THREE.Vector3(position[0], position[1], position[2])
+          : CENTER_VEC
       )
       // then normalize and
       // multiply by a negative scalar to send it towards that point
