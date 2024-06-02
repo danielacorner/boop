@@ -1,24 +1,40 @@
 import { Loader } from "@react-three/drei";
 // import SceneOffscreen from "./components/SceneOffscreen";
-import { SpreadOutButton } from "./components/UI/BtnSpreadOut";
-import {
-  AutoModeButton,
-  Music,
-  MusicButton,
-} from "./components/UI/Music/Music";
-import { SpinCameraButton } from "./components/UI/Music/SpinCameraButton";
-import { ShuffleButton } from "./components/UI/Music/ShuffleButton";
-import { GithubButton } from "./GithubButton";
-import styled from "styled-components";
+import { Music } from "./components/UI/Music/Music";
 import { TrackDoubleClick } from "./TrackDoubleClick";
 import Scene from "./components/Scene";
+import { ControlsOverlay } from "./ControlsOverlay";
+import { INITIAL_CAMERA_POSITION, MAX_DPR, dprAtom } from "./utils/constants";
+import { Canvas } from "@react-three/fiber";
+import { useAtom } from "jotai";
 
 function App() {
+  const [dpr] = useAtom(dprAtom);
+
   return (
     <>
       <Loader />
       {/* <SceneOffscreen /> */}
-      <Scene />
+      <Canvas
+        // worker={worker}
+        // fallback={<Scene />}
+        shadows={dpr === MAX_DPR}
+        // frameloop="demand"
+        style={{ position: "fixed", inset: 0 }}
+        dpr={[0.4, dpr]}
+        camera={{
+          position: INITIAL_CAMERA_POSITION,
+          fov: 35,
+          near: 1,
+          far: 60,
+        }}
+        // performance={{ min: 0.75 }}
+        // https://docs.pmnd.rs/react-three-fiber/advanced/scaling-performance
+        performance={{ min: 1, max: 1 }}
+        // gl={{ alpha: true, antialias: true }}
+      >
+        <Scene />
+      </Canvas>
       <Music />
       <ControlsOverlay />
       <TrackDoubleClick />
@@ -27,36 +43,3 @@ function App() {
 }
 
 export default App;
-
-function ControlsOverlay() {
-  return (
-    <ControlsOverlayStyles>
-      <MusicButton />
-      <ShuffleButton />
-      <AutoModeButton />
-      <SpreadOutButton />
-      <SpinCameraButton />
-      <GithubButton className="btn-github" />
-    </ControlsOverlayStyles>
-  );
-}
-const ControlsOverlayStyles = styled.div`
-  position: fixed;
-  z-index: 10;
-  bottom: 32px;
-  left: 0;
-  right: 0;
-  display: flex;
-  gap: 0.5em;
-  justify-content: center;
-  width: 100%;
-  .btn-github {
-    transform: scale(0.7);
-    transform-origin: bottom left;
-    position: fixed;
-    bottom: 0px;
-    left: 0px;
-  }
-  @media (min-width: 768px) {
-  }
-`;

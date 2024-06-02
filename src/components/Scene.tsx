@@ -20,7 +20,6 @@ import * as THREE from "three";
 import { isCameraMovingAtom, usePositions } from "../store/store";
 import { Collider } from "./Collider/Collider";
 import {
-  // BALL_RADIUS,
   INITIAL_CAMERA_POSITION,
   MAX_DPR,
   MAX_DPR_BY_TIER,
@@ -36,20 +35,16 @@ const Scene = () => {
       <AdaptiveDpr pixelated={true} />
       <AdaptiveEvents />
       <FancyStars />
-      <ambientLight intensity={0.25} />
+      <ambientLight intensity={3} />
       <spotLight
-        intensity={1}
+        intensity={2000}
         angle={0.2}
         penumbra={1}
-        position={[30, 30, 30]}
+        position={[8, 8, 8]}
         castShadow
         shadow-mapSize={[512, 512]}
       />
-      <directionalLight
-        intensity={5}
-        position={[-10, -10, -10]}
-        color="purple"
-      />
+      <directionalLight intensity={4} position={[-10, 10, 6]} color="#e5acff" />
       <Physics gravity={[0, 0, 0]} iterations={1}>
         <PhysicsScene />
       </Physics>
