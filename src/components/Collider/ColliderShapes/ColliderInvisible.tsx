@@ -77,9 +77,9 @@ export function ColliderInvisible() {
     <animated.mesh name="colliderSphere" ref={sphereRef} scale={scale}>
       <Icosahedron
         args={[colliderRadius, -1]}
-        matrixWorldAutoUpdate={undefined}
-        getObjectsByProperty={undefined}
-        getVertexPosition={undefined}
+        //        matrixWorldAutoUpdate={undefined}
+        //        getObjectsByProperty={undefined}
+        //        getVertexPosition={undefined}
       >
         <meshPhysicalMaterial
           transmission={1}

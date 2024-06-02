@@ -81,9 +81,9 @@ export function ColliderDodeca() {
     <animated.mesh name="colliderSphere" ref={sphereRef} scale={scale}>
       <Dodecahedron
         args={[colliderRadius * ICOSA_MULT, 0]}
-        matrixWorldAutoUpdate={undefined}
-        getObjectsByProperty={undefined}
-        getVertexPosition={undefined}
+        //        matrixWorldAutoUpdate={undefined}
+        //        getObjectsByProperty={undefined}
+        //        getVertexPosition={undefined}
       >
         <meshPhysicalMaterial
           transmission={1}

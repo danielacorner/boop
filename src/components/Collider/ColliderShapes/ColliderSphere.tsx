@@ -87,9 +87,9 @@ export function ColliderSphere() {
       </Html>
       <Sphere
         args={[colliderRadius, 32]}
-        matrixWorldAutoUpdate={undefined}
-        getObjectsByProperty={undefined}
-        getVertexPosition={undefined}
+        // matrixWorldAutoUpdate={undefined}
+        // getObjectsByProperty={undefined}
+        // getVertexPosition={undefined}
       >
         <meshPhysicalMaterial
           transmission={1}

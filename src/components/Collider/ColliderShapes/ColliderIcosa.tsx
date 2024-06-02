@@ -77,9 +77,9 @@ export function ColliderIcosa() {
     <animated.mesh name="colliderSphere" ref={sphereRef} scale={scale}>
       <Icosahedron
         args={[colliderRadius, 0]}
-        matrixWorldAutoUpdate={undefined}
-        getObjectsByProperty={undefined}
-        getVertexPosition={undefined}
+        //        matrixWorldAutoUpdate={undefined}
+        //        getObjectsByProperty={undefined}
+        //        getVertexPosition={undefined}
       >
         <meshPhysicalMaterial
           transmission={1}

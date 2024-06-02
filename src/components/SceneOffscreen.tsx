@@ -13,7 +13,7 @@ const worker = new Worker(new URL("./worker.jsx", import.meta.url), {
   type: "module",
 });
 
-export const SceneOffscreen = () => {
+const SceneOffscreen = () => {
   const [dpr] = useAtom(dprAtom);
   return (
     <>
@@ -38,3 +38,5 @@ export const SceneOffscreen = () => {
     </>
   );
 };
+
+export default SceneOffscreen;

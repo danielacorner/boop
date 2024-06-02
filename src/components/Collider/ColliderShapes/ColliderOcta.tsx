@@ -77,9 +77,9 @@ export function ColliderOcta() {
     <animated.mesh name="colliderSphere" ref={sphereRef} scale={scale}>
       <Octahedron
         args={[colliderRadius * ICOSA_MULT, 0]}
-        matrixWorldAutoUpdate={undefined}
-        getObjectsByProperty={undefined}
-        getVertexPosition={undefined}
+        //        matrixWorldAutoUpdate={undefined}
+        //        getObjectsByProperty={undefined}
+        //        getVertexPosition={undefined}
       >
         <meshPhysicalMaterial
           transmission={1}

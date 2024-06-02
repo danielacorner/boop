@@ -1,5 +1,5 @@
 import { Loader } from "@react-three/drei";
-import { SceneOffscreen } from "./components/SceneOffscreen";
+// import SceneOffscreen from "./components/SceneOffscreen";
 import { SpreadOutButton } from "./components/UI/BtnSpreadOut";
 import {
   AutoModeButton,
@@ -11,12 +11,14 @@ import { ShuffleButton } from "./components/UI/Music/ShuffleButton";
 import { GithubButton } from "./GithubButton";
 import styled from "styled-components";
 import { TrackDoubleClick } from "./TrackDoubleClick";
+import Scene from "./components/Scene";
 
 function App() {
   return (
     <>
       <Loader />
-      <SceneOffscreen />
+      {/* <SceneOffscreen /> */}
+      <Scene />
       <Music />
       <ControlsOverlay />
       <TrackDoubleClick />

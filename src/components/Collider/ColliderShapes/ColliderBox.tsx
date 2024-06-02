@@ -74,9 +74,9 @@ export function ColliderBox() {
           colliderRadius * BOX_MULT,
           colliderRadius * BOX_MULT,
         ]}
-        matrixWorldAutoUpdate={undefined}
-        getObjectsByProperty={undefined}
-        getVertexPosition={undefined}
+        //        matrixWorldAutoUpdate={undefined}
+        //        getObjectsByProperty={undefined}
+        //        getVertexPosition={undefined}
       >
         <meshPhysicalMaterial
           transmission={1}
