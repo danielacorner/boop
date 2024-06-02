@@ -64,27 +64,37 @@ export function ColliderSphere() {
   useDanceToMusic({ api, position, isTabActive, colliderRadius });
 
   // shaking effect
-  const deviceMotion = useDeviceMotion();
-  console.log("⭐🎈  ColliderSphere  deviceMotion:", deviceMotion);
+  // const deviceMotion = useDeviceMotion();
+  // console.log("⭐🎈  ColliderSphere  deviceMotion:", deviceMotion);
+  // useEffect(() => {
+  //   const {
+  //     x: accX,
+  //     y: accY,
+  //     z: accZ,
+  //   } = deviceMotion.accelerationIncludingGravity;
+  //   api.applyImpulse(
+  //     [(accX ?? 0) * 0.1, (accY ?? 0) * 0.1, (accZ ?? 0) * 0.1],
+  //     [0, 0, 0]
+  //   );
+  // }, [deviceMotion, api]);
+
+  const deviceOrientation = useDeviceOrientation();
+  // apply impulse when the device rotates
   useEffect(() => {
-    const {
-      x: accX,
-      y: accY,
-      z: accZ,
-    } = deviceMotion.accelerationIncludingGravity;
+    const { alpha, beta, gamma } = deviceOrientation;
     api.applyImpulse(
-      [(accX ?? 0) * 0.1, (accY ?? 0) * 0.1, (accZ ?? 0) * 0.1],
+      [(alpha ?? 0) * 0.1, (beta ?? 0) * 0.1, (gamma ?? 0) * 0.1],
       [0, 0, 0]
     );
-  }, [deviceMotion, api]);
+  }, [deviceOrientation, api]);
 
   return (
     <animated.mesh name="colliderSphere" ref={sphereRef} scale={scale}>
-      <Html>
+      {/* <Html>
         <p style={{ color: "white", marginLeft: -192 }}>
           {JSON.stringify(deviceMotion, null, 2)}
         </p>
-      </Html>
+      </Html> */}
       <Sphere
         args={[colliderRadius, 32]}
         // matrixWorldAutoUpdate={undefined}
@@ -124,4 +134,17 @@ const useDeviceMotion = () => {
   });
 
   return motion;
+};
+
+const useDeviceOrientation = () => {
+  const [orientation, setOrientation] = useState({
+    alpha: null,
+    beta: null,
+    gamma: null,
+  });
+  useEventListener("deviceorientation", (deviceOrientationEvent) => {
+    setOrientation(deviceOrientationEvent);
+  });
+
+  return orientation;
 };

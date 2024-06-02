@@ -37,7 +37,7 @@ const Scene = () => {
       <FancyStars />
       <ambientLight intensity={3} />
       <spotLight
-        intensity={2000}
+        intensity={200}
         angle={0.2}
         penumbra={1}
         position={[8, 8, 8]}
