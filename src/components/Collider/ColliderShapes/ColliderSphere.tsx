@@ -1,5 +1,5 @@
 /* eslint-disable react/no-unknown-property */
-import { Icosahedron, Sphere } from "@react-three/drei";
+import { Html, Icosahedron, Sphere } from "@react-three/drei";
 import { useSphere } from "@react-three/cannon";
 import { useEffect, useRef, useState } from "react";
 import { useSpring, animated } from "@react-spring/three";
@@ -9,6 +9,7 @@ import { useDanceToMusic } from "../useDanceToMusic";
 import { useChangeShape } from "../useShape";
 import { useIsTabActive } from "../useIsTabActive";
 import { useDoubleClicked } from "../useDoubleClicked";
+import { useEventListener } from "../../../utils/hooks";
 
 export function ColliderSphere() {
   const { colliderRadius } = useCollider();
@@ -64,6 +65,7 @@ export function ColliderSphere() {
 
   // shaking effect
   const deviceMotion = useDeviceMotion();
+  console.log("⭐🎈  ColliderSphere  deviceMotion:", deviceMotion);
   useEffect(() => {
     const {
       x: accX,
@@ -78,6 +80,11 @@ export function ColliderSphere() {
 
   return (
     <animated.mesh name="colliderSphere" ref={sphereRef} scale={scale}>
+      <Html>
+        <p style={{ color: "white", marginLeft: -192 }}>
+          {JSON.stringify(deviceMotion, null, 2)}
+        </p>
+      </Html>
       <Sphere
         args={[colliderRadius, 32]}
         matrixWorldAutoUpdate={undefined}
@@ -112,18 +119,9 @@ const useDeviceMotion = () => {
     },
     interval: 0,
   });
-
-  useEffect(() => {
-    const handle = (deviceMotionEvent) => {
-      setMotion(deviceMotionEvent);
-    };
-
-    window.addEventListener("devicemotion", handle);
-
-    return () => {
-      window.removeEventListener("devicemotion", handle);
-    };
-  }, []);
+  useEventListener("devicemotion", (deviceMotionEvent) => {
+    setMotion(deviceMotionEvent);
+  });
 
   return motion;
 };
