@@ -20,6 +20,7 @@ import * as THREE from "three";
 import { isCameraMovingAtom, usePositions } from "../store/store";
 import { Collider } from "./Collider/Collider";
 import {
+  // BALL_RADIUS,
   INITIAL_CAMERA_POSITION,
   MAX_DPR,
   MAX_DPR_BY_TIER,
@@ -56,6 +57,8 @@ const Scene = () => {
       <Effects />
       {/* https://threejs.org/examples/webgl_shaders_sky.html */}
       <Sky turbidity={10} rayleigh={0} inclination={0.51} />
+      {/* <RotateSceneWithDeviceOrientation /> */}
+      {/* <MoveSceneWithDeviceMotion /> */}
     </>
   );
 };
@@ -130,9 +133,70 @@ function MoveCamera() {
     } else {
       camera.lookAt(0, 0, 0);
       // animate the camera from its current position back to the initial position using lerp
-      camera.position.lerp(INITIAL_CAM_POS, 0.1);
+      // camera.position.lerp(INITIAL_CAM_POS, 0.1);
     }
   });
 
   return null;
 }
+
+// const RAD = BALL_RADIUS * 6;
+
+// function RotateSceneWithDeviceOrientation() {
+//   const { camera } = useThree();
+
+//   useEffect(() => {
+//     const handleDeviceOrientation = (event) => {
+//       const x = event.alpha; // 0 (default)
+//       const y = event.beta - 90; // 90 = facing you, 0 = facing up
+//       const z = event.gamma; // 0
+//       if (x && y && z) {
+//         // camera.rotation.set(x, y, z);
+//         // position the camera so that when we lookAt the origin, the camera position has been rotated around the origin by the camera rotation
+//         const nextX = 6 + ((x * Math.PI) / 180) * RAD;
+//         const nextY = 6 + ((y * Math.PI) / 180) * RAD;
+//         const nextZ = 6 + ((z * Math.PI) / 180) * RAD;
+//         camera.position.set(nextX, nextY, nextZ);
+
+//         // camera.lookAt(0, 0, 0);
+//       }
+//     };
+
+//     window.addEventListener("deviceorientation", handleDeviceOrientation);
+//     return () =>
+//       window.removeEventListener("deviceorientation", handleDeviceOrientation);
+//     // eslint-disable-next-line react-hooks/exhaustive-deps
+//   }, []);
+
+//   useFrame(() => {
+//     // Update camera rotation here if needed
+//   });
+
+//   return null;
+// }
+
+// function MoveSceneWithDeviceMotion() {
+//   const { camera } = useThree();
+
+//   useEffect(() => {
+//     const handleDeviceMotion = (event) => {
+//       console.log("⭐🎈  handleDeviceMotion  event:", event);
+//       const x = event.accelerationIncludingGravity?.x ?? 0;
+//       const y = event.accelerationIncludingGravity?.y ?? 0;
+//       const z = event.accelerationIncludingGravity?.z ?? 0;
+//       if (x && y && z) {
+//         camera.position.set(x, y, z);
+//       }
+//     };
+
+//     window.addEventListener("devicemotion", handleDeviceMotion);
+//     return () => window.removeEventListener("devicemotion", handleDeviceMotion);
+//     // eslint-disable-next-line react-hooks/exhaustive-deps
+//   }, []);
+
+//   useFrame(() => {
+//     // Update camera position here if needed
+//   });
+
+//   return null;
+// }

@@ -1,7 +1,7 @@
 /* eslint-disable react/no-unknown-property */
 import { Icosahedron, Sphere } from "@react-three/drei";
 import { useSphere } from "@react-three/cannon";
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useSpring, animated } from "@react-spring/three";
 import { useMoveWithMouse } from "../useMoveWithMouse";
 import { useCollider } from "../useCollider";
@@ -62,6 +62,20 @@ export function ColliderSphere() {
   // fake bpm-based dancing when music is playing
   useDanceToMusic({ api, position, isTabActive, colliderRadius });
 
+  // shaking effect
+  const deviceMotion = useDeviceMotion();
+  useEffect(() => {
+    const {
+      x: accX,
+      y: accY,
+      z: accZ,
+    } = deviceMotion.accelerationIncludingGravity;
+    api.applyImpulse(
+      [(accX ?? 0) * 0.1, (accY ?? 0) * 0.1, (accZ ?? 0) * 0.1],
+      [0, 0, 0]
+    );
+  }, [deviceMotion, api]);
+
   return (
     <animated.mesh name="colliderSphere" ref={sphereRef} scale={scale}>
       <Sphere
@@ -79,3 +93,37 @@ export function ColliderSphere() {
     </animated.mesh>
   );
 }
+const useDeviceMotion = () => {
+  const [motion, setMotion] = useState({
+    acceleration: {
+      x: null,
+      y: null,
+      z: null,
+    },
+    accelerationIncludingGravity: {
+      x: null,
+      y: null,
+      z: null,
+    },
+    rotationRate: {
+      alpha: null,
+      beta: null,
+      gamma: null,
+    },
+    interval: 0,
+  });
+
+  useEffect(() => {
+    const handle = (deviceMotionEvent) => {
+      setMotion(deviceMotionEvent);
+    };
+
+    window.addEventListener("devicemotion", handle);
+
+    return () => {
+      window.removeEventListener("devicemotion", handle);
+    };
+  }, []);
+
+  return motion;
+};
