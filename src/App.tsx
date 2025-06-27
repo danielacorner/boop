@@ -4,6 +4,7 @@ import { Music } from "./components/UI/Music/Music";
 import { TrackDoubleClick } from "./TrackDoubleClick";
 import Scene from "./components/Scene";
 import { ControlsOverlay } from "./ControlsOverlay";
+import { DeviceOrientationButton } from "./components/UI/DeviceOrientationButton";
 import { INITIAL_CAMERA_POSITION, MAX_DPR, dprAtom } from "./utils/constants";
 import { Canvas } from "@react-three/fiber";
 import { useAtom } from "jotai";
@@ -37,6 +38,7 @@ function App() {
       </Canvas>
       <Music />
       <ControlsOverlay />
+      <DeviceOrientationButton />
       <TrackDoubleClick />
     </>
   );

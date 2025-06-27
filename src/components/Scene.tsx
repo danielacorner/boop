@@ -19,6 +19,7 @@ import { musicAtom } from "./UI/Music/Music";
 import * as THREE from "three";
 import { isCameraMovingAtom, usePositions } from "../store/store";
 import { Collider } from "./Collider/Collider";
+import { DeviceOrientationRotation } from "./DeviceOrientationRotation";
 import {
   INITIAL_CAMERA_POSITION,
   MAX_DPR,
@@ -32,6 +33,7 @@ const Scene = () => {
     <>
       <AdaptDprManually />
       <MoveCamera />
+      <DeviceOrientationRotation />
       <AdaptiveDpr pixelated={true} />
       <AdaptiveEvents />
       <FancyStars />
