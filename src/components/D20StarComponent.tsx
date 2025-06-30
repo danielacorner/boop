@@ -101,7 +101,7 @@ export function D20StarComponent({
           />
         </mesh>
         <mesh
-          onClick={() => {
+          onDoubleClick={() => {
             window.open("https://20d.netlify.app");
           }}
           onPointerOver={(e) => {
