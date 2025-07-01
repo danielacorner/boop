@@ -7,12 +7,14 @@ import { DeviceOrientationButton } from "./components/UI/DeviceOrientationButton
 import { INITIAL_CAMERA_POSITION, MAX_DPR, dprAtom } from "./utils/constants";
 import { Canvas } from "@react-three/fiber";
 import { useAtom } from "jotai";
+import { GeometryControls } from "./components/UI/GeometryControls";
 
 export function Fidget2() {
   const [dpr] = useAtom(dprAtom);
 
   return (
     <>
+      <GeometryControls />
       <Loader />
       <div style={{ 
         position: "absolute", 

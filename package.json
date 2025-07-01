@@ -26,6 +26,7 @@
     "framer-motion": "^12.19.2",
     "glslify": "^7.1.1",
     "jotai": "^2.8.2",
+    "leva": "^0.10.0",
     "nice-color-palettes": "^2.0.0",
     "postprocessing": "^6.35.5",
     "react": "^18.3.1",

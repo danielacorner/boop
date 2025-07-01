@@ -9,6 +9,8 @@ import { usePullTowardsCenter } from "./usePullTowardsCenter";
 import { useFrame } from "@react-three/fiber";
 import { usePositions } from "../../store/store";
 import { useShape } from "../Collider/useShape";
+import { useAtom } from "jotai";
+import { geometryTypeAtom } from "../../store/geometryStore";
 
 export type SphereClumpProps = {
   radius: number;
@@ -65,6 +67,8 @@ export function SphereClump({
 }: SphereClumpProps) {
   // const radiusRef = useRef(radius);
   // const [shape] = useShape();
+  const [geometryType] = useAtom(geometryTypeAtom);
+  // Using useSphere for physics, but will display as dodecahedron
   const [sphereRef, api] = useSphere<THREE.InstancedMesh>(
     () => ({
       args: [radius],
@@ -188,18 +192,25 @@ export function SphereClump({
       receiveShadow
       args={[undefined, undefined, nodes.length]}
     >
+      {/* Check for explicit props first, then use the selected geometry type */}
       {icosa ? (
         <icosahedronGeometry args={[radius, 0]} />
       ) : dodeca ? (
         <dodecahedronGeometry args={[radius, 0]} />
+      ) : geometryType === "sphere" ? (
+        <sphereGeometry args={[radius, 32, 32]} />
+      ) : geometryType === "dodecahedron" ? (
+        <dodecahedronGeometry args={[radius, 0]} />
+      ) : geometryType === "icosahedron" ? (
+        <icosahedronGeometry args={[radius, 0]} />
+      ) : geometryType === "box" ? (
+        <boxGeometry args={[radius * 1.6, radius * 1.6, radius * 1.6]} />
+      ) : geometryType === "tetrahedron" ? (
+        <tetrahedronGeometry args={[radius, 0]} />
+      ) : geometryType === "octahedron" ? (
+        <octahedronGeometry args={[radius, 0]} />
       ) : (
-        <sphereGeometry args={[radius, 32, 32]}>
-          {/* <instancedAttribute
-                                  attach="attributes-color"
-                                  count={filteredNodesRandom.length}
-                                  array={colorArray}
-                                /> */}
-        </sphereGeometry>
+        <dodecahedronGeometry args={[radius, 0]} />
       )}
       {CustomMaterial ? (
         <CustomMaterial {...matProps} />

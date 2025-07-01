@@ -1,5 +1,16 @@
-/* prevent pull-down-to-refresh */
+/* prevent pull-down-to-refresh and scrollbars */
 html,
 body {
     overscroll-behavior-y: contain;
+    margin: 0;
+    padding: 0;
+    overflow: hidden;
+    height: 100%;
+    width: 100%;
+}
+
+#root {
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
 }
