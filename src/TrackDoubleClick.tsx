@@ -4,12 +4,12 @@ import { MouseEvent, MouseEventHandler, useCallback, useRef } from "react";
 
 export function TrackDoubleClick() {
   const [, setDoubleclicked] = useDoubleClicked();
-  useEventListener("dblclick", () => {
-    setDoubleclicked(true);
-  });
-  useDoubleTap(() => {
-    setDoubleclicked(true);
-  });
+  // useEventListener("dblclick", () => {
+  //   setDoubleclicked(true);
+  // });
+  // useDoubleTap(() => {
+  //   setDoubleclicked(true);
+  // });
 
   return null;
 }

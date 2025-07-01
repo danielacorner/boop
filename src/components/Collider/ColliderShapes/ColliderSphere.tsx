@@ -10,6 +10,8 @@ import { useChangeShape } from "../useShape";
 import { useIsTabActive } from "../useIsTabActive";
 import { useDoubleClicked } from "../useDoubleClicked";
 import { useEventListener } from "../../../utils/hooks";
+import { useContext } from "react";
+import { DepthContext } from "../../../context/DepthContext";
 
 export function ColliderSphere() {
   const { colliderRadius } = useCollider();
@@ -35,7 +37,11 @@ export function ColliderSphere() {
   );
   const isTabActive = useIsTabActive();
 
-  useMoveWithMouse({ isTabActive, position, api, shouldLerpRef });
+  // Try to get depth from context if available
+  const depthContext = useContext(DepthContext);
+  const depth = depthContext?.depth || 0;
+
+  useMoveWithMouse({ isTabActive, position, api, shouldLerpRef, depth });
 
   // double click to change width
   const [dblClicked, setDblClicked] = useDoubleClicked();

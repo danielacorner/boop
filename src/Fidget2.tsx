@@ -9,13 +9,17 @@ import { Canvas } from "@react-three/fiber";
 import { useAtom } from "jotai";
 import { GeometryControls } from "./components/UI/GeometryControls";
 import { GeometryProvider } from "./context/GeometryContext";
+import { DepthProvider } from "./context/DepthContext";
+import { DepthSlider } from "./components/UI/DepthSlider";
 
 export function Fidget2() {
   const [dpr] = useAtom(dprAtom);
 
   return (
     <GeometryProvider>
-      <GeometryControls />
+      <DepthProvider>
+        <GeometryControls />
+        <DepthSlider />
       <Loader />
       <div style={{ 
         position: "absolute", 
@@ -47,6 +51,7 @@ export function Fidget2() {
       <ControlsOverlay />
       <DeviceOrientationButton />
       <TrackDoubleClick />
+      </DepthProvider>
     </GeometryProvider>
   );
 }

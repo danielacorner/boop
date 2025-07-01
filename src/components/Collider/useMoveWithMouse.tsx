@@ -11,6 +11,7 @@ export function useMoveWithMouse({
   position,
   api,
   shouldLerpRef,
+  depth = 0, // Add depth parameter with default value of 0
 }) {
   const touchingRef = useRef<[number, number, number] | null>(null);
 
@@ -40,7 +41,7 @@ export function useMoveWithMouse({
     return api.position.set(
       shouldLerpRef.current ? nextXL : nextX,
       shouldLerpRef.current ? nextYL : nextY,
-      0
+      depth // Use depth parameter instead of hardcoded 0
     );
   });
 
