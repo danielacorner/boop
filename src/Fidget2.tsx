@@ -8,12 +8,13 @@ import { INITIAL_CAMERA_POSITION, MAX_DPR, dprAtom } from "./utils/constants";
 import { Canvas } from "@react-three/fiber";
 import { useAtom } from "jotai";
 import { GeometryControls } from "./components/UI/GeometryControls";
+import { GeometryProvider } from "./context/GeometryContext";
 
 export function Fidget2() {
   const [dpr] = useAtom(dprAtom);
 
   return (
-    <>
+    <GeometryProvider>
       <GeometryControls />
       <Loader />
       <div style={{ 
@@ -46,6 +47,6 @@ export function Fidget2() {
       <ControlsOverlay />
       <DeviceOrientationButton />
       <TrackDoubleClick />
-    </>
+    </GeometryProvider>
   );
 }

@@ -9,8 +9,7 @@ import { usePullTowardsCenter } from "./usePullTowardsCenter";
 import { useFrame } from "@react-three/fiber";
 import { usePositions } from "../../store/store";
 import { useShape } from "../Collider/useShape";
-import { useAtom } from "jotai";
-import { geometryTypeAtom } from "../../store/geometryStore";
+import { GeometryType, useGeometry } from "../../context/GeometryContext";
 
 export type SphereClumpProps = {
   radius: number;
@@ -67,7 +66,15 @@ export function SphereClump({
 }: SphereClumpProps) {
   // const radiusRef = useRef(radius);
   // const [shape] = useShape();
-  const [geometryType] = useAtom(geometryTypeAtom);
+  
+  // Safely use the geometry context if available, otherwise fall back to sphere as default
+  let geometryType: GeometryType = "sphere";
+  try {
+    const context = useGeometry();
+    geometryType = context.geometryType;
+  } catch (error) {
+    // Outside of GeometryProvider (e.g., in Fidget1), use sphere as default
+  }
   // Using useSphere for physics, but will display as dodecahedron
   const [sphereRef, api] = useSphere<THREE.InstancedMesh>(
     () => ({

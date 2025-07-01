@@ -1,6 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { useAtom } from 'jotai';
-import { geometryTypeAtom, GeometryType } from '../../store/geometryStore';
+import { useGeometry, GeometryType } from '../../context/GeometryContext';
 
 const geometryOptions: { value: GeometryType; label: string; icon: string }[] = [
   { value: 'sphere', label: 'Sphere', icon: '⚪' },
@@ -12,7 +11,7 @@ const geometryOptions: { value: GeometryType; label: string; icon: string }[] = 
 ];
 
 export const GeometryControls: React.FC = () => {
-  const [geometryType, setGeometryType] = useAtom(geometryTypeAtom);
+  const { geometryType, setGeometryType } = useGeometry();
   const [isOpen, setIsOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
 
