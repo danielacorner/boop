@@ -30,42 +30,28 @@ export const GeometryControls: React.FC = () => {
 
   return (
     <>
-      {/* 3D shape preview with grid of buttons */}
       {isRendered && (
-        <div 
-          style={{
-            position: 'absolute',
-            top: '20px',
-            right: '20px',
-            width: '220px',
-            backgroundColor: 'rgba(0, 0, 0, 0.5)',
-            backdropFilter: 'blur(10px)',
-            borderRadius: '8px',
-            padding: '12px 15px',
-            color: 'white',
-            boxShadow: '0 2px 10px rgba(0, 0, 0, 0.3)',
-            zIndex: 1000
-          }}
-        >
+        <>
           <div style={{ 
             marginBottom: '10px', 
             display: 'flex', 
-            justifyContent: 'center',
+            justifyContent: 'space-between',
+            alignItems: 'center',
             fontWeight: 'bold',
             fontSize: '16px'
           }}>
             <span>{geometryOptions.find(opt => opt.value === geometryType)?.label}</span>
           </div>
 
-          {/* Shape selection buttons */}
+          {/* Shape selection buttons in single row */}
           <div style={{
             display: 'grid',
-            gridTemplateColumns: 'repeat(3, 1fr)',
+            gridTemplateColumns: 'repeat(7, 1fr)', // Changed to 7 columns for all shapes in one row
             gridGap: '8px',
             width: '100%',
             padding: '5px 0'
           }}>
-            {/* First row: Sphere, Tetrahedron, Box */}
+            {/* All shapes in a single row */}
             <Tooltip title="Sphere" placement="bottom">
               <button
                 onClick={() => setGeometryType('sphere')}
@@ -79,7 +65,7 @@ export const GeometryControls: React.FC = () => {
                   border: geometryType === 'sphere' ? '2px solid rgba(120, 120, 255, 0.6)' : '1px solid rgba(255, 255, 255, 0.2)',
                   cursor: 'pointer',
                   padding: 0,
-                  minHeight: '60px',
+                  minHeight: '45px', // Smaller button height
                   position: 'relative',
                   overflow: 'hidden'
                 }}
@@ -110,7 +96,7 @@ export const GeometryControls: React.FC = () => {
                   border: geometryType === 'tetrahedron' ? '2px solid rgba(120, 120, 255, 0.6)' : '1px solid rgba(255, 255, 255, 0.2)',
                   cursor: 'pointer',
                   padding: 0,
-                  minHeight: '60px',
+                  minHeight: '45px', // Smaller button height
                   position: 'relative',
                   overflow: 'hidden'
                 }}
@@ -141,7 +127,7 @@ export const GeometryControls: React.FC = () => {
                   border: geometryType === 'box' ? '2px solid rgba(120, 120, 255, 0.6)' : '1px solid rgba(255, 255, 255, 0.2)',
                   cursor: 'pointer',
                   padding: 0,
-                  minHeight: '60px',
+                  minHeight: '45px', // Smaller button height
                   position: 'relative',
                   overflow: 'hidden'
                 }}
@@ -174,7 +160,7 @@ export const GeometryControls: React.FC = () => {
                   border: geometryType === 'octahedron' ? '2px solid rgba(120, 120, 255, 0.6)' : '1px solid rgba(255, 255, 255, 0.2)',
                   cursor: 'pointer',
                   padding: 0,
-                  minHeight: '60px',
+                  minHeight: '45px', // Smaller button height
                   position: 'relative',
                   overflow: 'hidden'
                 }}
@@ -205,7 +191,7 @@ export const GeometryControls: React.FC = () => {
                   border: geometryType === 'dodecahedron' ? '2px solid rgba(120, 120, 255, 0.6)' : '1px solid rgba(255, 255, 255, 0.2)',
                   cursor: 'pointer',
                   padding: 0,
-                  minHeight: '60px',
+                  minHeight: '45px', // Smaller button height
                   position: 'relative',
                   overflow: 'hidden'
                 }}
@@ -236,7 +222,7 @@ export const GeometryControls: React.FC = () => {
                   border: geometryType === 'icosahedron' ? '2px solid rgba(120, 120, 255, 0.6)' : '1px solid rgba(255, 255, 255, 0.2)',
                   cursor: 'pointer',
                   padding: 0,
-                  minHeight: '60px',
+                  minHeight: '45px', // Smaller button height
                   position: 'relative',
                   overflow: 'hidden'
                 }}
@@ -255,9 +241,8 @@ export const GeometryControls: React.FC = () => {
               </button>
             </Tooltip>
 
-            {/* Third row (centered): Star Tetrahedron */}
-            <div style={{ gridColumn: '2/3' }}>
-              <Tooltip title="Tetrahedron Star" placement="bottom">
+            {/* Last shape in the row: Star Tetrahedron */}
+            <Tooltip title="Tetrahedron Star" placement="bottom">
                 <button
                   onClick={() => setGeometryType('tetrahedron_star')}
                   aria-label="Tetrahedron Star"
@@ -270,7 +255,7 @@ export const GeometryControls: React.FC = () => {
                     border: geometryType === 'tetrahedron_star' ? '2px solid rgba(120, 120, 255, 0.6)' : '1px solid rgba(255, 255, 255, 0.2)',
                     cursor: 'pointer',
                     padding: 0,
-                    minHeight: '60px',
+                    minHeight: '45px', // Smaller button height
                     position: 'relative',
                     overflow: 'hidden'
                   }}
@@ -288,9 +273,8 @@ export const GeometryControls: React.FC = () => {
                   </div>
                 </button>
               </Tooltip>
-            </div>
           </div>
-        </div>
+        </>
       )}
     </>
   );

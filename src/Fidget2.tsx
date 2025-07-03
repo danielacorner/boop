@@ -18,8 +18,30 @@ export function Fidget2() {
   return (
     <GeometryProvider>
       <DepthProvider>
-        <GeometryControls />
-        <DepthSlider />
+        {/* Control Panel Container */}
+        <div style={{
+          position: 'absolute',
+          top: '20px',
+          right: '20px',
+          width: '580px',
+          backgroundColor: 'rgba(0, 0, 0, 0.5)',
+          backdropFilter: 'blur(10px)',
+          borderRadius: '8px',
+          padding: '12px 15px',
+          color: 'white',
+          boxShadow: '0 2px 10px rgba(0, 0, 0, 0.3)',
+          zIndex: 1000
+        }}>
+          <div style={{marginBottom: '5px'}}>
+            <GeometryControls />
+          </div>
+          <div style={{ 
+            height: '1px', 
+            background: 'rgba(255,255,255,0.2)', 
+            margin: '10px 0' 
+          }}></div>
+          <DepthSlider />
+        </div>
       <Loader />
       <div style={{ 
         position: "absolute", 

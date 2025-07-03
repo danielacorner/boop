@@ -89,22 +89,13 @@ export const DepthSlider: React.FC = () => {
   }, [depth, setDepth]);
 
   return (
-    <div 
+    <div
       style={{
-        position: 'absolute',
-        top: '70px',
-        right: '20px',
-        backgroundColor: 'rgba(0, 0, 0, 0.5)',
-        backdropFilter: 'blur(10px)',
-        borderRadius: '8px',
-        padding: '10px 15px',
-        width: '200px',
+        width: '100%',
         color: 'white',
         transition: 'transform 0.2s ease, opacity 0.2s ease',
         transform: isHovered ? 'scale(1.02)' : 'scale(1)',
         opacity: isHovered ? 0.95 : 0.7,
-        zIndex: 1000,
-        boxShadow: '0 2px 10px rgba(0, 0, 0, 0.3)',
       }}
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
