@@ -100,7 +100,7 @@ export const DepthSlider: React.FC = () => {
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
     >
-      <div style={{ marginBottom: '8px', display: 'flex', justifyContent: 'space-between' }}>
+      <div style={{ marginBottom: '5px', display: 'flex', justifyContent: 'space-between', fontSize: '13px' }}>
         <label htmlFor="depth-slider">Depth Control</label>
         <span>{depth.toFixed(1)}</span>
       </div>
@@ -115,8 +115,8 @@ export const DepthSlider: React.FC = () => {
         style={{
           width: '100%',
           background: 'linear-gradient(to right, #3a6df0, #a855f7)',
-          height: '6px',
-          borderRadius: '3px',
+          height: '4px', // Smaller height
+          borderRadius: '2px',
           appearance: 'none',
           outline: 'none',
         }}
