@@ -1,85 +1,297 @@
-import React from 'react';
-import { useGeometry, GeometryType } from '../../context/GeometryContext';
-import { BsCircleFill } from 'react-icons/bs';
-import { TbBox, TbBoxMultiple, TbDice, TbDice5, TbDice6, TbTriangle } from 'react-icons/tb';
+import React, { useState, useEffect } from 'react';
+import { useGeometry } from '../../context/GeometryContext';
+import { Tooltip } from '@mui/material';
+import { Canvas } from '@react-three/fiber';
+import { Sphere, Box, Tetrahedron, Octahedron, Icosahedron, Dodecahedron, TetrahedronStar } from './ShapePreview';
 
-const iconStyle = { size: 20, strokeWidth: 1.5 };
-
-const geometryOptions: { value: GeometryType; icon: React.ReactNode }[] = [
-  { value: 'sphere', icon: <BsCircleFill size={iconStyle.size} /> },
-  { value: 'dodecahedron', icon: <TbDice5 size={iconStyle.size} strokeWidth={iconStyle.strokeWidth} /> },
-  { value: 'icosahedron', icon: <TbDice size={iconStyle.size} strokeWidth={iconStyle.strokeWidth} /> },
-  { value: 'box', icon: <TbBox size={iconStyle.size} strokeWidth={iconStyle.strokeWidth} /> },
-  { value: 'tetrahedron', icon: <TbTriangle size={iconStyle.size} strokeWidth={iconStyle.strokeWidth} /> },
-  { value: 'octahedron', icon: <TbBoxMultiple size={iconStyle.size} strokeWidth={iconStyle.strokeWidth} /> }
+// Array of geometry options
+const geometryOptions = [
+  { value: "sphere", label: "Sphere" },
+  { value: "tetrahedron", label: "Tetrahedron" },
+  { value: "box", label: "Box" },
+  { value: "octahedron", label: "Octahedron" },
+  { value: "dodecahedron", label: "Dodecahedron" },
+  { value: "icosahedron", label: "Icosahedron" },
+  { value: "tetrahedron_star", label: "Tetrahedron Star" },
 ];
+
+// Track if component is mounted for initial render
+let isMounted = false;
 
 export const GeometryControls: React.FC = () => {
   const { geometryType, setGeometryType } = useGeometry();
+  const [isRendered, setIsRendered] = useState(false);
+
+  useEffect(() => {
+    isMounted = true;
+    setIsRendered(true);
+    return () => { isMounted = false; };
+  }, []);
 
   return (
-    <div 
-      style={{
-        position: 'absolute',
-        top: '10px',
-        right: '10px',
-        zIndex: 1000,
-        display: 'flex',
-        gap: '4px',
-        backgroundColor: 'rgba(0,0,0,0.6)',
-        padding: '6px',
-        borderRadius: '8px',
-        backdropFilter: 'blur(10px)',
-        boxShadow: '0 4px 12px rgba(0,0,0,0.4)',
-        border: '1px solid rgba(255,255,255,0.15)'
-      }}
-    >
-      {geometryOptions.map((option) => (
-        <button
-          key={option.value}
-          onClick={() => setGeometryType(option.value)}
-          title={option.value.charAt(0).toUpperCase() + option.value.slice(1)}
-          aria-label={option.value}
-          aria-pressed={geometryType === option.value}
+    <>
+      {/* 3D shape preview with grid of buttons */}
+      {isRendered && (
+        <div 
           style={{
-            width: '40px',
-            height: '40px',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            border: 'none',
-            borderRadius: '6px',
-            cursor: 'pointer',
+            position: 'absolute',
+            top: '20px',
+            right: '20px',
+            width: '220px',
+            backgroundColor: 'rgba(0, 0, 0, 0.5)',
+            backdropFilter: 'blur(10px)',
+            borderRadius: '8px',
+            padding: '12px 15px',
             color: 'white',
-            background: geometryType === option.value 
-              ? 'rgba(137, 100, 247, 0.7)' 
-              : 'rgba(30, 30, 30, 0.6)',
-            transition: 'all 0.15s ease',
-            fontSize: '18px',
-            padding: 0,
-            outline: 'none',
-            boxShadow: geometryType === option.value 
-              ? '0 0 0 1px rgba(255,255,255,0.6), inset 0 0 12px rgba(137, 100, 247, 0.4)' 
-              : 'inset 0 0 0 1px rgba(255,255,255,0.1)'  
-          }}
-          onMouseEnter={(e) => {
-            if (geometryType !== option.value) {
-              e.currentTarget.style.background = 'rgba(137, 100, 247, 0.3)';
-              e.currentTarget.style.boxShadow = 'inset 0 0 0 1px rgba(255,255,255,0.3)';
-              e.currentTarget.style.transform = 'translateY(-2px)';
-            }
-          }}
-          onMouseLeave={(e) => {
-            if (geometryType !== option.value) {
-              e.currentTarget.style.background = 'rgba(30, 30, 30, 0.6)';
-              e.currentTarget.style.boxShadow = 'inset 0 0 0 1px rgba(255,255,255,0.1)';
-              e.currentTarget.style.transform = 'translateY(0)';
-            }
+            boxShadow: '0 2px 10px rgba(0, 0, 0, 0.3)',
+            zIndex: 1000
           }}
         >
-          {option.icon}
-        </button>
-      ))}
-    </div>
+          <div style={{ 
+            marginBottom: '10px', 
+            display: 'flex', 
+            justifyContent: 'center',
+            fontWeight: 'bold',
+            fontSize: '16px'
+          }}>
+            <span>{geometryOptions.find(opt => opt.value === geometryType)?.label}</span>
+          </div>
+
+          {/* Shape selection buttons */}
+          <div style={{
+            display: 'grid',
+            gridTemplateColumns: 'repeat(3, 1fr)',
+            gridGap: '8px',
+            width: '100%',
+            padding: '5px 0'
+          }}>
+            {/* First row: Sphere, Tetrahedron, Box */}
+            <Tooltip title="Sphere" placement="bottom">
+              <button
+                onClick={() => setGeometryType('sphere')}
+                aria-label="Sphere"
+                aria-pressed={geometryType === 'sphere'}
+                style={{
+                  width: '100%',
+                  aspectRatio: '1',
+                  borderRadius: '4px',
+                  backgroundColor: geometryType === 'sphere' ? 'rgba(100, 100, 255, 0.3)' : 'transparent',
+                  border: geometryType === 'sphere' ? '2px solid rgba(120, 120, 255, 0.6)' : '1px solid rgba(255, 255, 255, 0.2)',
+                  cursor: 'pointer',
+                  padding: 0,
+                  minHeight: '60px',
+                  position: 'relative',
+                  overflow: 'hidden'
+                }}
+              >
+                <div style={{ width: '100%', height: '100%', position: 'absolute', top: 0, left: 0 }}>
+                  {/* eslint-disable react/no-unknown-property */}
+                  <Canvas frameloop={geometryType === 'sphere' ? "always" : "demand"} camera={{ position: [0, 0, 2.5] }}>
+                    <ambientLight intensity={0.5} />
+                    <pointLight position={[10, 10, 10]} intensity={0.7} />
+                    <pointLight position={[-10, -10, -5]} intensity={0.7} />
+                    <pointLight position={[0, 0, 5]} intensity={0.7} color="#6666ff" />
+                  {/* eslint-enable react/no-unknown-property */}
+                    <Sphere />
+                  </Canvas>
+                </div>
+              </button>
+            </Tooltip>
+            <Tooltip title="Tetrahedron" placement="bottom">
+              <button
+                onClick={() => setGeometryType('tetrahedron')}
+                aria-label="Tetrahedron"
+                aria-pressed={geometryType === 'tetrahedron'}
+                style={{
+                  width: '100%',
+                  aspectRatio: '1',
+                  borderRadius: '4px',
+                  backgroundColor: geometryType === 'tetrahedron' ? 'rgba(100, 100, 255, 0.3)' : 'transparent',
+                  border: geometryType === 'tetrahedron' ? '2px solid rgba(120, 120, 255, 0.6)' : '1px solid rgba(255, 255, 255, 0.2)',
+                  cursor: 'pointer',
+                  padding: 0,
+                  minHeight: '60px',
+                  position: 'relative',
+                  overflow: 'hidden'
+                }}
+              >
+                <div style={{ width: '100%', height: '100%', position: 'absolute', top: 0, left: 0 }}>
+                  {/* eslint-disable react/no-unknown-property */}
+                  <Canvas frameloop={geometryType === 'tetrahedron' ? "always" : "demand"} camera={{ position: [0, 0, 2.5] }}>
+                    <ambientLight intensity={0.5} />
+                    <pointLight position={[10, 10, 10]} intensity={0.7} />
+                    <pointLight position={[-10, -10, -5]} intensity={0.7} />
+                    <pointLight position={[0, 0, 5]} intensity={0.7} color="#6666ff" />
+                  {/* eslint-enable react/no-unknown-property */}
+                    <Tetrahedron />
+                  </Canvas>
+                </div>
+              </button>
+            </Tooltip>
+            <Tooltip title="Box" placement="bottom">
+              <button
+                onClick={() => setGeometryType('box')}
+                aria-label="Box"
+                aria-pressed={geometryType === 'box'}
+                style={{
+                  width: '100%',
+                  aspectRatio: '1',
+                  borderRadius: '4px',
+                  backgroundColor: geometryType === 'box' ? 'rgba(100, 100, 255, 0.3)' : 'transparent',
+                  border: geometryType === 'box' ? '2px solid rgba(120, 120, 255, 0.6)' : '1px solid rgba(255, 255, 255, 0.2)',
+                  cursor: 'pointer',
+                  padding: 0,
+                  minHeight: '60px',
+                  position: 'relative',
+                  overflow: 'hidden'
+                }}
+              >
+                <div style={{ width: '100%', height: '100%', position: 'absolute', top: 0, left: 0 }}>
+                  {/* eslint-disable react/no-unknown-property */}
+                  <Canvas frameloop={geometryType === 'box' ? "always" : "demand"} camera={{ position: [0, 0, 2.5] }}>
+                    <ambientLight intensity={0.5} />
+                    <pointLight position={[10, 10, 10]} intensity={0.7} />
+                    <pointLight position={[-10, -10, -5]} intensity={0.7} />
+                    <pointLight position={[0, 0, 5]} intensity={0.7} color="#6666ff" />
+                  {/* eslint-enable react/no-unknown-property */}
+                    <Box />
+                  </Canvas>
+                </div>
+              </button>
+            </Tooltip>
+
+            {/* Second row: Octahedron, Dodecahedron, Icosahedron */}
+            <Tooltip title="Octahedron" placement="bottom">
+              <button
+                onClick={() => setGeometryType('octahedron')}
+                aria-label="Octahedron"
+                aria-pressed={geometryType === 'octahedron'}
+                style={{
+                  width: '100%',
+                  aspectRatio: '1',
+                  borderRadius: '4px',
+                  backgroundColor: geometryType === 'octahedron' ? 'rgba(100, 100, 255, 0.3)' : 'transparent',
+                  border: geometryType === 'octahedron' ? '2px solid rgba(120, 120, 255, 0.6)' : '1px solid rgba(255, 255, 255, 0.2)',
+                  cursor: 'pointer',
+                  padding: 0,
+                  minHeight: '60px',
+                  position: 'relative',
+                  overflow: 'hidden'
+                }}
+              >
+                <div style={{ width: '100%', height: '100%', position: 'absolute', top: 0, left: 0 }}>
+                  {/* eslint-disable react/no-unknown-property */}
+                  <Canvas frameloop={geometryType === 'octahedron' ? "always" : "demand"} camera={{ position: [0, 0, 2.5] }}>
+                    <ambientLight intensity={0.5} />
+                    <pointLight position={[10, 10, 10]} intensity={0.7} />
+                    <pointLight position={[-10, -10, -5]} intensity={0.7} />
+                    <pointLight position={[0, 0, 5]} intensity={0.7} color="#6666ff" />
+                  {/* eslint-enable react/no-unknown-property */}
+                    <Octahedron />
+                  </Canvas>
+                </div>
+              </button>
+            </Tooltip>
+            <Tooltip title="Dodecahedron" placement="bottom">
+              <button
+                onClick={() => setGeometryType('dodecahedron')}
+                aria-label="Dodecahedron"
+                aria-pressed={geometryType === 'dodecahedron'}
+                style={{
+                  width: '100%',
+                  aspectRatio: '1',
+                  borderRadius: '4px',
+                  backgroundColor: geometryType === 'dodecahedron' ? 'rgba(100, 100, 255, 0.3)' : 'transparent',
+                  border: geometryType === 'dodecahedron' ? '2px solid rgba(120, 120, 255, 0.6)' : '1px solid rgba(255, 255, 255, 0.2)',
+                  cursor: 'pointer',
+                  padding: 0,
+                  minHeight: '60px',
+                  position: 'relative',
+                  overflow: 'hidden'
+                }}
+              >
+                <div style={{ width: '100%', height: '100%', position: 'absolute', top: 0, left: 0 }}>
+                  {/* eslint-disable react/no-unknown-property */}
+                  <Canvas frameloop={geometryType === 'dodecahedron' ? "always" : "demand"} camera={{ position: [0, 0, 2.5] }}>
+                    <ambientLight intensity={0.5} />
+                    <pointLight position={[10, 10, 10]} intensity={0.7} />
+                    <pointLight position={[-10, -10, -5]} intensity={0.7} />
+                    <pointLight position={[0, 0, 5]} intensity={0.7} color="#6666ff" />
+                  {/* eslint-enable react/no-unknown-property */}
+                    <Dodecahedron />
+                  </Canvas>
+                </div>
+              </button>
+            </Tooltip>
+            <Tooltip title="Icosahedron" placement="bottom">
+              <button
+                onClick={() => setGeometryType('icosahedron')}
+                aria-label="Icosahedron"
+                aria-pressed={geometryType === 'icosahedron'}
+                style={{
+                  width: '100%',
+                  aspectRatio: '1',
+                  borderRadius: '4px',
+                  backgroundColor: geometryType === 'icosahedron' ? 'rgba(100, 100, 255, 0.3)' : 'transparent',
+                  border: geometryType === 'icosahedron' ? '2px solid rgba(120, 120, 255, 0.6)' : '1px solid rgba(255, 255, 255, 0.2)',
+                  cursor: 'pointer',
+                  padding: 0,
+                  minHeight: '60px',
+                  position: 'relative',
+                  overflow: 'hidden'
+                }}
+              >
+                <div style={{ width: '100%', height: '100%', position: 'absolute', top: 0, left: 0 }}>
+                  {/* eslint-disable react/no-unknown-property */}
+                  <Canvas frameloop={geometryType === 'icosahedron' ? "always" : "demand"} camera={{ position: [0, 0, 2.5] }}>
+                    <ambientLight intensity={0.5} />
+                    <pointLight position={[10, 10, 10]} intensity={0.7} />
+                    <pointLight position={[-10, -10, -5]} intensity={0.7} />
+                    <pointLight position={[0, 0, 5]} intensity={0.7} color="#6666ff" />
+                  {/* eslint-enable react/no-unknown-property */}
+                    <Icosahedron />
+                  </Canvas>
+                </div>
+              </button>
+            </Tooltip>
+
+            {/* Third row (centered): Star Tetrahedron */}
+            <div style={{ gridColumn: '2/3' }}>
+              <Tooltip title="Tetrahedron Star" placement="bottom">
+                <button
+                  onClick={() => setGeometryType('tetrahedron_star')}
+                  aria-label="Tetrahedron Star"
+                  aria-pressed={geometryType === 'tetrahedron_star'}
+                  style={{
+                    width: '100%',
+                    aspectRatio: '1',
+                    borderRadius: '4px',
+                    backgroundColor: geometryType === 'tetrahedron_star' ? 'rgba(100, 100, 255, 0.3)' : 'transparent',
+                    border: geometryType === 'tetrahedron_star' ? '2px solid rgba(120, 120, 255, 0.6)' : '1px solid rgba(255, 255, 255, 0.2)',
+                    cursor: 'pointer',
+                    padding: 0,
+                    minHeight: '60px',
+                    position: 'relative',
+                    overflow: 'hidden'
+                  }}
+                >
+                  <div style={{ width: '100%', height: '100%', position: 'absolute', top: 0, left: 0 }}>
+                    {/* eslint-disable react/no-unknown-property */}
+                    <Canvas frameloop={geometryType === 'tetrahedron_star' ? "always" : "demand"} camera={{ position: [0, 0, 2.8] }}>
+                      <ambientLight intensity={0.5} />
+                      <pointLight position={[10, 10, 10]} intensity={0.7} />
+                      <pointLight position={[-10, -10, -5]} intensity={0.7} />
+                      <pointLight position={[0, 0, 5]} intensity={0.7} color="#6666ff" />
+                    {/* eslint-enable react/no-unknown-property */}
+                      <TetrahedronStar />
+                    </Canvas>
+                  </div>
+                </button>
+              </Tooltip>
+            </div>
+          </div>
+        </div>
+      )}
+    </>
   );
 };
