@@ -1,9 +1,13 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { useDepth } from '../../context/DepthContext';
 
 export const DepthSlider: React.FC = () => {
   const { depth, setDepth } = useDepth();
   const [isHovered, setIsHovered] = useState(false);
+  
+  // Touch pinch-to-zoom state
+  const touchesRef = useRef<Touch[]>([]);
+  const lastDistanceRef = useRef<number | null>(null);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setDepth(parseFloat(e.target.value));
@@ -25,6 +29,62 @@ export const DepthSlider: React.FC = () => {
     // Cleanup
     return () => {
       window.removeEventListener('wheel', handleWheel);
+    };
+  }, [depth, setDepth]);
+  
+  // Handle pinch-to-zoom on touch devices
+  useEffect(() => {
+    // Calculate distance between two touch points
+    const getDistance = (touches: Touch[]): number => {
+      if (touches.length < 2) return 0;
+      const dx = touches[0].clientX - touches[1].clientX;
+      const dy = touches[0].clientY - touches[1].clientY;
+      return Math.sqrt(dx * dx + dy * dy);
+    };
+
+    const handleTouchStart = (e: TouchEvent) => {
+      if (e.touches.length >= 2) {
+        // Store initial touches
+        touchesRef.current = Array.from(e.touches);
+        lastDistanceRef.current = getDistance(touchesRef.current);
+      }
+    };
+
+    const handleTouchMove = (e: TouchEvent) => {
+      if (e.touches.length >= 2 && lastDistanceRef.current !== null) {
+        e.preventDefault(); // Prevent page zoom/scroll
+        
+        // Calculate new distance
+        const newDistance = getDistance(Array.from(e.touches));
+        const delta = (newDistance - lastDistanceRef.current) * 0.01;
+        
+        // Update depth based on pinch movement
+        const newDepth = Math.min(10, Math.max(-10, depth + delta));
+        setDepth(newDepth);
+        
+        // Update last distance
+        lastDistanceRef.current = newDistance;
+      }
+    };
+
+    const handleTouchEnd = () => {
+      // Reset touch tracking
+      touchesRef.current = [];
+      lastDistanceRef.current = null;
+    };
+
+    // Add touch event listeners
+    window.addEventListener('touchstart', handleTouchStart, { passive: true });
+    window.addEventListener('touchmove', handleTouchMove, { passive: false });
+    window.addEventListener('touchend', handleTouchEnd);
+    window.addEventListener('touchcancel', handleTouchEnd);
+
+    return () => {
+      // Clean up event listeners
+      window.removeEventListener('touchstart', handleTouchStart);
+      window.removeEventListener('touchmove', handleTouchMove);
+      window.removeEventListener('touchend', handleTouchEnd);
+      window.removeEventListener('touchcancel', handleTouchEnd);
     };
   }, [depth, setDepth]);
 
