@@ -202,7 +202,7 @@ export function ColliderSphere() {
     // Common material properties for all geometry types
     const material = (
       <meshPhysicalMaterial
-        transmission={1}
+        transmission={0.9}
         thickness={colliderRadius / 2}
         roughness={0}
       />
@@ -246,11 +246,31 @@ export function ColliderSphere() {
           </Tetrahedron>
         );
       case "tetrahedron_star":
-        // For tetrahedron star, use an icosahedron for now (needs custom geometry)
+        // Merkaba - Star tetrahedron (two perfectly interlocking tetrahedrons)
         return (
-          <Icosahedron args={[colliderRadius, 2]}>
-            {material}
-          </Icosahedron>
+          <group rotation={[Math.PI/5, Math.PI/4, 0]}>
+            {/* Upward-pointing tetrahedron */}
+            <Tetrahedron args={[colliderRadius * 0.95, 0]}>
+              <meshPhysicalMaterial
+                transmission={0.9}
+                thickness={colliderRadius / 2.5}
+                roughness={0.0}
+                metalness={0}
+              />
+            </Tetrahedron>
+            
+            {/* Downward-pointing tetrahedron */}
+            <group rotation={[Math.PI/2, Math.PI/2, Math.PI/2]}>
+              <Tetrahedron args={[colliderRadius * 0.95, 0]}>
+                <meshPhysicalMaterial
+                  transmission={0.9}
+                  thickness={colliderRadius / 2.5}
+                  roughness={0.0}
+                  metalness={0}
+                />
+              </Tetrahedron>
+            </group>
+          </group>
         );
       case "sphere":
       default:
