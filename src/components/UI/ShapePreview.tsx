@@ -72,20 +72,36 @@ export const Icosahedron = () => (
   </mesh>
 );
 
-// Star tetrahedron (two intersecting tetrahedrons)
+// Merkaba - Star tetrahedron (two perfectly interlocking tetrahedrons)
 // @ts-ignore - Three.js props
-export const TetrahedronStar = () => (
-  <group>
-    <mesh>
-      <tetrahedronGeometry args={[1, 0]} />
-      <meshStandardMaterial color="#ffffff" wireframe={true} emissive="#6666ff" emissiveIntensity={0.5} />
-    </mesh>
-    <mesh rotation={[0, 0, Math.PI]}>
-      <tetrahedronGeometry args={[1, 0]} />
-      <meshStandardMaterial color="#ffffff" wireframe={true} emissive="#6666ff" emissiveIntensity={0.5} />
-    </mesh>
-  </group>
-);
+export const TetrahedronStar = () => {
+  // Match the reference image with proper rotation for a merkaba
+  return (
+    <group rotation={[Math.PI/5, Math.PI/4, 0]}>
+      {/* Upward-pointing tetrahedron */}
+      <mesh>
+        <tetrahedronGeometry args={[0.95, 0]} />
+        <meshStandardMaterial 
+          color="#ffffff" 
+          wireframe={true} 
+          emissive="#66aaff" 
+          emissiveIntensity={0.6} 
+        />
+      </mesh>
+      
+      {/* Downward-pointing tetrahedron */}
+      <mesh rotation={[Math.PI/2, Math.PI/2, Math.PI/2]}>
+        <tetrahedronGeometry args={[0.95, 0]} />
+        <meshStandardMaterial 
+          color="#ffffff" 
+          wireframe={true} 
+          emissive="#6666ff" 
+          emissiveIntensity={0.6} 
+        />
+      </mesh>
+    </group>
+  );
+};
 
 type ShapePreviewProps = {
   shape: string;
