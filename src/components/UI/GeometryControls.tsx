@@ -32,24 +32,15 @@ export const GeometryControls: React.FC = () => {
     <>
       {isRendered && (
         <>
-          <div style={{ 
-            marginBottom: '6px', 
-            display: 'flex', 
-            justifyContent: 'space-between',
-            alignItems: 'center',
-            fontWeight: 'bold',
-            fontSize: '14px'
-          }}>
-            <span>{geometryOptions.find(opt => opt.value === geometryType)?.label}</span>
-          </div>
+          {/* Title hidden as requested */}
 
           {/* Shape selection buttons in single row */}
           <div style={{
             display: 'grid',
             gridTemplateColumns: 'repeat(7, 1fr)', // Changed to 7 columns for all shapes in one row
-            gridGap: '5px',
+            gridGap: '3px',
             width: '100%',
-            padding: '5px 0'
+            padding: '2px 0'
           }}>
             {/* All shapes in a single row */}
             <Tooltip title="Sphere" placement="bottom">
@@ -65,7 +56,7 @@ export const GeometryControls: React.FC = () => {
                   border: geometryType === 'sphere' ? '2px solid rgba(120, 120, 255, 0.6)' : '1px solid rgba(255, 255, 255, 0.2)',
                   cursor: 'pointer',
                   padding: 0,
-                  minHeight: '35px', // Even smaller button height
+                  minHeight: '28px', // Even smaller button height
                   position: 'relative',
                   overflow: 'hidden'
                 }}
@@ -96,7 +87,7 @@ export const GeometryControls: React.FC = () => {
                   border: geometryType === 'tetrahedron' ? '2px solid rgba(120, 120, 255, 0.6)' : '1px solid rgba(255, 255, 255, 0.2)',
                   cursor: 'pointer',
                   padding: 0,
-                  minHeight: '35px', // Even smaller button height
+                  minHeight: '28px', // Even smaller button height
                   position: 'relative',
                   overflow: 'hidden'
                 }}
@@ -127,7 +118,7 @@ export const GeometryControls: React.FC = () => {
                   border: geometryType === 'box' ? '2px solid rgba(120, 120, 255, 0.6)' : '1px solid rgba(255, 255, 255, 0.2)',
                   cursor: 'pointer',
                   padding: 0,
-                  minHeight: '35px', // Even smaller button height
+                  minHeight: '28px', // Even smaller button height
                   position: 'relative',
                   overflow: 'hidden'
                 }}
@@ -160,7 +151,7 @@ export const GeometryControls: React.FC = () => {
                   border: geometryType === 'octahedron' ? '2px solid rgba(120, 120, 255, 0.6)' : '1px solid rgba(255, 255, 255, 0.2)',
                   cursor: 'pointer',
                   padding: 0,
-                  minHeight: '35px', // Even smaller button height
+                  minHeight: '28px', // Even smaller button height
                   position: 'relative',
                   overflow: 'hidden'
                 }}
@@ -191,7 +182,7 @@ export const GeometryControls: React.FC = () => {
                   border: geometryType === 'dodecahedron' ? '2px solid rgba(120, 120, 255, 0.6)' : '1px solid rgba(255, 255, 255, 0.2)',
                   cursor: 'pointer',
                   padding: 0,
-                  minHeight: '35px', // Even smaller button height
+                  minHeight: '28px', // Even smaller button height
                   position: 'relative',
                   overflow: 'hidden'
                 }}
@@ -222,7 +213,7 @@ export const GeometryControls: React.FC = () => {
                   border: geometryType === 'icosahedron' ? '2px solid rgba(120, 120, 255, 0.6)' : '1px solid rgba(255, 255, 255, 0.2)',
                   cursor: 'pointer',
                   padding: 0,
-                  minHeight: '35px', // Even smaller button height
+                  minHeight: '28px', // Even smaller button height
                   position: 'relative',
                   overflow: 'hidden'
                 }}
@@ -255,7 +246,7 @@ export const GeometryControls: React.FC = () => {
                     border: geometryType === 'tetrahedron_star' ? '2px solid rgba(120, 120, 255, 0.6)' : '1px solid rgba(255, 255, 255, 0.2)',
                     cursor: 'pointer',
                     padding: 0,
-                    minHeight: '35px', // Even smaller button height
+                    minHeight: '28px', // Even smaller button height
                     position: 'relative',
                     overflow: 'hidden'
                   }}

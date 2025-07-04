@@ -27,7 +27,7 @@ export function Fidget2() {
           backgroundColor: 'rgba(0, 0, 0, 0.5)',
           backdropFilter: 'blur(10px)',
           borderRadius: '8px',
-          padding: '8px 10px', // Reduced padding
+          padding: '6px 8px', // Further reduced padding
           color: 'white',
           boxShadow: '0 2px 10px rgba(0, 0, 0, 0.3)',
           zIndex: 1000
