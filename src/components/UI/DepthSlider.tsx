@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useDepth } from '../../context/DepthContext';
+import { LuAxis3D } from 'react-icons/lu';
 
 export const DepthSlider: React.FC = () => {
   const { depth, setDepth } = useDepth();
@@ -96,12 +97,18 @@ export const DepthSlider: React.FC = () => {
         transition: 'transform 0.2s ease, opacity 0.2s ease',
         transform: isHovered ? 'scale(1.02)' : 'scale(1)',
         opacity: isHovered ? 0.95 : 0.7,
+        display: 'flex',
+        gap: '5px',
+        alignItems: 'center',
+        
       }}
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
     >
-      <div style={{ marginBottom: '5px', display: 'flex', justifyContent: 'space-between', fontSize: '13px' }}>
-        <label htmlFor="depth-slider">Depth Control</label>
+      <div style={{ marginBottom: '5px', display: 'flex', justifyContent: 'space-between', fontSize: '13px', alignItems: 'center' }}>
+        <label htmlFor="depth-slider" style={{ display: 'flex', alignItems: 'center' }}>
+          <LuAxis3D style={{ marginRight: '5px' }} />
+        </label>
         <span>{depth.toFixed(1)}</span>
       </div>
       <input
