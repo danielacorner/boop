@@ -1,5 +1,5 @@
 /* eslint-disable react/no-unknown-property */
-import { Html, Icosahedron, Sphere } from "@react-three/drei";
+import { Html, Icosahedron, Sphere, Box, Tetrahedron, Octahedron, Dodecahedron } from "@react-three/drei";
 import { useSphere } from "@react-three/cannon";
 import { useFrame, useThree } from "@react-three/fiber";
 import { useEffect, useRef, useState } from "react";
@@ -12,10 +12,13 @@ import { useDoubleClicked } from "../useDoubleClicked";
 import { useEventListener } from "../../../utils/hooks";
 import { useContext } from "react";
 import { DepthContext } from "../../../context/DepthContext";
+import { useGeometry } from "../../../context/GeometryContext";
 import * as THREE from "three";
 
 export function ColliderSphere() {
   const { colliderRadius } = useCollider();
+  // Get the geometry type from the context
+  const { geometryType } = useGeometry();
 
   const shouldLerpRef = useRef<boolean>(true);
 
@@ -194,25 +197,75 @@ export function ColliderSphere() {
     );
   }, [deviceOrientation, api]);
 
+  // Render the selected geometry based on the GeometryContext
+  const renderGeometry = () => {
+    // Common material properties for all geometry types
+    const material = (
+      <meshPhysicalMaterial
+        transmission={1}
+        thickness={colliderRadius / 2}
+        roughness={0}
+      />
+    );
+    
+    // Higher resolution for complex shapes
+    const highDetail = 24;
+    const lowDetail = 16;
+    
+    // Match geometryType from context to appropriate geometry components
+    switch (geometryType) {
+      case "box":
+        // Box takes width, height, depth params
+        return (
+          <Box args={[colliderRadius * 1.5, colliderRadius * 1.5, colliderRadius * 1.5]}>
+            {material}
+          </Box>
+        );
+      case "octahedron":
+        return (
+          <Octahedron args={[colliderRadius * 1.2, 0]}>
+            {material}
+          </Octahedron>
+        );
+      case "dodecahedron":
+        return (
+          <Dodecahedron args={[colliderRadius, 0]}>
+            {material}
+          </Dodecahedron>
+        );
+      case "icosahedron":
+        return (
+          <Icosahedron args={[colliderRadius, 0]}>
+            {material}
+          </Icosahedron>
+        );
+      case "tetrahedron":
+        return (
+          <Tetrahedron args={[colliderRadius * 1.3, 0]}>
+            {material}
+          </Tetrahedron>
+        );
+      case "tetrahedron_star":
+        // For tetrahedron star, use an icosahedron for now (needs custom geometry)
+        return (
+          <Icosahedron args={[colliderRadius, 2]}>
+            {material}
+          </Icosahedron>
+        );
+      case "sphere":
+      default:
+        // Default to sphere
+        return (
+          <Sphere args={[colliderRadius, highDetail]}>
+            {material}
+          </Sphere>
+        );
+    }
+  };
+  
   return (
     <animated.mesh name="colliderSphere" ref={sphereRef} scale={scale}>
-      {/* <Html>
-        <p style={{ color: "white", marginLeft: -192 }}>
-          {JSON.stringify(deviceMotion, null, 2)}
-        </p>
-      </Html> */}
-      <Sphere
-        args={[colliderRadius, 32]}
-        // matrixWorldAutoUpdate={undefined}
-        // getObjectsByProperty={undefined}
-        // getVertexPosition={undefined}
-      >
-        <meshPhysicalMaterial
-          transmission={1}
-          thickness={colliderRadius / 2}
-          roughness={0}
-        />
-      </Sphere>
+      {renderGeometry()}
     </animated.mesh>
   );
 }
