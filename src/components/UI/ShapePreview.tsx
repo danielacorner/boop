@@ -58,7 +58,7 @@ export const Octahedron = () => (
 
 // @ts-ignore - Three.js props
 export const Dodecahedron = () => (
-  <mesh>
+  <mesh rotation={[Math.PI/5, Math.PI/4, 0]}>
     <dodecahedronGeometry args={[1, 0]} />
     <meshStandardMaterial color="#ffffff" wireframe={true} emissive="#6666ff" emissiveIntensity={0.5} />
   </mesh>
