@@ -40,55 +40,29 @@ export function ColliderSphere() {
 
   // Get depth from context
   const depthContext = useContext(DepthContext);
-  const depthValue = depthContext?.depth || 0;
+  const contextDepthValue = depthContext?.depth || 0;
+
+  // Use React Spring's physics-based animation for super smooth transitions
+  const [{ animatedDepth }, springApi] = useSpring(() => ({
+    animatedDepth: contextDepthValue,
+    // Spring configuration for smooth transitions
+    config: {
+      mass: 0.4,       // Lower mass for faster response
+      tension: 170,    // Higher tension for quicker movement
+      friction: 14,    // Balanced friction for minimal oscillation
+      precision: 0.001, // High precision for smooth transitions
+      velocity: 0      // Start with 0 velocity
+    },
+  }));
   
-  // Animation state for depth transitions
-  const depthAnimation = useRef({
-    current: depthValue,
-    target: depthValue,
-    startTime: 0,
-    duration: 120, // Even faster animation for rapid changes (milliseconds)
-    animating: false,
-    prevDepth: depthValue, // Track the previous depth value
-    lastTime: Date.now() // Track last update time
-  });
-  
-  // Update target when depth changes
+  // Update the spring animation when depth changes
   useEffect(() => {
-    const now = Date.now();
-    // When multiple changes happen in rapid succession, adjust current value
-    // to create a smooth animation from the current position
-    if (depthAnimation.current.animating) {
-      // Calculate current position in the animation
-      const elapsed = now - depthAnimation.current.startTime;
-      const progress = Math.min(elapsed / depthAnimation.current.duration, 1);
-      const t = progress < 0.5 ? 4 * progress**3 : 1 - Math.pow(-2 * progress + 2, 3) / 2;
-      const currentPos = depthAnimation.current.current + 
-                        (depthAnimation.current.target - depthAnimation.current.current) * t;
-      
-      // Start new animation from the current interpolated position
-      depthAnimation.current = {
-        ...depthAnimation.current,
-        current: currentPos,
-        target: depthValue,
-        startTime: now,
-        animating: true,
-        prevDepth: depthAnimation.current.target,
-        lastTime: now
-      };
-    } else {
-      // Regular animation start
-      depthAnimation.current = {
-        ...depthAnimation.current,
-        current: depthAnimation.current.current,
-        target: depthValue,
-        startTime: now,
-        animating: true,
-        prevDepth: depthAnimation.current.target,
-        lastTime: now
-      };
-    }
-  }, [depthValue]);
+    springApi.start({
+      animatedDepth: contextDepthValue,
+      // The immediate flag would skip animation - we don't want that
+      immediate: false,
+    });
+  }, [contextDepthValue, springApi]);
 
   // Get access to Three.js objects and viewport
   const { viewport, size, get } = useThree();
@@ -155,39 +129,9 @@ export function ColliderSphere() {
       finalY = THREE.MathUtils.lerp(currentPos[1], nextY, LERP_SPEED);
     }
     
-    // Calculate the animated depth value
-    let finalDepth = depthValue;
-    
-    // Apply depth animation with improved handling for rapid changes
-    if (depthAnimation.current.animating) {
-      const { current, target, startTime, duration } = depthAnimation.current;
-      const now = Date.now();
-      const elapsed = now - startTime;
-      
-      // Always update the last animation time
-      depthAnimation.current.lastTime = now;
-      
-      // Calculate progress with speed adjustment for large depth changes
-      // This makes larger jumps faster to maintain responsiveness
-      const distanceFactor = Math.abs(target - current) > 5 ? 0.7 : 1; // Speed up large jumps
-      const adjustedDuration = duration * distanceFactor;
-      const progress = Math.min(elapsed / adjustedDuration, 1);
-      
-      // Improved cubic easing with bias toward completion
-      // This ensures the animation completes more decisively
-      const t = progress < 0.4 ? 4 * progress**3 : 1 - Math.pow(-2 * progress + 2, 3) / 2;
-      finalDepth = current + (target - current) * t;
-      
-      // End animation when complete or very close
-      if (progress >= 1 || Math.abs(finalDepth - target) < 0.01) {
-        depthAnimation.current = {
-          ...depthAnimation.current,
-          current: target,
-          animating: false
-        };
-        finalDepth = target; // Snap exactly to target
-      }
-    }
+    // Get the current animated depth value directly from React Spring
+    // This is automatically smooth and handles interruptions perfectly
+    const finalDepth = animatedDepth.get();
     
     // Apply the final position with physics API - this controls the actual object position
     api.position.set(finalX, finalY, finalDepth);
@@ -217,9 +161,15 @@ export function ColliderSphere() {
   });
 
   // fake bpm-based dancing when music is playing
-  useDanceToMusic({ api, position, isTabActive, colliderRadius });
+  // Pass the current depth value from React Spring to make sure it's available in hooks
+  useDanceToMusic({
+    api, 
+    position, 
+    isTabActive,
+    colliderRadius
+  });
 
-  // shaking effect
+  // shaking effect (commented out)
   // const deviceMotion = useDeviceMotion();
   // console.log("⭐🎈  ColliderSphere  deviceMotion:", deviceMotion);
   // useEffect(() => {
