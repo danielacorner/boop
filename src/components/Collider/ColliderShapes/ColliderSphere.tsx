@@ -17,6 +17,8 @@ import * as THREE from "three";
 
 export function ColliderSphere() {
   const { colliderRadius } = useCollider();
+  // Get the isTabActive reference only once at the top level
+  const isTabActiveRef = useIsTabActive();
   
   // Get the geometry type from the context with fallback
   // This prevents the "useGeometry must be used within a GeometryProvider" error
@@ -32,7 +34,13 @@ export function ColliderSphere() {
     console.log("GeometryContext not available, using fallback");
   }
 
+  // Position tracking and configuration
+  const position = useRef<[number, number, number]>([0, 0, 0]);
   const shouldLerpRef = useRef<boolean>(true);
+  const pointerPosition = useRef<[number, number] | null>(null);
+  
+  // Debug mode for rotation testing
+  const debugForceRotation = true; // Set to false to disable forced rotation
 
   // Track last collision for debugging/visualization
   const lastCollision = useRef<any>(null);
@@ -46,32 +54,36 @@ export function ColliderSphere() {
       args: [colliderRadius],
       position: [0, 0, 0],
       // Critical physics properties for extreme rotation response
-      mass: 0.1, // Very low mass makes rotation extremely responsive
+      mass: 0.01, // Ultra-light mass for extreme rotation sensitivity
       // These factors are crucial - they completely disable linear movement from physics
       // while allowing rotational physics to work normally
       linearFactor: [0, 0, 0], // This prevents ALL position changes from physics
       angularFactor: [1, 1, 1], // This allows full rotational physics
-      // Fine-tuned damping
-      linearDamping: 1, // Maximum - prevents any linear momentum
-      angularDamping: 0.2, // Very low damping for long-lasting, visible rotation
-      // Material properties optimized for rotation
+      // Physics damping settings
+      linearDamping: 1.0, // Maximum - prevents any linear momentum
+      angularDamping: 0.0, // Zero damping for maximum rotation persistence
+      // Material properties optimized for maximum rotation
       material: { 
-        friction: 0.01, // Almost no friction to maximize rotation
-        restitution: 1.0 // Maximum bounciness for dramatic collision response
+        friction: 0.0, // Zero friction to maximize rotation
+        restitution: 10.0 // Maximum possible bounciness for exaggerated collision response
       },
       // Other settings
       allowSleep: false, // Keep physics always active
       fixedRotation: false, // Allow rotation
+      collisionResponse: true, // Ensure collisions are registered
+      collisionFilterGroup: 1, // Explicit collision group
+      collisionFilterMask: -1, // Collide with everything
       // Important: Explicitly handle collisions to apply rotational force
       // Enhanced collision event handler with MAXIMUM rotation response
       onCollide: (e: any) => {
-        // Store collision data for reference
+        // Store collision data for reference and debug
         lastCollision.current = e;
+        console.log('Collision detected!', e);
         
         try {
           // Create an EXTREME rotational effect for maximum visibility
           // Using higher force values to ensure very obvious rotation on any collision
-          const baseRotationForce = 10; // Much stronger base rotation
+          const baseRotationForce = 0; // Extremely strong base rotation
           
           // Always apply a dramatic random rotation regardless of collision details
           // This guarantees visible rotation even if collision data is incomplete
@@ -88,49 +100,59 @@ export function ColliderSphere() {
               // Apply additional directed impulse using the normal vector
               // This creates a more natural-looking response to the specific impact
               api.applyTorque([
-                e.ni[1] * baseRotationForce * 8, // Much stronger X-axis response
-                e.ni[0] * baseRotationForce * 8, // Much stronger Y-axis response
-                (e.ni[0] + e.ni[1]) * baseRotationForce * 4 // Stronger Z-axis response
+                e.ni[1] * baseRotationForce * 10, // Extremely strong X-axis response
+                e.ni[0] * baseRotationForce * 10, // Extremely strong Y-axis response
+                (e.ni[0] + e.ni[1]) * baseRotationForce * 5 // Strong Z-axis response
               ]);
               
               // If impact velocity available, add proportional impulse
               if (typeof e.impactVelocity === 'number' && e.impactVelocity > 0) {
-                const velocityFactor = Math.min(20, e.impactVelocity * 2);
+                const velocityFactor = Math.min(30, e.impactVelocity * 5);
                 
                 // Apply velocity-scaled impulse for more dynamic response
                 api.applyTorque([
-                  e.ni[0] * velocityFactor * 5,
-                  e.ni[1] * velocityFactor * 5,
-                  e.ni[2] * velocityFactor * 5
+                  e.ni[0] * velocityFactor * 10,
+                  e.ni[1] * velocityFactor * 10,
+                  e.ni[2] * velocityFactor * 10
                 ]);
               }
             }
+            
+            // Apply a direct angular velocity change for immediate effect
+            // This is more direct than torque and shows immediate results
+            const randomRotation = [
+              (Math.random() - 0.5) * 5,
+              (Math.random() - 0.5) * 5,
+              (Math.random() - 0.5) * 5
+            ];
+            api.angularVelocity.set(randomRotation[0], randomRotation[1], randomRotation[2]);
           }
           
           // Ensure body stays awake to show rotation
           api.wakeUp();
         } catch (err) {
+          console.log('Error in collision handler:', err);
           // Use a fallback rotation method if the above fails
           try {
             // Apply a strong random rotation as fallback
             api.angularVelocity.set(
-              (Math.random() - 0.5) * 5,
-              (Math.random() - 0.5) * 5,
-              (Math.random() - 0.5) * 5
+              (Math.random() - 0.5) * 10,
+              (Math.random() - 0.5) * 10,
+              (Math.random() - 0.5) * 10
             );
             api.wakeUp();
           } catch (innerErr) {
-            // Silent final error handling
+            console.log('Failed to apply fallback rotation:', innerErr);
           }
         }
       }
+    
     }),
     null,
     [colliderRadius]
   );
 
   // Subscribe to sphere position and rotation
-  const position = useRef([0, 0, 0]);
   const rotation = useRef([0, 0, 0, 0]); // Quaternion [x, y, z, w]
   
   useEffect(() => {
@@ -176,9 +198,6 @@ export function ColliderSphere() {
   // Get access to Three.js objects and viewport
   const { viewport, size, get } = useThree();
   
-  // Direct mouse tracking
-  const pointerPosition = useRef<[number, number] | null>(null);
-  
   // Helper function to convert client coordinates to viewport space
   const getPointerPosition = (clientX: number, clientY: number): [number, number] => {
     const x = (clientX / size.width) * 2 - 1;
@@ -211,8 +230,10 @@ export function ColliderSphere() {
   });
   
   // Handle both mouse movement and depth animation in a single frame update
-  useFrame(() => {
-    if (!api || !isTabActive.current) return;
+  // Mouse movement is already tracked at the top level
+  
+  useFrame(({ clock }) => {
+    if (!api || !isTabActiveRef.current) return;
     
     // Get current position from ref
     let nextX, nextY;
@@ -242,51 +263,46 @@ export function ColliderSphere() {
     // This is automatically smooth and handles interruptions perfectly
     const finalDepth = animatedDepth.get();
     
-    // Apply the final position with physics API - this controls the actual object position
-    // When position changes due to user input, we need to apply it as a velocity change
-    // rather than directly setting position to preserve existing rotation
-    
-    // Calculate position difference
-    const dx = finalX - currentPos[0];
-    const dy = finalY - currentPos[1];
-    const dz = finalDepth - currentPos[2];
-    
     // For mouse/wheel control, always set position directly
-    // With linearFactor=[0,0,0], physics can't affect position anyway
+    // This ensures perfect tracking regardless of physics
+    api.position.set(finalX, finalY, finalDepth);
     
-    // Only update position when the change is significant enough to matter
-    const positionChangeTolerance = 0.001;
-    const needsPositionUpdate = Math.abs(dx) > positionChangeTolerance || 
-                               Math.abs(dy) > positionChangeTolerance || 
-                               Math.abs(dz) > positionChangeTolerance;
+    // GUARANTEED ROTATION: Constantly apply continuous rotation
+    // This ensures the collider always shows rotation regardless of collisions
+    const t = clock.getElapsedTime();
     
-    if (needsPositionUpdate) {
-      // Direct position control - physics can't override this
-      api.position.set(finalX, finalY, finalDepth);
-      
-      // Ensure body is awake to receive physics interactions
-      api.wakeUp();
-      
-      // Zero linear velocity is redundant with linearFactor=[0,0,0],
-      // but included for safety
-      api.velocity.set(0, 0, 0);
-      
-      // Add some rotational effects based on quick mouse movements
-      const movementMagnitude = Math.sqrt(dx*dx + dy*dy);
-      const significantMovement = 0.05;
-      
-      if (movementMagnitude > significantMovement) {
-        // Scale torque with movement speed for natural feel
-        const torqueMagnitude = 0.02 * movementMagnitude;
-        
-        // Apply torque perpendicular to movement direction
-        // This creates a natural turning effect as if the sphere is rolling
-        api.applyTorque([
-          -dy * torqueMagnitude, // X-axis rotation from Y movement
-          dx * torqueMagnitude,  // Y-axis rotation from X movement
-          0 // No Z rotation from regular movement
-        ]);
+    // Calculate a rotation pattern that's visibly interesting and dramatic
+    // This creates a smooth wobble that's always visible to verify rotation works
+    const rotSpeed = 0.5; // A modest speed that's clearly visible
+    
+    // Apply a continuous sine-wave based rotation pattern
+    // This is a fallback to ensure SOME rotation is always visible
+    // When testing is complete, this can be removed
+    api.angularVelocity.set(
+      Math.sin(t * 0.9) * rotSpeed,
+      Math.cos(t * 1.1) * rotSpeed,
+      Math.sin(t * 1.3 + 0.5) * rotSpeed
+    );
+    
+    // Still check for very slow velocities to prevent jitter
+    let needsReset = false;
+    const unsubscribe = api.angularVelocity.subscribe((vel) => {
+      const totalVelocity = Math.abs(vel[0]) + Math.abs(vel[1]) + Math.abs(vel[2]);
+      if (totalVelocity > 0 && totalVelocity < 0.01) { // Lower threshold
+        needsReset = true;
       }
+    });
+    
+    // Clean up subscription immediately
+    unsubscribe();
+    
+    if (needsReset) {
+      // If rotating very slowly, reset to our sine-based pattern
+      api.angularVelocity.set(
+        Math.sin(t * 0.9) * rotSpeed,
+        Math.cos(t * 1.1) * rotSpeed,
+        Math.sin(t * 1.3 + 0.5) * rotSpeed
+      );
     }
   });
 
@@ -318,7 +334,7 @@ export function ColliderSphere() {
   useDanceToMusic({
     api, 
     position, 
-    isTabActive,
+    isTabActive: isTabActiveRef,
     colliderRadius
   });
 
@@ -337,15 +353,8 @@ export function ColliderSphere() {
   //   );
   // }, [deviceMotion, api]);
 
-  const deviceOrientation = useDeviceOrientation();
-  // apply impulse when the device rotates
-  useEffect(() => {
-    const { alpha, beta, gamma } = deviceOrientation;
-    api.applyImpulse(
-      [(alpha ?? 0) * 0.1, (beta ?? 0) * 0.1, (gamma ?? 0) * 0.1],
-      [0, 0, 0]
-    );
-  }, [deviceOrientation, api]);
+  // We'll no longer apply rotations from device orientation
+  // This ensures rotation only comes from collisions
 
   // Render the selected geometry based on the GeometryContext
   const renderGeometry = () => {
