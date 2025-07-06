@@ -20,7 +20,7 @@ export function ColliderDodeca() {
   const dodecahedronGeometrygeo = useMemo(
     () =>
       toConvexProps(
-        new THREE.DodecahedronBufferGeometry(colliderRadius * 1.3, 0)
+        new THREE.DodecahedronGeometry(colliderRadius * 1.3, 0)
       ),
     [colliderRadius]
   );

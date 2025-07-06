@@ -1,6 +1,6 @@
 import React, { createContext, useState, useContext, ReactNode } from 'react';
 
-export type GeometryType = "sphere" | "dodecahedron" | "icosahedron" | "box" | "tetrahedron" | "octahedron" | "tetrahedron_star";
+export type GeometryType = "sphere" | "dodecahedron" | "icosahedron" | "box" | "tetrahedron" | "octahedron" | "tetrahedron_star" | "none";
 
 // Context interface
 interface GeometryContextType {

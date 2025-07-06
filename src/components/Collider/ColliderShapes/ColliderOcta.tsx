@@ -18,7 +18,7 @@ export function ColliderOcta() {
     useCollider();
   const colliderRadius = colliderRadius0 * ICOSA_MULT;
   const dodecahedronGeometrygeo = useMemo(
-    () => toConvexProps(new THREE.OctahedronBufferGeometry(colliderRadius)),
+    () => toConvexProps(new THREE.OctahedronGeometry(colliderRadius)),
     [colliderRadius]
   );
   const [sphereRef, api] = useConvexPolyhedron<THREE.InstancedMesh>(
