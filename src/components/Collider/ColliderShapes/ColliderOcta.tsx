@@ -1,9 +1,10 @@
 /* eslint-disable react/no-unknown-property */
 import { Octahedron } from "@react-three/drei";
 import { useConvexPolyhedron } from "@react-three/cannon";
-import { useEffect, useMemo, useRef } from "react";
+import { useEffect, useMemo, useRef, useContext } from "react";
 import { toConvexProps } from "../../../utils/hooks";
 import { useSpring, animated } from "@react-spring/three";
+import { useFrame, useThree } from "@react-three/fiber";
 import { useMoveWithMouse } from "../useMoveWithMouse";
 import { useCollider } from "../useCollider";
 import { useDanceToMusic } from "../useDanceToMusic";
@@ -12,6 +13,7 @@ import * as THREE from "three";
 import { useIsTabActive } from "../useIsTabActive";
 import { useSpin } from "../useSpin";
 import { useDoubleClicked } from "../useDoubleClicked";
+import { DepthContext } from "../../../context/DepthContext";
 const ICOSA_MULT = 1.2;
 export function ColliderOcta() {
   const { colliderRadius: colliderRadius0, colliderRadiusMultiplier } =
@@ -21,19 +23,60 @@ export function ColliderOcta() {
     () => toConvexProps(new THREE.OctahedronGeometry(colliderRadius)),
     [colliderRadius]
   );
+  // Get depth from context
+  const depthContext = useContext(DepthContext);
+  const contextDepthValue = depthContext?.depth || 0;
+  
+  // Use React Spring's physics-based animation for super smooth transitions
+  const [{ animatedDepth }, springApi] = useSpring(() => ({
+    animatedDepth: contextDepthValue,
+    config: {
+      mass: 0.4,
+      tension: 170,
+      friction: 14,
+      precision: 0.001,
+      velocity: 0
+    },
+  }));
+  
+  // Update the spring animation when depth changes
+  useEffect(() => {
+    springApi.start({
+      animatedDepth: contextDepthValue,
+      immediate: false,
+    });
+  }, [contextDepthValue, springApi]);
+
   const [sphereRef, api] = useConvexPolyhedron<THREE.InstancedMesh>(
     () => ({
       name: "colliderSphere",
       type: "Kinematic",
-      mass: 2, // approximate mass using volume of a sphere equation
-      // https://threejs.org/docs/scenes/geometry-browser.html#IcosahedronGeometry
+      mass: 1, // Standard mass
       args: dodecahedronGeometrygeo as any,
       position: [0, 0, 0],
+      // Physics settings for proper collisions
+      linearFactor: [1, 1, 1],
+      angularFactor: [1, 1, 1],
+      linearDamping: 0.5,
+      angularDamping: 0.5,
+      material: {
+        friction: 0.2,
+        restitution: 0.8
+      },
+      allowSleep: false,
+      fixedRotation: false,
+      collisionResponse: true,
+      collisionFilterGroup: 1,
+      collisionFilterMask: -1,
+      // Simple collision handler
+      onCollide: (e: any) => {
+        console.log('Collision detected with octahedron!', e);
+        api.wakeUp();
+      }
     }),
     null,
     [dodecahedronGeometrygeo]
   );
-  useSpin(api);
 
   const shouldLerpRef = useRef<boolean>(true);
 
@@ -44,8 +87,19 @@ export function ColliderOcta() {
     [api, colliderRadius]
   );
   const isTabActive = useIsTabActive();
+  
+  // Apply the animated depth
+  useFrame(() => {
+    if (!api || !isTabActive.current) return;
+    // Apply the animated depth from React Spring
+    const depth = animatedDepth.get();
+    // Get current position
+    const currentPos = position.current;
+    // Update with depth
+    api.position.set(currentPos[0], currentPos[1], depth);
+  });
 
-  useMoveWithMouse({ isTabActive, position, api, shouldLerpRef });
+  useMoveWithMouse({ isTabActive, position, api, shouldLerpRef, depth: 0 });
   const changeShape = useChangeShape();
 
   // double click to change width
@@ -77,14 +131,12 @@ export function ColliderOcta() {
     <animated.mesh name="colliderSphere" ref={sphereRef} scale={scale}>
       <Octahedron
         args={[colliderRadius * ICOSA_MULT, 0]}
-        //        matrixWorldAutoUpdate={undefined}
-        //        getObjectsByProperty={undefined}
-        //        getVertexPosition={undefined}
       >
         <meshPhysicalMaterial
-          transmission={1}
+          transmission={0.9}
           thickness={colliderRadius / 2}
           roughness={0}
+          metalness={0}
         />
       </Octahedron>
     </animated.mesh>
