@@ -43,7 +43,7 @@ export function Fidget2() {
           <DepthSlider />
         </div>
       <Loader />
-      <div style={{ 
+      {/* <div style={{ 
         position: "absolute", 
         top: "10px", 
         left: "10px", 
@@ -54,7 +54,7 @@ export function Fidget2() {
         zIndex: 1000
       }}>
         Fidget 2
-      </div>
+      </div> */}
       <Canvas
         shadows={dpr === MAX_DPR}
         style={{ position: "fixed", inset: 0, background: "linear-gradient(135deg, #4a3b78 0%, #8774b5 100%)" }}

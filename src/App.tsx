@@ -16,7 +16,7 @@ function App() {
   // Get the saved fidget index from localStorage or default to 0
   const [currentFidgetIndex, setCurrentFidgetIndex] = useState<number>(() => {
     const savedIndex = localStorage.getItem("currentFidgetIndex");
-    return savedIndex ? parseInt(savedIndex, 10) : 0;
+    return savedIndex ? parseInt(savedIndex, 10) : 1;
   });
 
   // Save the current fidget index whenever it changes
@@ -73,40 +73,52 @@ function App() {
         </AnimatePresence>
       </div>
 
-      {/* Navigation controls in a separate container with higher z-index */}
-      <div className="navigation-controls">
-        {/* Previous arrow */}
-        <button 
-          className="carousel-arrow left-arrow"
-          onClick={handleNavigatePrevious}
-          aria-label="Previous fidget"
-        >
-          ‹
-        </button>
-
-        {/* Next arrow */}
-        <button 
-          className="carousel-arrow right-arrow"
-          onClick={handleNavigateNext}
-          aria-label="Next fidget"
-        >
-          ›
-        </button>
-      </div>
-
-      {/* Pagination indicator */}
-      <div className="pagination-dots">
-        {fidgetComponents.map((_, index) => (
-          <button
-            key={index}
-            className={`pagination-dot ${index === currentFidgetIndex ? 'active' : ''}`}
-            onClick={() => setCurrentFidgetIndex(index)}
-            aria-label={`Go to fidget ${index + 1}`}
-          />
-        ))}
-      </div>
+      {/* <NavigationControls
+        handleNavigatePrevious={handleNavigatePrevious}
+        handleNavigateNext={handleNavigateNext}
+        currentFidgetIndex={currentFidgetIndex}
+        setCurrentFidgetIndex={setCurrentFidgetIndex}
+      /> */}
     </div>
   );
 }
 
 export default App;
+
+function NavigationControls(
+  {handleNavigatePrevious,handleNavigateNext,currentFidgetIndex,
+    setCurrentFidgetIndex}
+){
+  return  <div><div className="navigation-controls">
+    {/* Previous arrow */}
+    <button 
+      className="carousel-arrow left-arrow"
+      onClick={handleNavigatePrevious}
+      aria-label="Previous fidget"
+    >
+      ‹
+    </button>
+
+    {/* Next arrow */}
+    <button 
+      className="carousel-arrow right-arrow"
+      onClick={handleNavigateNext}
+      aria-label="Next fidget"
+    >
+      ›
+    </button>
+  </div>
+
+  {/* Pagination indicator */}
+  <div className="pagination-dots">
+    {fidgetComponents.map((_, index) => (
+      <button
+        key={index}
+        className={`pagination-dot ${index === currentFidgetIndex ? 'active' : ''}`}
+        onClick={() => setCurrentFidgetIndex(index)}
+        aria-label={`Go to fidget ${index + 1}`}
+      />
+    ))}
+  </div>
+</div>
+}
