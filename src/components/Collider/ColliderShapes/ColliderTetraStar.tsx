@@ -13,14 +13,16 @@ import * as THREE from "three";
 import { useIsTabActive } from "../useIsTabActive";
 import { useSpin } from "../useSpin";
 import { useDoubleClicked } from "../useDoubleClicked";
+import { getEnhancedCollisionConfig, getEnhancedCollisionHandler, applyContinuousCollisionWakeup } from "../preventObjectSticking";
 import { DepthContext } from "../../../context/DepthContext";
 import { useRotation } from "../../../context/RotationContext";
 import { GeometryType } from "../../../context/GeometryContext";
 
 // Create a tetrahedron mesh for collision detection
 const createTetrahedronShape = (radius: number, rotation: [number, number, number] = [0, 0, 0]) => {
-  // Create the geometry
-  const geometry = new THREE.TetrahedronGeometry(radius, 0);
+  // Create the geometry with a slightly larger size (1.1x) to prevent visual penetration
+  // This ensures the collision happens before visual intersection
+  const geometry = new THREE.TetrahedronGeometry(radius * 1.1, 0);
   
   // Apply rotation to the geometry before creating convex props
   geometry.applyMatrix4(
@@ -71,49 +73,92 @@ export function ColliderTetraStar({ geometryType = "tetrahedron_star" }: { geome
   }, [contextDepthValue, springApi]);
   
   // Create compound body with two tetrahedrons that don't collide with each other
-  const [starRef, api] = useCompoundBody<Group>(() => ({
-    mass: 1,
-    type: isKinematic ? "Kinematic" : "Dynamic", // Switch between Kinematic and Dynamic based on rotation velocity
-    position: [0, 0, 0],
-    // Create a compound shape with two tetrahedrons
-    shapes: [
-      {
-        type: "ConvexPolyhedron",
-        args: tetraUpShape as any,
-        position: [0, 0, 0],
-        rotation: [0, 0, 0],
-        // Set collision filter group/mask so the two tetrahedrons don't collide with each other
-        collisionFilterGroup: 2, // Group 2 for first tetra
-        collisionFilterMask: 1, // Only collide with group 1 (other objects)
-      },
-      {
-        type: "ConvexPolyhedron",
-        args: tetraDownShape as any,
-        position: [0, 0, 0],
-        rotation: [0, 0, 0],
-        // Use different collision group for second tetra
-        collisionFilterGroup: 4, // Group 4 for second tetra
-        collisionFilterMask: 1, // Only collide with group 1 (other objects)
-      },
-    ],
-    // Physics settings for proper collisions
-    linearFactor: [1, 1, 1],
-    angularFactor: [1, 1, 1],
-    linearDamping: 0.5,
-    angularDamping: 0.5,
-    material: {
-      friction: 0.2,
-      restitution: 0.8
-    },
-    allowSleep: false,
-    fixedRotation: false,
-    collisionResponse: true,
-    // Simple collision handler
-    onCollide: (e: any) => {
-      // console.log('Collision detected with tetra star!', e);
-      api.wakeUp();
+  const [starRef, api] = useCompoundBody<Group>(() => {
+    // Get enhanced collision settings from our helper
+    const enhancedSettings = getEnhancedCollisionConfig(colliderRadius, 1.3);
+    
+    return {
+      name: "colliderTetraStar",
+      mass: 1,
+      type: isKinematic ? "Kinematic" : "Dynamic", // Switch between Kinematic and Dynamic based on rotation velocity
+      position: [0, 0, 0],
+      // Create a compound shape with two tetrahedrons
+      shapes: [
+        {
+          type: "ConvexPolyhedron",
+          args: tetraUpShape as any,
+          position: [0, 0, 0],
+          rotation: [0, 0, 0],
+          // Set collision filter group/mask so the two tetrahedrons don't collide with each other
+          collisionFilterGroup: 2, // Group 2 for first tetra
+          collisionFilterMask: 1, // Only collide with group 1 (other objects)
+        },
+        {
+          type: "ConvexPolyhedron",
+          args: tetraDownShape as any,
+          position: [0, 0, 0],
+          rotation: [0, 0, 0],
+          // Use different collision group for second tetra
+          collisionFilterGroup: 4, // Group 4 for second tetra
+          collisionFilterMask: 1, // Only collide with group 1 (other objects)
+        },
+      ],
+      // Apply enhanced collision settings to the entire body
+      linearFactor: [1, 1, 1],
+      angularFactor: [1, 1, 1],
+      linearDamping: enhancedSettings.linearDamping,
+      angularDamping: enhancedSettings.angularDamping,
+      material: enhancedSettings.material,
+      allowSleep: enhancedSettings.allowSleep,
+      fixedRotation: enhancedSettings.fixedRotation,
+      collisionResponse: true,
+      // Use enhanced collision equations
+      contactEquationRelaxation: enhancedSettings.contactEquationRelaxation,
+      contactEquationStiffness: enhancedSettings.contactEquationStiffness,
+      frictionEquationStiffness: enhancedSettings.frictionEquationStiffness,
+      restitutionSpeed: enhancedSettings.restitutionSpeed,
+      contactSkinSize: enhancedSettings.contactSkinSize,
+      // Define explicit collision filters instead of using onCollide here
+      collisionFilterGroup: 2, // Main body group
+      collisionFilterMask: -1 // Collide with everything
+    };
+  });
+  
+  // Apply direct collision handling approach for compound bodies
+  useEffect(() => {
+    // For compound bodies, we need a different approach
+    // Register a collision callback directly through the physics API
+    const collisionCallback = getEnhancedCollisionHandler(api);
+
+    // Keep a reference to the event handler function so we can unsubscribe
+    const handleCollision = (event: any) => {
+      if (event.body && event.target) {
+        // Apply our enhanced collision handler with more force for compound bodies
+        collisionCallback(event);
+
+        // Apply a second impulse after a short delay to ensure proper collision response
+        setTimeout(() => {
+          api.wakeUp();
+        }, 10);
+      }
+    };
+
+    // Register our handler directly to the physics world through the ref
+    // Capture the reference value inside the effect to avoid lint warnings
+    const currentRef = starRef.current;
+    
+    if (currentRef) {
+      // Use the body's collision event system
+      currentRef.addEventListener('collision', handleCollision);
     }
-  }));
+
+    return () => {
+      // Cleanup using the captured reference
+      if (currentRef) {
+        currentRef.removeEventListener('collision', handleCollision);
+      }
+    };
+  }, [api, starRef]);
   
   // Store the active status in a ref for use in the frame loop
   const isTabActiveRef = useRef<boolean>(true);
@@ -199,11 +244,18 @@ export function ColliderTetraStar({ geometryType = "tetrahedron_star" }: { geome
     // Get the current animated depth value directly from React Spring
     const finalDepth = animatedDepth.get();
     
+    // Check if position has changed significantly
+    const hasMoved = (
+      Math.abs(finalX - currentPos[0]) > 0.001 || 
+      Math.abs(finalY - currentPos[1]) > 0.001 || 
+      Math.abs(finalDepth - currentPos[2]) > 0.001
+    );
+    
     // Update position with depth
     api.position.set(finalX, finalY, finalDepth);
     
-    // Wake up the physics body every frame to ensure it stays active
-    api.wakeUp();
+    // Use shared helper to maintain continuous collision detection
+    applyContinuousCollisionWakeup(api, hasMoved, currentPos as [number, number, number]);
   });
 
   const changeShape = useChangeShape();

@@ -13,6 +13,7 @@ import * as THREE from "three";
 import { useIsTabActive } from "../useIsTabActive";
 import { useSpin } from "../useSpin";
 import { useDoubleClicked } from "../useDoubleClicked";
+import { getEnhancedCollisionConfig, getEnhancedCollisionHandler, applyContinuousCollisionWakeup } from "../preventObjectSticking";
 import { DepthContext } from "../../../context/DepthContext";
 import { GeometryType } from "../../../context/GeometryContext";
 const ICOSA_MULT = 1;
@@ -21,10 +22,12 @@ export function ColliderDodeca({ geometryType = "dodecahedron" }: { geometryType
     useCollider();
   const colliderRadius = colliderRadius0 * ICOSA_MULT *colliderRadiusMultiplier;
   const dodecahedronGeometrygeo = useMemo(
-    () =>
-      toConvexProps(
-        new THREE.DodecahedronGeometry(colliderRadius * 1.3, 0)
-      ),
+    () => {
+      // Create a slightly larger collision geometry to prevent objects from penetrating
+      // The 1.4 factor ensures the collision happens before visual intersection
+      const collisionGeometry = new THREE.DodecahedronGeometry(colliderRadius * 1.4, 0);
+      return toConvexProps(collisionGeometry);
+    },
     [colliderRadius]
   );
   // Get depth from context
@@ -51,36 +54,39 @@ export function ColliderDodeca({ geometryType = "dodecahedron" }: { geometryType
     });
   }, [contextDepthValue, springApi]);
 
+  // Get rotation velocity from context (same as original implementation)
+  const angularFactor = useMemo<[number, number, number]>(() => [1, 1, 1], []);
+  
   const [sphereRef, api] = useConvexPolyhedron<THREE.InstancedMesh>(
     () => ({
-      name: "colliderSphere",
+      name: "colliderDodeca",
       type: "Kinematic",
-      mass: 1, // Standard mass
+      mass: 1,
       args: dodecahedronGeometrygeo as any,
       position: [0, 0, 0],
-      // Physics settings for proper collisions
       linearFactor: [1, 1, 1],
-      angularFactor: [1, 1, 1],
-      linearDamping: 0.5,
-      angularDamping: 0.5,
-      material: {
-        friction: 0.2,
-        restitution: 0.8
-      },
-      allowSleep: false,
-      fixedRotation: false,
-      collisionResponse: true,
+      angularFactor,
+      // Apply enhanced collision settings
+      ...getEnhancedCollisionConfig(colliderRadius, 1.1),
+      // Define collision filters explicitly
       collisionFilterGroup: 1,
-      collisionFilterMask: -1,
-      // Simple collision handler
-      onCollide: (e: any) => {
-        // console.log('Collision detected with dodeca!', e);
-        api.wakeUp();
-      }
+      collisionFilterMask: -1
     }),
     null,
     [dodecahedronGeometrygeo]
   );
+
+  // Set up collision handler properly after physics body is created
+  useEffect(() => {
+    if (sphereRef.current) {
+      // Register collision event listener
+      sphereRef.current.addEventListener('collision', (event: any) => {
+        // Use our enhanced collision handler
+        getEnhancedCollisionHandler(api)(event);
+      });
+    }
+  }, [api, sphereRef]);
+
   // Store the active status in a ref for use in the frame loop
   const isTabActiveRef = useRef<boolean>(true);
   const isTabActive = useIsTabActive();
@@ -165,11 +171,18 @@ export function ColliderDodeca({ geometryType = "dodecahedron" }: { geometryType
     // Get the current animated depth value directly from React Spring
     const finalDepth = animatedDepth.get();
     
+    // Check if position has changed significantly
+    const hasMoved = (
+      Math.abs(finalX - currentPos[0]) > 0.001 || 
+      Math.abs(finalY - currentPos[1]) > 0.001 || 
+      Math.abs(finalDepth - currentPos[2]) > 0.001
+    );
+    
     // Update position with depth
     api.position.set(finalX, finalY, finalDepth);
     
-    // Wake up the physics body every frame to ensure it stays active
-    api.wakeUp();
+    // Use shared helper to maintain continuous collision detection
+    applyContinuousCollisionWakeup(api, hasMoved, currentPos as [number, number, number]);
   });
   
   // fake bpm-based dancing when music is playing

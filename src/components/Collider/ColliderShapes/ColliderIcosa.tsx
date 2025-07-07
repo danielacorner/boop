@@ -6,6 +6,7 @@ import { useFrame, useThree } from "@react-three/fiber";
 import { DepthContext } from "../../../context/DepthContext";
 import { GeometryType } from "../../../context/GeometryContext";
 import { toConvexProps, useEventListener } from "../../../utils/hooks";
+import { getEnhancedCollisionConfig, getEnhancedCollisionHandler, applyContinuousCollisionWakeup } from "../preventObjectSticking";
 import { useSpring, animated } from "@react-spring/three";
 import { useMoveWithMouse } from "../useMoveWithMouse";
 import { useCollider } from "../useCollider";
@@ -20,7 +21,12 @@ export function ColliderIcosa({ geometryType = "icosahedron" }: { geometryType?:
   const { colliderRadius: colliderRadius0 } = useCollider();
   const colliderRadius = colliderRadius0 * ICOSA_MULT;
   const icosahedronGeometrygeo = useMemo(
-    () => toConvexProps(new THREE.IcosahedronGeometry(colliderRadius)),
+    () => {
+      // Create a slightly larger collision geometry to prevent objects from penetrating
+      // The 1.1 factor ensures the collision happens before visual intersection
+      const collisionGeometry = new THREE.IcosahedronGeometry(colliderRadius * 1.1, 0);
+      return toConvexProps(collisionGeometry);
+    },
     [colliderRadius]
   );
   
@@ -52,28 +58,32 @@ export function ColliderIcosa({ geometryType = "icosahedron" }: { geometryType?:
   
   const [sphereRef, api] = useConvexPolyhedron<THREE.InstancedMesh>(
     () => ({
-      name: "colliderSphere",
-      type: "Kinematic",
-      mass: 2,
+      name: "colliderIcosa",
       args: icosahedronGeometrygeo as any,
+      mass: 1,
       position: [0, 0, 0],
-      linearFactor: [1, 1, 1],
-      angularFactor: [1, 1, 1],
-      linearDamping: 0.5,
-      angularDamping: 0.5,
-      material: {
-        friction: 0.2,
-        restitution: 0.8
-      },
-      onCollide: (e: any) => {
-        // console.log('Collision detected with icosahedron!', e);
-        api.wakeUp();
-      }
+      type: "Kinematic",
+      // Apply enhanced collision configuration
+      ...getEnhancedCollisionConfig(colliderRadius, 1.2),
+      // We'll add the collision handler in useEffect below
+      collisionFilterGroup: 1,
+      collisionFilterMask: -1
     }),
     null,
     [icosahedronGeometrygeo]
   );
   
+  // Set up collision handler properly after physics body is created
+  useEffect(() => {
+    if (sphereRef.current) {
+      // Register collision event listener
+      sphereRef.current.addEventListener('collision', (event: any) => {
+        // Use our enhanced collision handler
+        getEnhancedCollisionHandler(api)(event);
+      });
+    }
+  }, [api, sphereRef]);
+
   // Store the active status in a ref for use in the frame loop
   const isTabActiveRef = useRef<boolean>(true);
   const isTabActiveValue = useIsTabActive();
@@ -157,11 +167,19 @@ export function ColliderIcosa({ geometryType = "icosahedron" }: { geometryType?:
     // Get the current animated depth value directly from React Spring
     const finalDepth = animatedDepth.get();
     
+    // Check if position has changed significantly
+    const hasMoved = (
+      Math.abs(finalX - currentPos[0]) > 0.001 || 
+      Math.abs(finalY - currentPos[1]) > 0.001 || 
+      Math.abs(finalDepth - currentPos[2]) > 0.001
+    );
+    
     // Update position with depth
     api.position.set(finalX, finalY, finalDepth);
     
-    // Wake up the physics body every frame to ensure it stays active
-    api.wakeUp();
+    // Apply continuous collision wakeup to prevent objects from getting stuck
+    // Ensure correct type is passed as [number, number, number]
+    applyContinuousCollisionWakeup(api, hasMoved, currentPos as [number, number, number]);
   });
   
   // fake bpm-based dancing when music is playing

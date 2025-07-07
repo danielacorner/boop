@@ -12,6 +12,7 @@ import { useChangeShape } from "../useShape";
 import { useIsTabActive } from "../useIsTabActive";
 import { useSpin } from "../useSpin";
 import { useDoubleClicked } from "../useDoubleClicked";
+import { getEnhancedCollisionConfig, getEnhancedCollisionHandler, applyContinuousCollisionWakeup } from "../preventObjectSticking";
 import { DepthContext } from "../../../context/DepthContext";
 import { useRotation } from "../../../context/RotationContext";
 import { GeometryType } from "../../../context/GeometryContext";
@@ -30,10 +31,12 @@ export function ColliderTetra({ geometryType = "tetrahedron" }: { geometryType?:
   const { isKinematic } = useRotation();
   
   // Create tetrahedron geometry for physics body
-  const tetrahedronGeometry = useMemo(() => 
-    toConvexProps(new THREE.TetrahedronGeometry(colliderRadius * TETRA_MULT, 0)),
-    [colliderRadius]
-  );
+  const tetrahedronGeometry = useMemo(() => {
+    // Create a slightly larger collision geometry to prevent objects from penetrating
+    // The 1.1 factor ensures the collision happens before visual intersection
+    const collisionGeometry = new THREE.TetrahedronGeometry(colliderRadius * TETRA_MULT * 1.1, 0);
+    return toConvexProps(collisionGeometry);
+  }, [colliderRadius]);
   
   // Use React Spring's physics-based animation for super smooth transitions
   const [{ animatedDepth }, springApi] = useSpring(() => ({
@@ -56,31 +59,54 @@ export function ColliderTetra({ geometryType = "tetrahedron" }: { geometryType?:
   }, [contextDepthValue, springApi]);
   
   // Create physics body with proper tetrahedron collision shape
-  const [tetraRef, api] = useConvexPolyhedron<THREE.Mesh>(() => ({
-    mass: 1,
-    type: isKinematic ? "Kinematic" : "Dynamic", // Switch between Kinematic and Dynamic based on rotation velocity
-    args: tetrahedronGeometry as any,
-    position: [0, 0, 0],
-    // Physics settings for proper collisions
-    linearFactor: [1, 1, 1],
-    angularFactor: [1, 1, 1],
-    linearDamping: 0.5,
-    angularDamping: 0.5,
-    material: {
-      friction: 0.2,
-      restitution: 0.8
-    },
-    allowSleep: false,
-    fixedRotation: false,
-    collisionResponse: true,
-    collisionFilterGroup: 1,
-    collisionFilterMask: -1,
-    // Simple collision handler
-    onCollide: (e: any) => {
-      // console.log('Collision detected with tetrahedron!', e);
-      api.wakeUp();
+  const [tetraRef, api] = useConvexPolyhedron<THREE.InstancedMesh>(
+    () => ({
+      name: "colliderTetra",
+      type: "Kinematic",
+      mass: 1,
+      args: tetrahedronGeometry as any,
+      position: [0, 0, 0],
+      // Apply enhanced collision settings
+      ...getEnhancedCollisionConfig(colliderRadius, 1.1),
+      // Define explicit collision filters
+      collisionFilterGroup: 1,
+      collisionFilterMask: -1
+    }),
+    null,
+    [tetrahedronGeometry]
+  );
+  
+  // Apply the enhanced collision handler after physics body is created
+  useEffect(() => {
+    // Manually set up the collision handler here
+    const enhancedHandler = getEnhancedCollisionHandler(api);
+    
+    // Keep a reference to the event handler function for cleanup
+    const handleCollision = (event: any) => {
+      enhancedHandler(event);
+      
+      // Apply a second impulse after a short delay to ensure proper collision response
+      setTimeout(() => {
+        api.wakeUp();
+      }, 10);
+    };
+    
+    // Capture the current ref to avoid lint warnings in cleanup
+    const currentRef = tetraRef.current;
+    
+    // Register the enhanced collision handler
+    if (currentRef) {
+      // Register with the collision event system
+      currentRef.addEventListener('collision', handleCollision);
     }
-  }));
+    
+    return () => {
+      // Cleanup when unmounting
+      if (currentRef) {
+        currentRef.removeEventListener('collision', handleCollision);
+      }
+    };
+  }, [api, tetraRef]);
   
   // Store the active status in a ref for use in the frame loop
   const isTabActiveRef = useRef<boolean>(true);
@@ -166,11 +192,18 @@ export function ColliderTetra({ geometryType = "tetrahedron" }: { geometryType?:
     // Get the current animated depth value directly from React Spring
     const finalDepth = animatedDepth.get();
     
+    // Check if position has changed significantly
+    const hasMoved = (
+      Math.abs(finalX - currentPos[0]) > 0.001 || 
+      Math.abs(finalY - currentPos[1]) > 0.001 || 
+      Math.abs(finalDepth - currentPos[2]) > 0.001
+    );
+    
     // Update position with depth
     api.position.set(finalX, finalY, finalDepth);
     
-    // Wake up the physics body every frame to ensure it stays active
-    api.wakeUp();
+    // Use shared helper to maintain continuous collision detection
+    applyContinuousCollisionWakeup(api, hasMoved, currentPos as [number, number, number]);
   });
 
   const changeShape = useChangeShape();
