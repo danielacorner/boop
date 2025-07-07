@@ -4,6 +4,7 @@ import { useConvexPolyhedron } from "@react-three/cannon";
 import { useEffect, useMemo, useRef, useContext } from "react";
 import { useFrame, useThree } from "@react-three/fiber";
 import { DepthContext } from "../../../context/DepthContext";
+import { GeometryType } from "../../../context/GeometryContext";
 import { toConvexProps, useEventListener } from "../../../utils/hooks";
 import { useSpring, animated } from "@react-spring/three";
 import { useMoveWithMouse } from "../useMoveWithMouse";
@@ -15,7 +16,7 @@ import { useIsTabActive } from "../useIsTabActive";
 import { useSpin } from "../useSpin";
 import { useDoubleClicked } from "../useDoubleClicked";
 const ICOSA_MULT = 1.3;
-export function ColliderIcosa() {
+export function ColliderIcosa({ geometryType = "icosahedron" }: { geometryType?: GeometryType }) {
   const { colliderRadius: colliderRadius0 } = useCollider();
   const colliderRadius = colliderRadius0 * ICOSA_MULT;
   const icosahedronGeometrygeo = useMemo(

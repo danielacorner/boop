@@ -14,8 +14,9 @@ import { useIsTabActive } from "../useIsTabActive";
 import { useSpin } from "../useSpin";
 import { useDoubleClicked } from "../useDoubleClicked";
 import { DepthContext } from "../../../context/DepthContext";
+import { GeometryType } from "../../../context/GeometryContext";
 const ICOSA_MULT = 1.2;
-export function ColliderOcta() {
+export function ColliderOcta({ geometryType = "octahedron" }: { geometryType?: GeometryType }) {
   const { colliderRadius: colliderRadius0, colliderRadiusMultiplier } =
     useCollider();
   const colliderRadius = colliderRadius0 * ICOSA_MULT;

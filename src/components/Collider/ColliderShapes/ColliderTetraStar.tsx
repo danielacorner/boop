@@ -14,6 +14,7 @@ import { useIsTabActive } from "../useIsTabActive";
 import { useSpin } from "../useSpin";
 import { useDoubleClicked } from "../useDoubleClicked";
 import { DepthContext } from "../../../context/DepthContext";
+import { GeometryType } from "../../../context/GeometryContext";
 
 // Create a tetrahedron mesh for collision detection
 const createTetrahedronShape = (radius: number, rotation: [number, number, number] = [0, 0, 0]) => {
@@ -29,7 +30,7 @@ const createTetrahedronShape = (radius: number, rotation: [number, number, numbe
   return toConvexProps(geometry);
 };
 
-export function ColliderTetraStar() {
+export function ColliderTetraStar({ geometryType = "tetrahedron_star" }: { geometryType?: GeometryType }) {
   const { colliderRadius } = useCollider();
   
   // Get depth from context

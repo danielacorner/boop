@@ -11,22 +11,22 @@ import { useGeometry } from "../../context/GeometryContext";
 import { GeometryProvider } from "../../context/GeometryContext";
 
 export function Collider() {
-  // Get the geometry type from the GeometryContext
-  const { geometryType } = useGeometry();
+  // Use optional chaining to safely access geometryType
+  const geometry = useGeometry();
+  const geometryType = geometry?.geometryType || "sphere";
   
-  // Map the full geometry type names to the appropriate components
   return (
     <>
-      {geometryType === "sphere" && <ColliderSphere />}
-      {geometryType === "icosahedron" && <ColliderIcosa />}
-      {geometryType === "dodecahedron" && <ColliderDodeca />}
-      {geometryType === "octahedron" && <ColliderOcta />}
-      {geometryType === "box" && <ColliderBox />}
+      {geometryType === "sphere" && <ColliderSphere geometryType={geometryType} />}
+      {geometryType === "dodecahedron" && <ColliderDodeca geometryType={geometryType} />}
+      {geometryType === "icosahedron" && <ColliderIcosa geometryType={geometryType} />}
+      {geometryType === "octahedron" && <ColliderOcta geometryType={geometryType} />}
+      {geometryType === "box" && <ColliderBox geometryType={geometryType} />}
       {geometryType === "none" && <ColliderInvisible />}
       {/* Tetrahedron now has its own specialized component with proper physics */}
-      {geometryType === "tetrahedron" && <ColliderTetra />}
+      {geometryType === "tetrahedron" && <ColliderTetra geometryType={geometryType} />}
       {/* Tetrahedron star now has its own specialized component with compound collision body */}
-      {geometryType === "tetrahedron_star" && <ColliderTetraStar />}
+      {geometryType === "tetrahedron_star" && <ColliderTetraStar geometryType={geometryType} />}
     </>
   );
 }

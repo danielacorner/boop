@@ -4,6 +4,7 @@ import { useBox } from "@react-three/cannon";
 import { useEffect, useRef, useContext } from "react";
 import { useFrame, useThree } from "@react-three/fiber";
 import { DepthContext } from "../../../context/DepthContext";
+import { GeometryType } from "../../../context/GeometryContext";
 import { COLLIDER_RADIUS, GROUP1, GROUP2 } from "../../../utils/constants";
 import { useSpring, animated } from "@react-spring/three";
 import { useMoveWithMouse } from "../useMoveWithMouse";
@@ -17,7 +18,7 @@ import { useDoubleClicked } from "../useDoubleClicked";
 import { useEventListener } from "../../../utils/hooks";
 
 const BOX_MULT = 1.5;
-export function ColliderBox() {
+export function ColliderBox({ geometryType = "box" }: { geometryType?: GeometryType }) {
   const { colliderRadius } = useCollider();
   const boxWidth = colliderRadius * BOX_MULT;
   const [sphereRef, api] = useBox<THREE.InstancedMesh>(

@@ -12,28 +12,15 @@ import { useDoubleClicked } from "../useDoubleClicked";
 import { useEventListener } from "../../../utils/hooks";
 import { useContext } from "react";
 import { DepthContext } from "../../../context/DepthContext";
-import { useGeometry } from "../../../context/GeometryContext";
+import { GeometryType } from "../../../context/GeometryContext";
 import * as THREE from "three";
 import { useSpin } from "../useSpin";
 
-export function ColliderSphere() {
+// Accept geometryType as a prop instead of using the context directly
+export function ColliderSphere({ geometryType = "sphere" }: { geometryType?: GeometryType }) {
   const { colliderRadius } = useCollider();
   // Get the isTabActive reference only once at the top level
   const isTabActiveRef = useIsTabActive();
-  
-  // Get the geometry type from the context with fallback
-  // This prevents the "useGeometry must be used within a GeometryProvider" error
-  let geometryType = "sphere"; // Default fallback value
-  
-  try {
-    const context = useGeometry();
-    if (context) {
-      geometryType = context.geometryType;
-    }
-  } catch (error) {
-    // If context is not available, use the default value
-    console.log("GeometryContext not available, using fallback");
-  }
 
   // Position tracking and configuration
   const position = useRef<[number, number, number]>([0, 0, 0]);

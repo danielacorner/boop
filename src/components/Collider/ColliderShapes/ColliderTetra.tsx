@@ -14,11 +14,12 @@ import { useIsTabActive } from "../useIsTabActive";
 import { useSpin } from "../useSpin";
 import { useDoubleClicked } from "../useDoubleClicked";
 import { DepthContext } from "../../../context/DepthContext";
+import { GeometryType } from "../../../context/GeometryContext";
 
 // Multiplier to scale the tetrahedron appropriately
 const TETRA_MULT = 1.3;
 
-export function ColliderTetra() {
+export function ColliderTetra({ geometryType = "tetrahedron" }: { geometryType?: GeometryType }) {
   const { colliderRadius } = useCollider();
   
   // Get depth from context
