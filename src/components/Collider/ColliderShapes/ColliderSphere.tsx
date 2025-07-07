@@ -319,7 +319,7 @@ export function ColliderSphere() {
         return (
           <group rotation={[Math.PI/5, Math.PI/4, 0]}>
             {/* Upward-pointing tetrahedron */}
-            <Tetrahedron args={[colliderRadius * 0.95, 0]}>
+            <Tetrahedron args={[colliderRadius * 1.4, 0]}>
               <meshPhysicalMaterial
                 transmission={0.9}
                 thickness={colliderRadius / 2.5}
@@ -330,7 +330,7 @@ export function ColliderSphere() {
             
             {/* Downward-pointing tetrahedron */}
             <group rotation={[Math.PI/2, Math.PI/2, Math.PI/2]}>
-              <Tetrahedron args={[colliderRadius * 0.95, 0]}>
+              <Tetrahedron args={[colliderRadius * 1.4, 0]}>
                 <meshPhysicalMaterial
                   transmission={0.9}
                   thickness={colliderRadius / 2.5}

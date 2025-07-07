@@ -198,9 +198,10 @@ export function ColliderBox() {
         //        getVertexPosition={undefined}
       >
         <meshPhysicalMaterial
-          transmission={1}
+          transmission={0.9}
           thickness={colliderRadius / 2}
           roughness={0}
+          metalness={0}
         />
       </Box>
     </animated.mesh>
