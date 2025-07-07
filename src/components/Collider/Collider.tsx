@@ -8,7 +8,6 @@ import { ColliderTetraStar } from "./ColliderShapes/ColliderTetraStar";
 import { ColliderTetra } from "./ColliderShapes/ColliderTetra";
 // Use GeometryContext instead of the older useShape hook
 import { useGeometry } from "../../context/GeometryContext";
-import { GeometryProvider } from "../../context/GeometryContext";
 
 export function Collider() {
   // Use optional chaining to safely access geometryType

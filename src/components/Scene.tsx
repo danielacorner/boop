@@ -27,6 +27,7 @@ import {
   MIN_DPR,
   dprAtom,
 } from "../utils/constants";
+import { GeometryProvider } from "../context/GeometryContext";
 
 const Scene = () => {
   return (
@@ -76,14 +77,14 @@ function PhysicsScene() {
   );
 
   return (
-    <>
+    <GeometryProvider>
       {/* <DebugInDev> */}
       <Collider />
       <D20StarComponent position={positions.d20} />
       {/* <MusicZoom /> */}
       <Clumpz {...{ positions }} />
       {/* </DebugInDev> */}
-    </>
+    </GeometryProvider>
   );
 }
 
