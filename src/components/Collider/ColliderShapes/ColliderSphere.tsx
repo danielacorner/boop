@@ -14,6 +14,7 @@ import { useContext } from "react";
 import { DepthContext } from "../../../context/DepthContext";
 import { useGeometry } from "../../../context/GeometryContext";
 import * as THREE from "three";
+import { useSpin } from "../useSpin";
 
 export function ColliderSphere() {
   const { colliderRadius } = useCollider();
@@ -90,6 +91,9 @@ export function ColliderSphere() {
 
   // Subscribe to sphere position and rotation
   const rotation = useRef([0, 0, 0, 0]); // Quaternion [x, y, z, w]
+  
+  // Apply rotation effect (same as other shapes)
+  useSpin(api);
   
   useEffect(() => {
     // Track position
