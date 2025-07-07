@@ -14,6 +14,7 @@ import { useIsTabActive } from "../useIsTabActive";
 import { useSpin } from "../useSpin";
 import { useDoubleClicked } from "../useDoubleClicked";
 import { DepthContext } from "../../../context/DepthContext";
+import { useRotation } from "../../../context/RotationContext";
 import { GeometryType } from "../../../context/GeometryContext";
 
 // Create a tetrahedron mesh for collision detection
@@ -36,6 +37,7 @@ export function ColliderTetraStar({ geometryType = "tetrahedron_star" }: { geome
   // Get depth from context
   const depthContext = useContext(DepthContext);
   const contextDepthValue = depthContext?.depth || 0;
+  const { isKinematic } = useRotation();
   
   // Create tetrahedron shapes for compound body
   const tetraUpShape = useMemo(() => 
@@ -71,7 +73,7 @@ export function ColliderTetraStar({ geometryType = "tetrahedron_star" }: { geome
   // Create compound body with two tetrahedrons that don't collide with each other
   const [starRef, api] = useCompoundBody<Group>(() => ({
     mass: 1,
-    type: "Kinematic",
+    type: isKinematic ? "Kinematic" : "Dynamic", // Switch between Kinematic and Dynamic based on rotation velocity
     position: [0, 0, 0],
     // Create a compound shape with two tetrahedrons
     shapes: [

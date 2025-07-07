@@ -9,12 +9,13 @@ import { useFrame, useThree } from "@react-three/fiber";
 import { useCollider } from "../useCollider";
 import { useDanceToMusic } from "../useDanceToMusic";
 import { useChangeShape } from "../useShape";
-import * as THREE from "three";
 import { useIsTabActive } from "../useIsTabActive";
 import { useSpin } from "../useSpin";
 import { useDoubleClicked } from "../useDoubleClicked";
 import { DepthContext } from "../../../context/DepthContext";
+import { useRotation } from "../../../context/RotationContext";
 import { GeometryType } from "../../../context/GeometryContext";
+import * as THREE from "three";
 
 // Multiplier to scale the tetrahedron appropriately
 const TETRA_MULT = 1.3;
@@ -22,9 +23,10 @@ const TETRA_MULT = 1.3;
 export function ColliderTetra({ geometryType = "tetrahedron" }: { geometryType?: GeometryType }) {
   const { colliderRadius } = useCollider();
   
-  // Get depth from context
+  // Get depth and rotation settings from contexts
   const depthContext = useContext(DepthContext);
   const contextDepthValue = depthContext?.depth || 0;
+  const { isKinematic } = useRotation();
   
   // Create tetrahedron geometry for physics body
   const tetrahedronGeometry = useMemo(() => 
@@ -55,7 +57,7 @@ export function ColliderTetra({ geometryType = "tetrahedron" }: { geometryType?:
   // Create physics body with proper tetrahedron collision shape
   const [tetraRef, api] = useConvexPolyhedron<THREE.Mesh>(() => ({
     mass: 1,
-    type: "Kinematic",
+    type: isKinematic ? "Kinematic" : "Dynamic", // Switch between Kinematic and Dynamic based on rotation velocity
     args: tetrahedronGeometry as any,
     position: [0, 0, 0],
     // Physics settings for proper collisions

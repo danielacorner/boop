@@ -10,7 +10,9 @@ import { useAtom } from "jotai";
 import { GeometryControls } from "./components/UI/GeometryControls";
 import { GeometryProvider } from "./context/GeometryContext";
 import { DepthProvider } from "./context/DepthContext";
+import { RotationProvider } from "./context/RotationContext";
 import { DepthSlider } from "./components/UI/DepthSlider";
+import { RotationSlider } from "./components/UI/RotationSlider";
 
 export function Fidget2() {
   const [dpr] = useAtom(dprAtom);
@@ -18,6 +20,7 @@ export function Fidget2() {
   return (
     <GeometryProvider>
       <DepthProvider>
+        <RotationProvider>
         {/* Control Panel Container */}
         <div style={{
           position: 'absolute',
@@ -42,7 +45,14 @@ export function Fidget2() {
             background: 'rgba(255,255,255,0.15)', 
             margin: '6px 0' 
           }}></div>
-          <DepthSlider />
+          <div style={{ 
+            display: 'flex',
+            flexDirection: 'column',
+            gap: '8px'
+          }}>
+            <DepthSlider />
+            <RotationSlider />
+          </div>
         </div>
       <Loader />
       {/* <div style={{ 
@@ -75,6 +85,7 @@ export function Fidget2() {
       <ControlsOverlay />
       <DeviceOrientationButton />
       <TrackDoubleClick />
+      </RotationProvider>
       </DepthProvider>
     </GeometryProvider>
   );
