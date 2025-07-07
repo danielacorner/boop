@@ -21,8 +21,9 @@ import * as THREE from "three";
 const TETRA_MULT = 1.3;
 
 export function ColliderTetra({ geometryType = "tetrahedron" }: { geometryType?: GeometryType }) {
-  const { colliderRadius } = useCollider();
-  
+  const { colliderRadius:colliderRadius1 } = useCollider();
+  const colliderRadius=colliderRadius1*1.3;
+
   // Get depth and rotation settings from contexts
   const depthContext = useContext(DepthContext);
   const contextDepthValue = depthContext?.depth || 0;
@@ -202,7 +203,7 @@ export function ColliderTetra({ geometryType = "tetrahedron" }: { geometryType?:
   return (
     <animated.mesh name="colliderTetra" ref={tetraRef as any} scale={scale}>
       {/* Visual representation of tetrahedron */}
-      <Tetrahedron args={[colliderRadius * TETRA_MULT, 0]}>
+      <Tetrahedron args={[colliderRadius, 0]}>
         <meshPhysicalMaterial
           transmission={0.9}
           thickness={colliderRadius / 2}
