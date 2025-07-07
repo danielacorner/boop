@@ -4,6 +4,7 @@ import { ColliderIcosa } from "./ColliderShapes/ColliderIcosa";
 import { ColliderInvisible } from "./ColliderShapes/ColliderInvisible";
 import { ColliderOcta } from "./ColliderShapes/ColliderOcta";
 import { ColliderSphere } from "./ColliderShapes/ColliderSphere";
+import { ColliderTetraStar } from "./ColliderShapes/ColliderTetraStar";
 // Use GeometryContext instead of the older useShape hook
 import { useGeometry } from "../../context/GeometryContext";
 import { GeometryProvider } from "../../context/GeometryContext";
@@ -21,8 +22,10 @@ export function Collider() {
       {geometryType === "octahedron" && <ColliderOcta />}
       {geometryType === "box" && <ColliderBox />}
       {geometryType === "none" && <ColliderInvisible />}
-      {/* Tetrahedron and other shapes can use ColliderSphere which now renders the correct geometry */}
-      {(geometryType === "tetrahedron" || geometryType === "tetrahedron_star") && <ColliderSphere />}
+      {/* Tetrahedron can use ColliderSphere which renders the correct geometry */}
+      {geometryType === "tetrahedron" && <ColliderSphere />}
+      {/* Tetrahedron star now has its own specialized component with compound collision body */}
+      {geometryType === "tetrahedron_star" && <ColliderTetraStar />}
     </>
   );
 }
