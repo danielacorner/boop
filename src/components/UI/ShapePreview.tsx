@@ -77,7 +77,7 @@ export const Icosahedron = () => (
 export const TetrahedronStar = () => {
   // Match the reference image with proper rotation for a merkaba
   return (
-    <group rotation={[Math.PI/5, Math.PI/4, 0]}>
+    <group rotation={[Math.PI/4, Math.PI/120, 0]} scale={1.4}>
       {/* Upward-pointing tetrahedron */}
       <mesh>
         <tetrahedronGeometry args={[0.95, 0]} />

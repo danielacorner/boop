@@ -22,8 +22,10 @@ export function Fidget2() {
         <div style={{
           position: 'absolute',
           top: '20px',
-          right: '20px',
-          width: '400px', // Reduced width
+          right: '0px',
+          left: '0px',
+          margin: '0 auto',
+          width: '320px', // Reduced width
           backgroundColor: 'rgba(0, 0, 0, 0.5)',
           backdropFilter: 'blur(10px)',
           borderRadius: '8px',

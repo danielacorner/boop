@@ -1,0 +1,155 @@
+/* Responsive styling for UI controls */
+
+/* Container styles for shape controls and depth slider */
+.controls-container {
+  width: 100%;
+  max-width: 100%;
+}
+
+/* Media query for screens smaller than 768px (tablet) */
+@media (max-width: 768px) {
+  .controls-container {
+    margin: 0 auto;
+    transform-origin: top center;
+  }
+}
+
+/* Media query for screens smaller than 480px (mobile) */
+@media (max-width: 480px) {
+  .controls-container {
+  }
+}
+
+/* Media query for very small screens (360px or smaller) */
+@media (max-width: 360px) {
+  .controls-container {
+    margin: 0 auto;
+  }
+  
+  .shape-grid {
+    grid-gap: 1px;
+  }
+  
+  .depth-slider-container {
+    gap: 3px;
+  }
+  
+  .depth-slider-label {
+    font-size: 11px;
+  }
+}
+
+/* Specific adjustments for shape buttons grid */
+.shape-grid {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  grid-gap: 3px;
+  width: 100%;
+  padding: 2px 0;
+}
+
+/* Center 3D elements within buttons */
+.shape-preview-container {
+  width: 100% !important; 
+  height: 100% !important; 
+  position: absolute !important;
+  top: 0 !important;
+  left: 0 !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  overflow: hidden !important;
+}
+
+.shape-preview-container canvas{
+  width: 100% !important;
+  height: 100% !important;
+}
+
+.shape-button {
+  width: 100%;
+  aspect-ratio: 1;
+  border-radius: 4px;
+  cursor: pointer;
+  padding: 0;
+  min-height: 28px;
+  position: relative;
+  overflow: hidden;
+}
+
+@media (max-width: 768px) {
+  .shape-grid {
+    grid-gap: 2px;
+  }
+}
+
+@media (max-width: 480px) {
+  .shape-grid {
+    grid-gap: 1px;
+  }
+  
+  .shape-button {
+    min-height: 24px;
+  }
+  
+  .depth-range-input {
+    height: 20px;
+  }
+}
+
+/* Depth slider container styling */
+.depth-slider-container {
+  width: 100%;
+  color: white;
+  transition: transform 0.2s ease, opacity 0.2s ease;
+  display: flex;
+  gap: 5px;
+  align-items: center;
+  opacity: 0.7;
+  padding: 0 1px;
+  box-sizing: border-box;
+}
+
+.depth-slider-container:hover {
+  transform: scale(1.02);
+  opacity: 0.95;
+}
+
+/* Depth slider label styling */
+.depth-slider-label {
+  margin-bottom: 5px;
+  display: flex;
+  justify-content: space-between;
+  font-size: 13px;
+  align-items: center;
+}
+
+@media (max-width: 480px) {
+  .depth-slider-label {
+    margin-bottom: 2px;
+    font-size: 11px;
+  }
+}
+
+/* Input range styling */
+.depth-range-input {
+  width: 100%;
+  background: linear-gradient(to right, #3a6df0, #a855f7);
+  height: 4px;
+  border-radius: 2px;
+  appearance: none;
+  outline: none;
+  margin-top: 2px;
+}
+
+@media (max-width: 480px) {
+  .depth-range-input {
+    height: 3px;
+  }
+}
+
+@media (max-width: 360px) {
+  .depth-range-input {
+    height: 2px;
+  }
+}

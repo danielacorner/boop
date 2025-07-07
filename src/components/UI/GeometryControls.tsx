@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import './UI.css';
 import { useGeometry } from '../../context/GeometryContext';
 import { Tooltip } from '@mui/material';
 import { Canvas } from '@react-three/fiber';
@@ -35,33 +36,21 @@ export const GeometryControls: React.FC = () => {
           {/* Title hidden as requested */}
 
           {/* Shape selection buttons in single row */}
-          <div style={{
-            display: 'grid',
-            gridTemplateColumns: 'repeat(7, 1fr)', // Changed to 7 columns for all shapes in one row
-            gridGap: '3px',
-            width: '100%',
-            padding: '2px 0'
-          }}>
+          <div className="controls-container">
+            <div className="shape-grid">
             {/* All shapes in a single row */}
             <Tooltip title="Sphere" placement="bottom">
               <button
                 onClick={() => setGeometryType('sphere')}
                 aria-label="Sphere"
                 aria-pressed={geometryType === 'sphere'}
+className="shape-button"
                 style={{
-                  width: '100%',
-                  aspectRatio: '1',
-                  borderRadius: '4px',
                   backgroundColor: geometryType === 'sphere' ? 'rgba(100, 100, 255, 0.3)' : 'transparent',
-                  border: geometryType === 'sphere' ? '2px solid rgba(120, 120, 255, 0.6)' : '1px solid rgba(255, 255, 255, 0.2)',
-                  cursor: 'pointer',
-                  padding: 0,
-                  minHeight: '28px', // Even smaller button height
-                  position: 'relative',
-                  overflow: 'hidden'
+                  border: geometryType === 'sphere' ? '2px solid rgba(120, 120, 255, 0.6)' : '1px solid rgba(255, 255, 255, 0.2)'
                 }}
               >
-                <div style={{ width: '100%', height: '100%', position: 'absolute', top: 0, left: 0 }}>
+                <div className="shape-preview-container">
                   {/* eslint-disable react/no-unknown-property */}
                   <Canvas frameloop={geometryType === 'sphere' ? "always" : "demand"} camera={{ position: [0, 0, 2.5] }}>
                     <ambientLight intensity={0.5} />
@@ -79,20 +68,13 @@ export const GeometryControls: React.FC = () => {
                 onClick={() => setGeometryType('tetrahedron')}
                 aria-label="Tetrahedron"
                 aria-pressed={geometryType === 'tetrahedron'}
+className="shape-button"
                 style={{
-                  width: '100%',
-                  aspectRatio: '1',
-                  borderRadius: '4px',
                   backgroundColor: geometryType === 'tetrahedron' ? 'rgba(100, 100, 255, 0.3)' : 'transparent',
-                  border: geometryType === 'tetrahedron' ? '2px solid rgba(120, 120, 255, 0.6)' : '1px solid rgba(255, 255, 255, 0.2)',
-                  cursor: 'pointer',
-                  padding: 0,
-                  minHeight: '28px', // Even smaller button height
-                  position: 'relative',
-                  overflow: 'hidden'
+                  border: geometryType === 'tetrahedron' ? '2px solid rgba(120, 120, 255, 0.6)' : '1px solid rgba(255, 255, 255, 0.2)'
                 }}
               >
-                <div style={{ width: '100%', height: '100%', position: 'absolute', top: 0, left: 0 }}>
+                <div className="shape-preview-container">
                   {/* eslint-disable react/no-unknown-property */}
                   <Canvas frameloop={geometryType === 'tetrahedron' ? "always" : "demand"} camera={{ position: [0, 0, 2.5] }}>
                     <ambientLight intensity={0.5} />
@@ -110,20 +92,13 @@ export const GeometryControls: React.FC = () => {
                 onClick={() => setGeometryType('box')}
                 aria-label="Box"
                 aria-pressed={geometryType === 'box'}
+className="shape-button"
                 style={{
-                  width: '100%',
-                  aspectRatio: '1',
-                  borderRadius: '4px',
                   backgroundColor: geometryType === 'box' ? 'rgba(100, 100, 255, 0.3)' : 'transparent',
-                  border: geometryType === 'box' ? '2px solid rgba(120, 120, 255, 0.6)' : '1px solid rgba(255, 255, 255, 0.2)',
-                  cursor: 'pointer',
-                  padding: 0,
-                  minHeight: '28px', // Even smaller button height
-                  position: 'relative',
-                  overflow: 'hidden'
+                  border: geometryType === 'box' ? '2px solid rgba(120, 120, 255, 0.6)' : '1px solid rgba(255, 255, 255, 0.2)'
                 }}
               >
-                <div style={{ width: '100%', height: '100%', position: 'absolute', top: 0, left: 0 }}>
+                <div className="shape-preview-container">
                   {/* eslint-disable react/no-unknown-property */}
                   <Canvas frameloop={geometryType === 'box' ? "always" : "demand"} camera={{ position: [0, 0, 2.5] }}>
                     <ambientLight intensity={0.5} />
@@ -143,20 +118,13 @@ export const GeometryControls: React.FC = () => {
                 onClick={() => setGeometryType('octahedron')}
                 aria-label="Octahedron"
                 aria-pressed={geometryType === 'octahedron'}
+className="shape-button"
                 style={{
-                  width: '100%',
-                  aspectRatio: '1',
-                  borderRadius: '4px',
                   backgroundColor: geometryType === 'octahedron' ? 'rgba(100, 100, 255, 0.3)' : 'transparent',
-                  border: geometryType === 'octahedron' ? '2px solid rgba(120, 120, 255, 0.6)' : '1px solid rgba(255, 255, 255, 0.2)',
-                  cursor: 'pointer',
-                  padding: 0,
-                  minHeight: '28px', // Even smaller button height
-                  position: 'relative',
-                  overflow: 'hidden'
+                  border: geometryType === 'octahedron' ? '2px solid rgba(120, 120, 255, 0.6)' : '1px solid rgba(255, 255, 255, 0.2)'
                 }}
               >
-                <div style={{ width: '100%', height: '100%', position: 'absolute', top: 0, left: 0 }}>
+                <div className="shape-preview-container">
                   {/* eslint-disable react/no-unknown-property */}
                   <Canvas frameloop={geometryType === 'octahedron' ? "always" : "demand"} camera={{ position: [0, 0, 2.5] }}>
                     <ambientLight intensity={0.5} />
@@ -174,20 +142,13 @@ export const GeometryControls: React.FC = () => {
                 onClick={() => setGeometryType('dodecahedron')}
                 aria-label="Dodecahedron"
                 aria-pressed={geometryType === 'dodecahedron'}
+className="shape-button"
                 style={{
-                  width: '100%',
-                  aspectRatio: '1',
-                  borderRadius: '4px',
                   backgroundColor: geometryType === 'dodecahedron' ? 'rgba(100, 100, 255, 0.3)' : 'transparent',
-                  border: geometryType === 'dodecahedron' ? '2px solid rgba(120, 120, 255, 0.6)' : '1px solid rgba(255, 255, 255, 0.2)',
-                  cursor: 'pointer',
-                  padding: 0,
-                  minHeight: '28px', // Even smaller button height
-                  position: 'relative',
-                  overflow: 'hidden'
+                  border: geometryType === 'dodecahedron' ? '2px solid rgba(120, 120, 255, 0.6)' : '1px solid rgba(255, 255, 255, 0.2)'
                 }}
               >
-                <div style={{ width: '100%', height: '100%', position: 'absolute', top: 0, left: 0 }}>
+                <div className="shape-preview-container">
                   {/* eslint-disable react/no-unknown-property */}
                   <Canvas frameloop={geometryType === 'dodecahedron' ? "always" : "demand"} camera={{ position: [0, 0, 2.5] }}>
                     <ambientLight intensity={0.5} />
@@ -205,20 +166,13 @@ export const GeometryControls: React.FC = () => {
                 onClick={() => setGeometryType('icosahedron')}
                 aria-label="Icosahedron"
                 aria-pressed={geometryType === 'icosahedron'}
+className="shape-button"
                 style={{
-                  width: '100%',
-                  aspectRatio: '1',
-                  borderRadius: '4px',
                   backgroundColor: geometryType === 'icosahedron' ? 'rgba(100, 100, 255, 0.3)' : 'transparent',
-                  border: geometryType === 'icosahedron' ? '2px solid rgba(120, 120, 255, 0.6)' : '1px solid rgba(255, 255, 255, 0.2)',
-                  cursor: 'pointer',
-                  padding: 0,
-                  minHeight: '28px', // Even smaller button height
-                  position: 'relative',
-                  overflow: 'hidden'
+                  border: geometryType === 'icosahedron' ? '2px solid rgba(120, 120, 255, 0.6)' : '1px solid rgba(255, 255, 255, 0.2)'
                 }}
               >
-                <div style={{ width: '100%', height: '100%', position: 'absolute', top: 0, left: 0 }}>
+                <div className="shape-preview-container">
                   {/* eslint-disable react/no-unknown-property */}
                   <Canvas frameloop={geometryType === 'icosahedron' ? "always" : "demand"} camera={{ position: [0, 0, 2.5] }}>
                     <ambientLight intensity={0.5} />
@@ -238,20 +192,13 @@ export const GeometryControls: React.FC = () => {
                   onClick={() => setGeometryType('tetrahedron_star')}
                   aria-label="Tetrahedron Star"
                   aria-pressed={geometryType === 'tetrahedron_star'}
+                  className="shape-button"
                   style={{
-                    width: '100%',
-                    aspectRatio: '1',
-                    borderRadius: '4px',
                     backgroundColor: geometryType === 'tetrahedron_star' ? 'rgba(100, 100, 255, 0.3)' : 'transparent',
-                    border: geometryType === 'tetrahedron_star' ? '2px solid rgba(120, 120, 255, 0.6)' : '1px solid rgba(255, 255, 255, 0.2)',
-                    cursor: 'pointer',
-                    padding: 0,
-                    minHeight: '28px', // Even smaller button height
-                    position: 'relative',
-                    overflow: 'hidden'
+                    border: geometryType === 'tetrahedron_star' ? '2px solid rgba(120, 120, 255, 0.6)' : '1px solid rgba(255, 255, 255, 0.2)'
                   }}
                 >
-                  <div style={{ width: '100%', height: '100%', position: 'absolute', top: 0, left: 0 }}>
+                  <div className="shape-preview-container">
                     {/* eslint-disable react/no-unknown-property */}
                     <Canvas frameloop={geometryType === 'tetrahedron_star' ? "always" : "demand"} camera={{ position: [0, 0, 2.8] }}>
                       <ambientLight intensity={0.5} />
@@ -264,6 +211,7 @@ export const GeometryControls: React.FC = () => {
                   </div>
                 </button>
               </Tooltip>
+            </div>
           </div>
         </>
       )}
