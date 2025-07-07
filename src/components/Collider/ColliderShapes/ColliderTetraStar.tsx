@@ -110,7 +110,7 @@ export function ColliderTetraStar({ geometryType = "tetrahedron_star" }: { geome
     collisionResponse: true,
     // Simple collision handler
     onCollide: (e: any) => {
-      console.log('Collision detected with tetra star!', e);
+      // console.log('Collision detected with tetra star!', e);
       api.wakeUp();
     }
   }));

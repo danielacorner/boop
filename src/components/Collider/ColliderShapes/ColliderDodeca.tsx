@@ -74,7 +74,7 @@ export function ColliderDodeca({ geometryType = "dodecahedron" }: { geometryType
       collisionFilterMask: -1,
       // Simple collision handler
       onCollide: (e: any) => {
-        console.log('Collision detected with dodeca!', e);
+        // console.log('Collision detected with dodeca!', e);
         api.wakeUp();
       }
     }),

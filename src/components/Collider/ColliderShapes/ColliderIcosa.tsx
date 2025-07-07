@@ -66,7 +66,7 @@ export function ColliderIcosa({ geometryType = "icosahedron" }: { geometryType?:
         restitution: 0.8
       },
       onCollide: (e: any) => {
-        console.log('Collision detected with icosahedron!', e);
+        // console.log('Collision detected with icosahedron!', e);
         api.wakeUp();
       }
     }),

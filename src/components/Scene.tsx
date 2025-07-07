@@ -77,14 +77,14 @@ function PhysicsScene() {
   );
 
   return (
-    <GeometryProvider>
+    <>
       {/* <DebugInDev> */}
       <Collider />
       <D20StarComponent position={positions.d20} />
       {/* <MusicZoom /> */}
       <Clumpz {...{ positions }} />
       {/* </DebugInDev> */}
-    </GeometryProvider>
+    </>
   );
 }
 

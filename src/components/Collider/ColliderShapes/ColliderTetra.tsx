@@ -77,7 +77,7 @@ export function ColliderTetra({ geometryType = "tetrahedron" }: { geometryType?:
     collisionFilterMask: -1,
     // Simple collision handler
     onCollide: (e: any) => {
-      console.log('Collision detected with tetrahedron!', e);
+      // console.log('Collision detected with tetrahedron!', e);
       api.wakeUp();
     }
   }));

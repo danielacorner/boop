@@ -71,7 +71,7 @@ export function ColliderOcta({ geometryType = "octahedron" }: { geometryType?: G
       collisionFilterMask: -1,
       // Simple collision handler
       onCollide: (e: any) => {
-        console.log('Collision detected with octahedron!', e);
+        // console.log('Collision detected with octahedron!', e);
         api.wakeUp();
       }
     }),

@@ -6,8 +6,8 @@ import "./App.css";
 
 // Array of all available fidget components
 const fidgetComponents = [
-  { id: 0, component: Fidget1 },
-  { id: 1, component: Fidget2 },
+  // { id: 0, component: Fidget1 },
+  { id: 0, component: Fidget2 },
   // Add more fidget components here as they're created
   // { id: 2, component: Fidget3 },
 ];
@@ -16,7 +16,7 @@ function App() {
   // Get the saved fidget index from localStorage or default to 0
   const [currentFidgetIndex, setCurrentFidgetIndex] = useState<number>(() => {
     const savedIndex = localStorage.getItem("currentFidgetIndex");
-    return savedIndex ? parseInt(savedIndex, 10) : 1;
+    return savedIndex ? parseInt(savedIndex, 10) : 0;
   });
 
   // Save the current fidget index whenever it changes
@@ -37,7 +37,7 @@ function App() {
   };
 
   // Get the current fidget component
-  const CurrentFidget = fidgetComponents[currentFidgetIndex].component;
+  const CurrentFidget = fidgetComponents[0].component;
 
   // Use this for debugging
   console.log('Current fidget index:', currentFidgetIndex);

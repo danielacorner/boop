@@ -37,7 +37,7 @@ export function ColliderBox({ geometryType = "box" }: { geometryType?: GeometryT
         restitution: 0.8
       },
       onCollide: (e: any) => {
-        console.log('Collision detected with box!', e);
+        // console.log('Collision detected with box!', e);
         api.wakeUp();
       }
     }),
