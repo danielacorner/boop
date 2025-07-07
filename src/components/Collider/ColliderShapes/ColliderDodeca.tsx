@@ -2,6 +2,7 @@
 import { Dodecahedron } from "@react-three/drei";
 import { useConvexPolyhedron } from "@react-three/cannon";
 import { useEffect, useMemo, useRef, useContext } from "react";
+import { useRotation } from "../../../context/RotationContext";
 import { toConvexProps, useEventListener } from "../../../utils/hooks";
 import { useSpring, animated } from "@react-spring/three";
 import { useFrame, useThree } from "@react-three/fiber";
@@ -54,13 +55,14 @@ export function ColliderDodeca({ geometryType = "dodecahedron" }: { geometryType
     });
   }, [contextDepthValue, springApi]);
 
-  // Get rotation velocity from context (same as original implementation)
+  // Get rotation settings from context
+  const { isKinematic } = useRotation();
   const angularFactor = useMemo<[number, number, number]>(() => [1, 1, 1], []);
   
   const [sphereRef, api] = useConvexPolyhedron<THREE.InstancedMesh>(
     () => ({
       name: "colliderDodeca",
-      type: "Kinematic",
+      type: isKinematic ? "Kinematic" : "Dynamic", // Respect rotation context setting
       mass: 1,
       args: dodecahedronGeometrygeo as any,
       position: [0, 0, 0],
